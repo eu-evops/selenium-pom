@@ -139,7 +139,7 @@ public class PageElementImpl implements PageElement {
         waitUntilGone(DEFAULT_TIMEOUT);
     }
 
-    // DEMO waiting for things to happen for instance waiting for element to disappear from the page
+    // DEMO waiting for things to happen, for instance waiting for element to disappear from the page
     public void waitUntilHidden(Integer timeout) throws TimeoutException {
         long start = Calendar.getInstance().getTimeInMillis();
         while (this.element.isDisplayed()) {

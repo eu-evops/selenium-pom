@@ -1,6 +1,7 @@
-package uk.sponte.automation.web;
+package uk.sponte.automation.web.proxies.handlers;
 
 import org.openqa.selenium.SearchContext;
+import uk.sponte.automation.web.PageSection;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

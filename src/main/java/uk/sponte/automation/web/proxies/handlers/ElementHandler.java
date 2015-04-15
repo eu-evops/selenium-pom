@@ -1,8 +1,7 @@
-package uk.sponte.automation.web;
+package uk.sponte.automation.web.proxies.handlers;
 
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import uk.sponte.automation.web.PageElement;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -13,17 +12,18 @@ import java.lang.reflect.Method;
  */
 public class ElementHandler implements InvocationHandler {
     private WebElement element;
-    private WebElementExtensionsImpl extensionsHandler;
+    private PageElement pageElement;
 
-    public ElementHandler(WebElement element, WebElementExtensionsImpl extensionsHandler) {
+    public ElementHandler(WebElement element, PageElement pageElement) {
         this.element = element;
-        this.extensionsHandler = extensionsHandler;
+        this.pageElement = pageElement;
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         try {
-            if (extensionsHandler.canHandle(method))
-                return method.invoke(extensionsHandler, args);
+            if (pageElement.canHandle(method)) {
+                return method.invoke(pageElement, args);
+            }
 
             return method.invoke(this.element, args);
         } catch(InvocationTargetException exception) {

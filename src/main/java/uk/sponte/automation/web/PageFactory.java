@@ -6,6 +6,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
@@ -15,6 +16,7 @@ import uk.sponte.automation.web.annotations.Section;
 import uk.sponte.automation.web.dependencies.DefaultDependencyInjectorImpl;
 import uk.sponte.automation.web.dependencies.DependencyInjector;
 import uk.sponte.automation.web.exceptions.PageFactoryError;
+import uk.sponte.automation.web.proxies.handlers.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -44,6 +46,7 @@ public class PageFactory {
     public <T> T get(Class<T> pageClass) throws PageFactoryError {
         return this.get(pageClass, dependencyInjector.get(WebDriver.class));
     }
+
     public <T> T get(T page) {
         return initializeContainer(page, dependencyInjector.get(WebDriver.class));
     }
@@ -54,6 +57,7 @@ public class PageFactory {
     }
 
     private <T> T initializeContainer(T page, SearchContext searchContext) {
+        setRootElement(page, searchContext);
         for (Field field : page.getClass().getFields()) {
             initializePageElements(field, page, searchContext);
             initializePageElementLists(field, page, searchContext);
@@ -64,18 +68,48 @@ public class PageFactory {
         return page;
     }
 
+    private <T> void setRootElement(T pageObject, SearchContext searchContext) {
+        if(!(searchContext instanceof WebElementExtensions)) return;
+
+        try {
+            Field rootElement = findField(pageObject, "rootElement");
+            rootElement.setAccessible(true);
+            rootElement.set(pageObject, searchContext);
+        } catch (NoSuchFieldException e) {
+            // e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            throw new PageFactoryError(e.getCause());
+        }
+    }
+
+    public Field findField(Object object, String name) throws NoSuchFieldException {
+        Class klass = object.getClass();
+
+        while(klass != null) {
+            for (Field field : klass.getDeclaredFields()) {
+                if (field.getName().equalsIgnoreCase(name))
+                    return field;
+            }
+
+            klass = klass.getSuperclass();
+        }
+
+        throw new NoSuchFieldException("Could not find field with name " + name);
+    }
+
     private <T> void initializePageSectionLists(Field field, T page, SearchContext searchContext) {
-        if(!List.class.isAssignableFrom(field.getType())) return;
+        if (!List.class.isAssignableFrom(field.getType())) return;
         Type genericType = field.getGenericType();
         if (!(genericType instanceof ParameterizedTypeImpl)) return;
         ParameterizedTypeImpl genericTypeImpl = (ParameterizedTypeImpl) genericType;
         if (PageElement.class.isAssignableFrom((Class<?>) genericTypeImpl.getActualTypeArguments()[0])) return;
-        if(field.getAnnotation(Section.class) == null) return;
+        if (field.getAnnotation(Section.class) == null) return;
 
         Class pageSectionType = (Class) genericTypeImpl.getActualTypeArguments()[0];
         Annotations annotations = new Annotations(field);
 
         PageSectionListHandler pageSectionListHandler = new PageSectionListHandler(
+                getDriver(),
                 searchContext,
                 annotations.buildBy(),
                 pageSectionType,
@@ -116,18 +150,7 @@ public class PageFactory {
 
         try {
             T pageSection = dependencyInjector.get((Class<T>) field.getType());
-
-            if(PageSection.class.isAssignableFrom(pageSection.getClass())) {
-                try {
-                    Field rootElement = PageSection.class.getDeclaredField("rootElement");
-                    rootElement.setAccessible(true);
-                    rootElement.set(pageSection, container);
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            initializeContainer(pageSection, container);
+            this.initializeContainer(pageSection, container);
 
             field.setAccessible(true);
             field.set(page, pageSection);
@@ -186,19 +209,19 @@ public class PageFactory {
 
     }
 
-    private static PageElement getPageElementProxy(WebDriver driver, By by, SearchContext searchContext, Field field) {
+    private PageElement getPageElementProxy(WebDriver driver, By by, SearchContext searchContext, Field field) {
         WebElementHandler elementHandler = new WebElementHandler(searchContext, by);
         WebElement proxyElement = (WebElement) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),
-                new Class[]{WebElement.class, Locatable.class},
+                new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },
                 elementHandler
         );
 
-        WebElementExtensionsImpl webElementExtensions = new WebElementExtensionsImpl(driver, searchContext, proxyElement, field);
-        InvocationHandler pageElementHandler = new ElementHandler(proxyElement, webElementExtensions);
+        PageElement pageElement = new PageElementImpl(driver, proxyElement, field);
+        InvocationHandler pageElementHandler = new ElementHandler(proxyElement, pageElement);
         return (PageElement) Proxy.newProxyInstance(
                 PageElement.class.getClassLoader(),
-                new Class[]{PageElement.class, WebElement.class},
+                new Class[]{PageElement.class},
                 pageElementHandler);
     }
 }

@@ -13,6 +13,12 @@ public interface WebElementExtensions {
     boolean isPresent();
 
     /**
+     * Returns text of an element even if it's hidden by CSS
+     * @return
+     */
+    String getHiddenText();
+
+    /**
      *
      * @return text from value attribute of an element
      */

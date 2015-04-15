@@ -3,7 +3,7 @@
 
 <style type="text/css">
     #drag {
-        cursor: move;
+    cursor: move;
     }
 
     #drag, #drop, #dblClick {
@@ -16,14 +16,16 @@
     }
 
     .item {
-        border: 1px solid blue;
-        padding: 5px;
-        margin-bottom: 5px;
+    border: 1px solid blue;
+    padding: 5px;
+    margin-bottom: 5px;
     }
 
+    #hidden { display: none }
+
     .item:hover {
-        background-color: blue;
-        color: white;
+    background-color: blue;
+    color: white;
     }
 </style>
 
@@ -69,11 +71,13 @@
 
         });
     });
+
 </script>
 
 <body>
 
 <h1>Headline</h1>
+
 <h2 style="display: none">Hidden subtitle</h2>
 
 <p>
@@ -124,6 +128,7 @@
 
 <div id="section">
     <h1>Section heading</h1>
+
     <h2>Section subtitle</h2>
     <ul>
         <li>one</li>
@@ -146,6 +151,27 @@
     <span class="one">two-one</span>
     <span class="two">two-two</span>
 </div>
+
+<div id="plainClassSection">
+    <div id="plainSectionChild">Hello World
+        <span class="item">one</span>
+        <span class="item">two</span>
+        <span class="item">three</span>
+    </div>
+</div>
+
+<div class="listItem">
+    <div class="listSubItem"><h5>List 1: Item 1</h5></div>
+    <div class="listSubItem"><h5>List 1: Item 2</h5></div>
+    <div class="listSubItem"><h5>List 1: Item 3</h5></div>
+</div>
+<div class="listItem">
+    <div class="listSubItem"><h5>List 2: Item 1</h5></div>
+    <div class="listSubItem"><h5>List 2: Item 2</h5></div>
+    <div class="listSubItem"><h5>List 2: Item 3</h5></div>
+</div>
+
+<div id="hidden">secret</div>
 
 </body>
 </html>

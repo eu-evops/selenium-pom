@@ -1,4 +1,4 @@
-package uk.sponte.automation.web;
+package uk.sponte.automation.web.proxies.handlers;
 
 import org.openqa.selenium.WebElement;
 

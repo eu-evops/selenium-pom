@@ -1,5 +1,6 @@
 package uk.sponte.automation.web.tests.ui;
 
+import junit.framework.Assert;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -7,14 +8,15 @@ import org.junit.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import uk.sponte.automation.web.PageFactory;
-import uk.sponte.automation.web.PageSection;
 import uk.sponte.automation.web.dependencies.DefaultDependencyInjectorImpl;
 import uk.sponte.automation.web.helpers.TestHelper;
 import uk.sponte.automation.web.testobjects.pages.TestPage;
 
 import java.util.concurrent.TimeoutException;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by swozniak on 03/04/15.
@@ -33,6 +35,7 @@ public class PageTest {
         url = testHelper.getTestPageAsBase64();
 
         DefaultDependencyInjectorImpl defaultDependencyInjector = new DefaultDependencyInjectorImpl();
+
         driver = defaultDependencyInjector.get(WebDriver.class);
         pageFactory = new PageFactory(defaultDependencyInjector);
     }
@@ -149,7 +152,7 @@ public class PageTest {
     }
     @Test
     public void returnsAListOfElements() throws Exception {
-        assertEquals("There should only be 1 child element", 6, testPage.listPageElements.size());
+        assertEquals("There should be 9 child elements", 9, testPage.listPageElements.size());
     }
 
     @Test
@@ -170,5 +173,30 @@ public class PageTest {
     @Test
     public void canCheckWhetherSectionExists() {
         assertTrue(testPage.section.isPresent());
+    }
+
+
+    @Test
+    public void setsRootElementForAChildSectionIfParentDoesNotExtendPageSection() {
+        assertNotNull(testPage.plainClassSection);
+        assertNotNull(testPage.plainClassSection.childInheritingFromPageSection);
+
+        assertEquals("one", testPage.plainClassSection.childInheritingFromPageSection.children.get(0).getText());
+    }
+
+    @Test
+    public void canUseListOfLists() {
+        assertEquals(2, testPage.listItems.size());
+        assertNotNull(testPage.listItems.get(0).subItems);
+
+        assertEquals(3, testPage.listItems.get(0).subItems.size());
+
+        assertEquals("List 1: Item 1", testPage.listItems.get(0).subItems.get(0).getText());
+        assertEquals("List 2: Item 3", testPage.listItems.get(1).subItems.get(2).getText());
+    }
+
+    @Test
+    public void canReadHiddenText() {
+        Assert.assertEquals("secret", testPage.hidden.getHiddenText());
     }
 }

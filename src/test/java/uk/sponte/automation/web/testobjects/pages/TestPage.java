@@ -1,13 +1,9 @@
 package uk.sponte.automation.web.testobjects.pages;
 
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.support.FindBy;
 import uk.sponte.automation.web.PageElement;
-import uk.sponte.automation.web.Page;
 import uk.sponte.automation.web.annotations.Section;
-import uk.sponte.automation.web.testobjects.sections.ParentSection;
-import uk.sponte.automation.web.testobjects.sections.SectionListItem;
-import uk.sponte.automation.web.testobjects.sections.TestSection;
+import uk.sponte.automation.web.testobjects.sections.*;
 
 import java.util.List;
 
@@ -50,4 +46,10 @@ public class TestPage {
 
     @FindBy(className = "sectionListItem")
     @Section public List<SectionListItem> sectionList;
+    @Section public PlainSection plainClassSection;
+
+    @FindBy(className = "listItem")
+    @Section public List<ListItem> listItems;
+
+    public PageElement hidden;
 }

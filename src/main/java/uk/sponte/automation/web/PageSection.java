@@ -13,11 +13,23 @@ public abstract class PageSection {
         return rootElement.isPresent();
     }
 
+    public String getText() {
+        return rootElement.getText();
+    }
+
     public void waitFor(Integer timeout) throws TimeoutException {
         this.rootElement.waitFor(timeout);
     }
     
     public void waitFor() throws TimeoutException {
         this.waitFor(DEFAULT_WAIT_TIMEOUT);
+    }
+
+    public void waitUntilGone() throws TimeoutException {
+        this.waitUntilGone(DEFAULT_WAIT_TIMEOUT);
+    }
+
+    public void waitUntilGone(Integer timeout) throws TimeoutException {
+        this.rootElement.waitUntilGone(timeout);
     }
 }

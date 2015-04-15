@@ -1,9 +1,9 @@
-package uk.sponte.automation.web;
+package uk.sponte.automation.web.proxies.handlers;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import uk.sponte.automation.web.PageElement;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;

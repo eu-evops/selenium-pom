@@ -12,6 +12,7 @@ import uk.sponte.automation.web.dependencies.DependencyInjector;
 import uk.sponte.automation.web.testobjects.pages.TestPage;
 import uk.sponte.automation.web.testobjects.sections.ChildSection;
 import uk.sponte.automation.web.testobjects.sections.ParentSection;
+import uk.sponte.automation.web.testobjects.sections.PlainSection;
 import uk.sponte.automation.web.testobjects.sections.TestSection;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.*;
  * Created by swozniak-ba on 02/04/15.
  */
 public class PageTest {
-    TestPage page;
+    TestPage testPage;
     private WebDriver webDriverMock;
     private PageFactory pageFactory;
     private WebElement headlineWebElementMock;
@@ -44,49 +45,57 @@ public class PageTest {
         when(mockDependencyInjector.get(ChildSection.class)).thenReturn(new ChildSection());
         when(mockDependencyInjector.get(TestSection.class)).thenReturn(new TestSection());
         when(mockDependencyInjector.get(WebDriver.class)).thenReturn(webDriverMock);
+
+        PlainSection plainSectionMock = mock(PlainSection.class);
+        when(mockDependencyInjector.get(PlainSection.class)).thenReturn(plainSectionMock);
+
         when(headlineWebElementMock.getText()).thenReturn("Headline");
 
+        WebElement plainSectionChildElementMock = mock(WebElement.class);
+
+        when(plainSectionChildElementMock.getTagName()).thenReturn("Hello World");
+        when(webDriverMock.findElement(new By.ById("plainSectionChild"))).thenReturn(plainSectionChildElementMock);
         when(webDriverMock.findElement(By.tagName("h1"))).thenReturn(headlineWebElementMock);
         when(webDriverMock.findElement(new ByIdOrName("someInput"))).thenReturn(someInputWebElementMock);
 
         pageFactory = new PageFactory(mockDependencyInjector);
-        page = pageFactory.get(TestPage.class);
+        testPage = pageFactory.get(TestPage.class);
     }
 
     @Test
     public void pageCreation() {
-        assertNotNull("page has not been initialised", page);
+        assertNotNull("page has not been initialised", testPage);
     }
 
     @Test
     public void pageElement() {
-        assertNotNull("pageElement has not been initialized", page.headline);
+        assertNotNull("pageElement has not been initialized", testPage.headline);
     }
 
     @Test
     public void canFindElementUsingAnnotations() {
         By by = By.tagName("h1");
 
-        page.headline.getText();
+        testPage.headline.getText();
         verify(webDriverMock).findElement(by);
     }
 
     @Test
     public void canGetText() {
-        page.headline.getText();
+        testPage.headline.getText();
         verify(headlineWebElementMock).getText();
     }
 
     @Test
     public void canGetValue() {
-        page.headline.getValue();
+        testPage.headline.getValue();
         verify(headlineWebElementMock).getAttribute("value");
     }
 
 
     @Test
     public void returnsPageElement() {
-        assertTrue(PageElement.class.isAssignableFrom(page.headline.getClass()));
+        assertTrue(PageElement.class.isAssignableFrom(testPage.headline.getClass()));
     }
 
     @Test
@@ -99,18 +108,18 @@ public class PageTest {
         String expectedText = "test";
         when(headlineWebElementMock.getText()).thenReturn(expectedText);
 
-        assertEquals("There should be 3 list elements on the page", 3, page.listPageElements.size());
-        assertEquals(expectedText, page.listPageElements.get(0).getText());
+        assertEquals("There should be 3 list elements on the page", 3, testPage.listPageElements.size());
+        assertEquals(expectedText, testPage.listPageElements.get(0).getText());
     }
 
     @Test
     public void canReadElementsText() {
-        assertEquals(page.headline.getText(), "Headline");
+        assertEquals(testPage.headline.getText(), "Headline");
     }
 
     @Test
     public void canGetPageSection() {
-        assertNotNull("page section should be initialized", page.parent);
+        assertNotNull("page section should be initialized", testPage.parent);
     }
 
     @Test
@@ -125,8 +134,8 @@ public class PageTest {
         when(childMock.findElements(By.className("item"))).thenReturn(elements);
 
         assertNotNull("should be able to access child elements of a section",
-                page.parent.child);
+                testPage.parent.child);
 
-        assertEquals(1, page.parent.child.children.size());
+        assertEquals(1, testPage.parent.child.children.size());
     }
 }

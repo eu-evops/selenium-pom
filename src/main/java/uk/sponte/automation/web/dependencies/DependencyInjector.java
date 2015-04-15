@@ -5,4 +5,6 @@ package uk.sponte.automation.web.dependencies;
  */
 public interface DependencyInjector {
     <T> T get(Class<T> klass) throws InjectionError;
+
+
 }

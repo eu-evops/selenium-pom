@@ -2,36 +2,38 @@ package uk.sponte.automation.web;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.Select;
+import uk.sponte.automation.web.helpers.OperationHelper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
  * Created by swozniak on 03/04/15.
  */
-public class WebElementExtensionsImpl implements WebElementExtensions {
+public class PageElementImpl implements PageElement {
     private final static Integer DEFAULT_TIMEOUT = 5000;
 
     private WebDriver driver;
-    private SearchContext searchContext;
     private WebElement element;
     private Field field;
 
-    public WebElementExtensionsImpl(
+    public PageElementImpl(
             WebDriver driver,
-            SearchContext searchContext,
             WebElement element,
             Field field) {
         this.driver = driver;
-        this.searchContext = searchContext;
         this.element = element;
         this.field = field;
     }
 
-    public Boolean canHandle(Method methodName) {
+    public boolean canHandle(Method methodName) {
         for (Method method : this.getClass().getMethods()) {
             if (method.getName().equals(methodName.getName()))
                 return true;
@@ -40,15 +42,19 @@ public class WebElementExtensionsImpl implements WebElementExtensions {
         return false;
     }
 
-    @Override
     public boolean isPresent() {
         try {
             this.element.getTagName();
-        } catch(NoSuchElementException | StaleElementReferenceException ex) {
+        } catch (NoSuchElementException | StaleElementReferenceException ex) {
             return false;
         }
 
         return true;
+    }
+
+    public String getHiddenText() {
+        return (String) ((JavascriptExecutor) driver).executeScript(
+                "return arguments[0].innerText;", element);
     }
 
     public String getValue() {
@@ -57,13 +63,13 @@ public class WebElementExtensionsImpl implements WebElementExtensions {
 
     public void set(String text) {
         String tagName = this.element.getTagName();
-        if(tagName.equalsIgnoreCase("input")) {
+        if (tagName.equalsIgnoreCase("input")) {
             this.element.clear();
             this.element.sendKeys(text);
             return;
         }
 
-        if(tagName.equalsIgnoreCase("select")) {
+        if (tagName.equalsIgnoreCase("select")) {
             Select select = new Select(this.element);
             select.selectByValue(text);
             return;
@@ -72,11 +78,12 @@ public class WebElementExtensionsImpl implements WebElementExtensions {
         throw new Error("Cannot set elements value: " + tagName);
     }
 
-    @Override
     public void set(String format, Object... args) {
         this.set(String.format(format, args));
     }
 
+
+    // DEMO custom actions made easier
     public void doubleClick() {
         new Actions(driver).doubleClick(this.element).perform();
     }
@@ -132,6 +139,7 @@ public class WebElementExtensionsImpl implements WebElementExtensions {
         waitUntilGone(DEFAULT_TIMEOUT);
     }
 
+    // DEMO waiting for things to happen for instance waiting for element to disappear from the page
     public void waitUntilHidden(Integer timeout) throws TimeoutException {
         long start = Calendar.getInstance().getTimeInMillis();
         while (this.element.isDisplayed()) {
@@ -171,5 +179,90 @@ public class WebElementExtensionsImpl implements WebElementExtensions {
 
     public void waitUntilVisible() throws TimeoutException {
         waitUntilVisible(DEFAULT_TIMEOUT);
+    }
+
+    public WebElement getWrappedElement() {
+        if(this.element instanceof RemoteWebElement) return this.element;
+
+        return null;
+    }
+
+    // DEMO ability to "decorate" selenium's logic, for instance adding retry logic
+    @Override
+    public void click() {
+        OperationHelper.withRetry(3, this.element::click);
+    }
+
+    @Override
+    public void submit() {
+        this.element.submit();
+    }
+
+    @Override
+    public void sendKeys(CharSequence... charSequences) {
+        this.element.sendKeys(charSequences);
+    }
+
+    @Override
+    public void clear() {
+        this.element.clear();
+    }
+
+    @Override
+    public String getTagName() {
+        return this.element.getTagName();
+    }
+
+    @Override
+    public String getAttribute(String s) {
+        return this.element.getAttribute(s);
+    }
+
+    @Override
+    public boolean isSelected() {
+        return this.element.isSelected();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.element.isEnabled();
+    }
+
+    @Override
+    public String getText() {
+        return this.element.getText();
+    }
+
+    public List<WebElement> findElements(By by) {
+        return this.element.findElements(by);
+    }
+
+    public WebElement findElement(By by) {
+        return this.element.findElement(by);
+    }
+
+    @Override
+    public boolean isDisplayed() {
+        return this.element.isDisplayed();
+    }
+
+    @Override
+    public Point getLocation() {
+        return this.element.getLocation();
+    }
+
+    @Override
+    public Dimension getSize() {
+        return this.element.getSize();
+    }
+
+    @Override
+    public String getCssValue(String s) {
+        return getCssValue(s);
+    }
+
+    @Override
+    public Coordinates getCoordinates() {
+        return ((Locatable)this.element).getCoordinates();
     }
 }

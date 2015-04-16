@@ -121,21 +121,4 @@ public class PageTest {
     public void canGetPageSection() {
         assertNotNull("page section should be initialized", testPage.parent);
     }
-
-    @Test
-    public void canGetChildSectionOfASection() {
-        ArrayList<WebElement> elements = new ArrayList<WebElement>();
-        elements.add(headlineWebElementMock);
-        when(webDriverMock.findElements(By.className("item"))).thenReturn(elements);
-        WebElement parentMock = mock(WebElement.class);
-        when(webDriverMock.findElement(new ByIdOrName("parent"))).thenReturn(parentMock);
-        WebElement childMock = mock(WebElement.class);
-        when(parentMock.findElement(new ByIdOrName("child"))).thenReturn(childMock);
-        when(childMock.findElements(By.className("item"))).thenReturn(elements);
-
-        assertNotNull("should be able to access child elements of a section",
-                testPage.parent.child);
-
-        assertEquals(1, testPage.parent.child.children.size());
-    }
 }

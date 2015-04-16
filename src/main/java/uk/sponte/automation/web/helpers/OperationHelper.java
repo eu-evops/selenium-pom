@@ -7,6 +7,10 @@ import uk.sponte.automation.web.exceptions.RetryException;
  */
 public class OperationHelper {
     public static void withRetry(int maxAttempts, Runnable runnable) throws RetryException {
+        withRetry(maxAttempts, 500, runnable);
+    }
+
+    public static void withRetry(int maxAttempts, int delay, Runnable runnable) throws RetryException {
         Exception exceptionThrown = null;
         for (int count = 0; count < maxAttempts; count++) {
             try {
@@ -15,7 +19,7 @@ public class OperationHelper {
             } catch (Exception e) {
                 System.out.printf("[%s] Retrying %s%n because of %s %n", count, runnable, e);
                 exceptionThrown = e;
-                sleep(500);
+                sleep(delay);
             }
         }
 
@@ -24,7 +28,7 @@ public class OperationHelper {
         }
     }
 
-    private static void sleep(int ms) {
+    public static void sleep(int ms) {
         try {
             Thread.sleep(ms);
         } catch (InterruptedException e) {

@@ -2,7 +2,6 @@ package uk.sponte.automation.web.tests.ui;
 
 import junit.framework.Assert;
 import org.junit.*;
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import uk.sponte.automation.web.PageFactory;
 import uk.sponte.automation.web.dependencies.DefaultDependencyInjectorImpl;
@@ -65,18 +64,14 @@ public class PageTest {
     @Test
     public void canDoubleClickElement() {
         testPage.doubleClick.doubleClick();
-        Alert alert = driver.switchTo().alert();
-        assertEquals("Double clicked!", alert.getText());
-        alert.accept();
+        assertEquals("Double clicked", testPage.doubleClick.getText());
     }
 
     @Test
+    @Ignore // Need real browser to run this test
     public void canDragAndDrop() {
         testPage.drag.dropOnto(testPage.drop);
-
-        Alert alert = driver.switchTo().alert();
-        assertEquals("Dropped!", alert.getText());
-        alert.accept();
+        assertEquals("dropped!", testPage.drop.getText());
     }
 
     @Test

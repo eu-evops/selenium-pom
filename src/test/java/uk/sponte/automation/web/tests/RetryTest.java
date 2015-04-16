@@ -16,9 +16,12 @@ public class RetryTest {
     public void canRetry() {
         final int[] times = {0};
         try {
-            OperationHelper.withRetry(3, () -> {
-                times[0]++;
-                throw new NoSuchElementException("lol");
+            OperationHelper.withRetry(3, 50, new Runnable() {
+                @Override
+                public void run() {
+                    times[0]++;
+                    throw new NoSuchElementException("lol");
+                }
             });
         } catch(RetryException e) {
             // nothing

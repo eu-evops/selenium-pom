@@ -33,8 +33,6 @@ public class PageTest {
 
     @Before
     public void setup() {
-        System.out.println(this.getClass().getResource(".").getPath());
-
         mockDependencyInjector = mock(DependencyInjector.class);
         webDriverMock = mock(WebDriver.class);
         headlineWebElementMock = mock(WebElement.class);

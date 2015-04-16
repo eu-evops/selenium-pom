@@ -6,7 +6,6 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.Select;
-import uk.sponte.automation.web.helpers.OperationHelper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -15,6 +14,9 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
+ * Thin wrapper around selenium WebElement. It also adds
+ * extension methods to simplify interacting with elements
+ * in HTML.
  * Created by swozniak on 03/04/15.
  */
 public class PageElementImpl implements PageElement {
@@ -45,7 +47,9 @@ public class PageElementImpl implements PageElement {
     public boolean isPresent() {
         try {
             this.element.getTagName();
-        } catch (NoSuchElementException | StaleElementReferenceException ex) {
+        } catch (NoSuchElementException e) {
+            return false;
+        } catch (StaleElementReferenceException ex) {
             return false;
         }
 
@@ -101,13 +105,19 @@ public class PageElementImpl implements PageElement {
             try {
                 this.element.getTagName();
                 return;
-            } catch (NoSuchElementException | StaleElementReferenceException webDriverException) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    // ignore
-                }
+            } catch (NoSuchElementException webDriverException) {
+                sleep(100);
+            } catch (StaleElementReferenceException webDriverException) {
+                sleep(100);
             }
+        }
+    }
+
+    private void sleep(int timeout) {
+        try {
+            Thread.sleep(timeout);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -123,13 +133,10 @@ public class PageElementImpl implements PageElement {
             }
             try {
                 this.element.getTagName();
-                Thread.sleep(100);
+                sleep(100);
             } catch (StaleElementReferenceException ex) {
                 return;
             } catch (NoSuchElementException ex) {
-                return;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
                 return;
             }
         }
@@ -146,12 +153,7 @@ public class PageElementImpl implements PageElement {
             if (Calendar.getInstance().getTimeInMillis() - start > timeout) {
                 throw new TimeoutException("Timed out while waiting for element to be hidden: " + this.field);
             }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return;
-            }
+            sleep(100);
         }
     }
 
@@ -168,12 +170,7 @@ public class PageElementImpl implements PageElement {
             if (Calendar.getInstance().getTimeInMillis() - start > timeout) {
                 throw new TimeoutException("Timed out while waiting for element to be visible: " + this.field);
             }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return;
-            }
+            sleep(100);
         }
     }
 
@@ -182,7 +179,7 @@ public class PageElementImpl implements PageElement {
     }
 
     public WebElement getWrappedElement() {
-        if(this.element instanceof RemoteWebElement) return this.element;
+        if (this.element instanceof RemoteWebElement) return this.element;
 
         return null;
     }
@@ -190,7 +187,7 @@ public class PageElementImpl implements PageElement {
     // DEMO ability to "decorate" selenium's logic, for instance adding retry logic
     @Override
     public void click() {
-        OperationHelper.withRetry(3, this.element::click);
+        this.element.click();
     }
 
     @Override
@@ -258,11 +255,11 @@ public class PageElementImpl implements PageElement {
 
     @Override
     public String getCssValue(String s) {
-        return getCssValue(s);
+        return this.element.getCssValue(s);
     }
 
     @Override
     public Coordinates getCoordinates() {
-        return ((Locatable)this.element).getCoordinates();
+        return ((Locatable) this.element).getCoordinates();
     }
 }

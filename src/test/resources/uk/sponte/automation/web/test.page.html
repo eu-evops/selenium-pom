@@ -37,13 +37,14 @@
     var DEFAULT_TIMEOUT = 500;
 
     $(function() {
-        $("#dblClick").dblclick(function() { alert('Double clicked!') });
+        $("#dblClick").dblclick(function(event, ui) {
+            $(this).text("Double clicked");
+        });
         $("#drag").draggable();
         $("#drop").droppable({
             drop: function(event, ui) {
-            $(this).text("Dropped!");
+                $(this).text("Dropped!");
                 $(ui.draggable).remove();
-                alert("Dropped!");
             }
         });
 

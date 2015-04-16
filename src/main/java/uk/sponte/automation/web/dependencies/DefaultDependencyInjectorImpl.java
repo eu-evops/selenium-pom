@@ -3,7 +3,6 @@ package uk.sponte.automation.web.dependencies;
 import org.openqa.selenium.WebDriver;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by n450777 on 07/04/15.
@@ -12,7 +11,7 @@ public class DefaultDependencyInjectorImpl implements DependencyInjector {
     private final HashMap<Class, DependencyFactory> factoryMapping;
 
     public DefaultDependencyInjectorImpl() {
-        factoryMapping = new HashMap<>();
+        factoryMapping = new HashMap();
         factoryMapping.put(WebDriver.class, new WebDriverFactory());
     }
 
@@ -23,7 +22,9 @@ public class DefaultDependencyInjectorImpl implements DependencyInjector {
                 return (T) factoryMapping.get(klass).get();
 
             return klass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException e) {
+            throw new InjectionError(e.getCause());
+        } catch(IllegalAccessException e) {
             throw new InjectionError(e.getCause());
         }
     }

@@ -14,7 +14,6 @@ import org.openqa.selenium.support.pagefactory.Annotations;
 import uk.sponte.automation.seleniumpom.annotations.Section;
 import uk.sponte.automation.seleniumpom.dependencies.DefaultDependencyInjectorImpl;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
-import uk.sponte.automation.seleniumpom.dependencies.InjectionError;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
 import uk.sponte.automation.seleniumpom.proxies.handlers.*;
 
@@ -22,6 +21,7 @@ import java.lang.reflect.*;
 import java.util.List;
 
 /**
+ * Selenium POM page factory - responsible for initialising pages with proxies
  * Created by swozniak-ba on 02/04/15.
  */
 @Singleton
@@ -103,18 +103,13 @@ public class PageFactory {
         if (field.getAnnotation(Section.class) == null) return;
 
         Type genericTypeArgument = genericTypeImpl.getActualTypeArguments()[0];
-        if(!(genericTypeArgument instanceof Class)) {
-            throw new InjectionError("Generic argument needs to be a class: " + genericTypeArgument);
-        }
-
-        Class genericClassArgument = (Class)genericTypeArgument;
         Annotations annotations = new Annotations(field);
 
         PageSectionListHandler pageSectionListHandler = new PageSectionListHandler(
                 getDriver(),
                 searchContext,
                 annotations.buildBy(),
-                genericClassArgument,
+                genericTypeArgument,
                 this);
 
         Object proxyInstance = Proxy.newProxyInstance(

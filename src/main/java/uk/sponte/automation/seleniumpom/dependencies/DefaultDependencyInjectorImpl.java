@@ -8,18 +8,23 @@ import java.util.HashMap;
  * Created by n450777 on 07/04/15.
  */
 public class DefaultDependencyInjectorImpl implements DependencyInjector {
-    private final HashMap<Class, DependencyFactory> factoryMapping;
+    private final HashMap<Class<?>, DependencyFactory<?>> factoryMapping = new HashMap<Class<?>, DependencyFactory<?>>();
 
     public DefaultDependencyInjectorImpl() {
-        factoryMapping = new HashMap<Class, DependencyFactory>();
-        factoryMapping.put(WebDriver.class, new WebDriverFactory());
+        registerFactory(WebDriver.class, new WebDriverFactory());
+    }
+
+    public <T> void registerFactory(Class<T> klass, DependencyFactory<T> factory) {
+        this.factoryMapping.put(klass, factory);
     }
 
     @Override
     public <T> T get(Class<T> klass) {
         try {
-            if(factoryMapping.containsKey(klass))
-                return (T) factoryMapping.get(klass).get();
+            if(factoryMapping.containsKey(klass)) {
+                Object objectInstance = factoryMapping.get(klass).get();
+                return klass.cast(objectInstance);
+            }
 
             return klass.newInstance();
         } catch (InstantiationException e) {
@@ -27,9 +32,5 @@ public class DefaultDependencyInjectorImpl implements DependencyInjector {
         } catch(IllegalAccessException e) {
             throw new InjectionError(e.getCause());
         }
-    }
-
-    public <T> void registerFactory(Class<T> itemClass, DependencyFactory factory) {
-        factoryMapping.put(itemClass, factory);
     }
 }

@@ -10,7 +10,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 /**
  * Created by n450777 on 07/04/15.
  */
-public class WebDriverFactory implements DependencyFactory {
+public class WebDriverFactory implements DependencyFactory<WebDriver> {
 
     private WebDriver driver;
 

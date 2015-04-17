@@ -6,11 +6,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>uk.sponte.automation</groupId>
-    <artifactId>web</artifactId>
+    <artifactId>selenium-pom</artifactId>
     <version>1.0-SNAPSHOT</version>
-
     <packaging>jar</packaging>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <build>
         <plugins>
@@ -21,6 +23,9 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                    <compilerArgs>
+                        <arg>-Xlint:unchecked</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>

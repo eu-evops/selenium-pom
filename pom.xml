@@ -5,7 +5,7 @@
 
     <groupId>uk.sponte.automation</groupId>
     <artifactId>selenium-pom</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -33,7 +33,7 @@
         <connection>scm:git:git@github.com:sponte/selenium-pom.git</connection>
         <developerConnection>scm:git:git@github.com:sponte/selenium-pom.git</developerConnection>
         <url>scm:git:git@github.com:sponte/selenium-pom.git</url>
-        <tag>v1.0.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>

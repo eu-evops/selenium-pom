@@ -11,17 +11,14 @@ import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.pagefactory.Annotations;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import uk.sponte.automation.seleniumpom.annotations.Section;
 import uk.sponte.automation.seleniumpom.dependencies.DefaultDependencyInjectorImpl;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
+import uk.sponte.automation.seleniumpom.dependencies.InjectionError;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
 import uk.sponte.automation.seleniumpom.proxies.handlers.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.List;
 
 /**
@@ -69,7 +66,7 @@ public class PageFactory {
     }
 
     private <T> void setRootElement(T pageObject, SearchContext searchContext) {
-        if(!(searchContext instanceof WebElementExtensions)) return;
+        if(!(searchContext instanceof PageElement)) return;
 
         try {
             Field rootElement = findField(pageObject, "rootElement");
@@ -100,20 +97,26 @@ public class PageFactory {
     private <T> void initializePageSectionLists(Field field, T page, SearchContext searchContext) {
         if (!List.class.isAssignableFrom(field.getType())) return;
         Type genericType = field.getGenericType();
-        if (!(genericType instanceof ParameterizedTypeImpl)) return;
-        ParameterizedTypeImpl genericTypeImpl = (ParameterizedTypeImpl) genericType;
+        if (!(genericType instanceof ParameterizedType)) return;
+        ParameterizedType genericTypeImpl = (ParameterizedType) genericType;
         if (PageElement.class.isAssignableFrom((Class<?>) genericTypeImpl.getActualTypeArguments()[0])) return;
         if (field.getAnnotation(Section.class) == null) return;
 
-        Class pageSectionType = (Class) genericTypeImpl.getActualTypeArguments()[0];
+        Type genericTypeArgument = genericTypeImpl.getActualTypeArguments()[0];
+        if(!(genericTypeArgument instanceof Class)) {
+            throw new InjectionError("Generic argument needs to be a class: " + genericTypeArgument);
+        }
+
+        Class genericClassArgument = (Class)genericTypeArgument;
         Annotations annotations = new Annotations(field);
 
         PageSectionListHandler pageSectionListHandler = new PageSectionListHandler(
                 getDriver(),
                 searchContext,
                 annotations.buildBy(),
-                pageSectionType,
+                genericClassArgument,
                 this);
+
         Object proxyInstance = Proxy.newProxyInstance(
                 Section.class.getClassLoader(),
                 new Class[]{List.class},
@@ -149,7 +152,7 @@ public class PageFactory {
                 field);
 
         try {
-            T pageSection = dependencyInjector.get((Class<T>) field.getType());
+            Object pageSection = dependencyInjector.get(field.getType());
             this.initializeContainer(pageSection, container);
 
             field.setAccessible(true);
@@ -163,13 +166,14 @@ public class PageFactory {
         Class<?> fieldType = field.getType();
         if (!List.class.isAssignableFrom(fieldType)) return;
         Type genericType = field.getGenericType();
-        if (!(genericType instanceof ParameterizedTypeImpl)) return;
-        ParameterizedTypeImpl genericTypeImpl = (ParameterizedTypeImpl) genericType;
+        if (!(genericType instanceof ParameterizedType)) return;
+        ParameterizedType genericTypeImpl = (ParameterizedType) genericType;
         if (!PageElement.class.isAssignableFrom((Class<?>) genericTypeImpl.getActualTypeArguments()[0])) return;
 
         Annotations annotations = new Annotations(field);
         WebElementListHandler elementListHandler = new WebElementListHandler(searchContext, annotations.buildBy());
-        List<WebElement> webElementListProxy = (List<WebElement>) Proxy.newProxyInstance(
+
+        List webElementListProxy = (List) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),
                 new Class[]{List.class},
                 elementListHandler
@@ -177,11 +181,11 @@ public class PageFactory {
 
         ElementListImpl webElementListExtensions = new ElementListImpl(searchContext, webElementListProxy);
         InvocationHandler pageElementHandler = new ElementListHandler(webElementListProxy, webElementListExtensions);
-        List<PageElement> pageElementListProxy = (List<PageElement>) Proxy.newProxyInstance(
+
+        List pageElementListProxy = (List) Proxy.newProxyInstance(
                 PageElement.class.getClassLoader(),
                 new Class[]{List.class},
                 pageElementHandler);
-
 
         try {
             field.setAccessible(true);

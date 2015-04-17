@@ -18,7 +18,7 @@ public class TestHelper {
     public String getTestPageAsBase64() {
         String resourcePath = "uk/sponte/automation/seleniumpom/test.page.html";
 
-        Configuration freemarkerConfiguration = new Configuration();
+        Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_22);
         freemarkerConfiguration.setClassForTemplateLoading(this.getClass(), "/");
         Template template;
         try {

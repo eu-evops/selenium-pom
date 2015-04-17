@@ -6,7 +6,7 @@ import uk.sponte.automation.seleniumpom.dependencies.DefaultDependencyInjectorIm
 import uk.sponte.automation.seleniumpom.helpers.TestDiInstance;
 import uk.sponte.automation.seleniumpom.helpers.TestDiInstanceFactory;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by n450777 on 07/04/15.

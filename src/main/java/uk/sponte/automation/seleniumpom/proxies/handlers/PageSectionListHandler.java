@@ -17,18 +17,18 @@ import java.util.List;
 /**
  * Created by n450777 on 08/04/15.
  */
-public class PageSectionListHandler implements InvocationHandler {
+public class PageSectionListHandler<T> implements InvocationHandler {
     private WebDriver driver;
     private SearchContext searchContext;
     private By by;
-    private Class pageSectionType;
+    private Class<T> pageSectionType;
     private PageFactory pageFactory;
 
     public PageSectionListHandler(
             WebDriver driver,
             SearchContext searchContext,
             By by,
-            Class pageSectionType,
+            Class<T> pageSectionType,
             PageFactory pageFactory) {
         this.driver = driver;
         this.searchContext = searchContext;
@@ -40,17 +40,17 @@ public class PageSectionListHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         List<WebElement> elements = searchContext.findElements(by);
-        List pageSections = new ArrayList();
+        List<T> pageSections = new ArrayList<T>();
         for (WebElement element : elements) {
             PageElement webElementExtensions = new PageElementImpl(driver, element, null);
 
             InvocationHandler pageElementHandler = new ElementHandler(element, webElementExtensions);
-            PageElement instance = (PageElement) Proxy.newProxyInstance(
+            PageElement instance = (PageElement)Proxy.newProxyInstance(
                     PageElement.class.getClassLoader(),
                     new Class[]{PageElement.class},
                     pageElementHandler);
 
-            Object pageSection = pageFactory.get(pageSectionType, instance);
+            T pageSection = pageFactory.get(pageSectionType, instance);
             pageSections.add(pageSection);
         }
 

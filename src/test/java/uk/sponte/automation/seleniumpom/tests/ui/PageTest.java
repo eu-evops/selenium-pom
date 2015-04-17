@@ -9,9 +9,7 @@ import uk.sponte.automation.seleniumpom.testobjects.pages.TestPage;
 
 import java.util.concurrent.TimeoutException;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by swozniak on 03/04/15.

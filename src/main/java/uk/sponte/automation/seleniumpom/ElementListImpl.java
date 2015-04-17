@@ -1,7 +1,6 @@
 package uk.sponte.automation.seleniumpom;
 
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebElement;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -13,7 +12,7 @@ public class ElementListImpl {
 
     public ElementListImpl(
             SearchContext searchContext,
-            List<WebElement> webElementListProxy) {
+            List webElementListProxy) {
     }
 
     public boolean canHandle(Method method) {

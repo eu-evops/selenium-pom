@@ -1,6 +1,5 @@
 package uk.sponte.automation.seleniumpom.proxies.handlers;
 
-import org.openqa.selenium.WebElement;
 import uk.sponte.automation.seleniumpom.ElementListImpl;
 
 import java.lang.reflect.InvocationHandler;
@@ -12,10 +11,10 @@ import java.util.List;
  * Created by swozniak on 03/04/15.
  */
 public class ElementListHandler implements InvocationHandler {
-    private List<WebElement> elementList;
+    private List elementList;
     private ElementListImpl extensionsListHandler;
 
-    public ElementListHandler(List<WebElement> element, ElementListImpl extensionsHandler) {
+    public ElementListHandler(List element, ElementListImpl extensionsHandler) {
         this.elementList = element;
         this.extensionsListHandler = extensionsHandler;
     }

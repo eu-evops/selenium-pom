@@ -5,7 +5,7 @@
 
     <groupId>uk.sponte.automation</groupId>
     <artifactId>selenium-pom</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -35,6 +35,29 @@
         <url>scm:git:git@github.com:sponte/selenium-pom.git</url>
         <tag>v1.0.1</tag>
     </scm>
+
+    <profiles>
+        <profile>
+            <id>sign</id>
+            <build>
+                <plugins>
+                    <!-- See http://maven.apache.org/plugins/maven-gpg-plugin/ -->
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <distributionManagement>
         <snapshotRepository>

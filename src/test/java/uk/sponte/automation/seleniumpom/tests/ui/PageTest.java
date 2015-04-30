@@ -24,8 +24,6 @@ public class PageTest {
 
     @BeforeClass
     public static void setup() {
-
-        System.setProperty("selenium.webdriver", "firefox");
         TestHelper testHelper = new TestHelper();
         url = testHelper.getTestPageAsBase64();
 

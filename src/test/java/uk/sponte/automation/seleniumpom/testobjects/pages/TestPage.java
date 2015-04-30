@@ -14,6 +14,9 @@ public class TestPage {
     @FindBy(tagName = "h1")
     public PageElement headline;
 
+    @FindBy(tagName = "h1")
+    private PageElement privateHeadline;
+
     @FindBy(tagName = "h2")
     public PageElement subtitle;
 
@@ -52,4 +55,8 @@ public class TestPage {
     @Section public List<ListItem> listItems;
 
     public PageElement hidden;
+
+    public String getPrivateHeadlineContents() {
+        return this.privateHeadline.getText();
+    }
 }

@@ -7,17 +7,23 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
-import org.openqa.selenium.support.FindAll;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.pagefactory.Annotations;
 import uk.sponte.automation.seleniumpom.annotations.Section;
 import uk.sponte.automation.seleniumpom.dependencies.DefaultDependencyInjectorImpl;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
-import uk.sponte.automation.seleniumpom.proxies.handlers.*;
+import uk.sponte.automation.seleniumpom.helpers.ClassHelper;
+import uk.sponte.automation.seleniumpom.proxies.handlers.ElementHandler;
+import uk.sponte.automation.seleniumpom.proxies.handlers.ElementListHandler;
+import uk.sponte.automation.seleniumpom.proxies.handlers.PageSectionListHandler;
+import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementHandler;
+import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementListHandler;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -55,7 +61,9 @@ public class PageFactory {
 
     private <T> T initializeContainer(T page, SearchContext searchContext) {
         setRootElement(page, searchContext);
-        for (Field field : page.getClass().getFields()) {
+        for (Field field : ClassHelper.getFieldsFromClass(page.getClass())) {
+            if(field.getName().equals("rootElement")) continue;
+
             initializePageElements(field, page, searchContext);
             initializePageElementLists(field, page, searchContext);
             initializePageSections(field, page, searchContext);
@@ -69,7 +77,7 @@ public class PageFactory {
         if(!(searchContext instanceof PageElement)) return;
 
         try {
-            Field rootElement = findField(pageObject, "rootElement");
+            Field rootElement = findField(pageObject.getClass(), "rootElement");
             rootElement.setAccessible(true);
             rootElement.set(pageObject, searchContext);
         } catch (NoSuchFieldException e) {
@@ -79,9 +87,7 @@ public class PageFactory {
         }
     }
 
-    public Field findField(Object object, String name) throws NoSuchFieldException {
-        Class klass = object.getClass();
-
+    public Field findField(Class<?> klass, String name) throws NoSuchFieldException {
         while(klass != null) {
             for (Field field : klass.getDeclaredFields()) {
                 if (field.getName().equalsIgnoreCase(name))
@@ -127,15 +133,10 @@ public class PageFactory {
     }
 
     private <T> void initializePageSections(Field field, T page, SearchContext searchContext) {
-        if (List.class.isAssignableFrom(field.getType())) return;
-        if (PageElement.class.isAssignableFrom(field.getType())) return;
-
-        if (PageSection.class.isAssignableFrom(field.getType()) &&
-                field.getAnnotation(Section.class) == null &&
-                field.getAnnotation(FindBy.class) == null &&
-                field.getAnnotation(FindBys.class) == null &&
-                field.getAnnotation(FindAll.class) == null
-                ) return;
+        Class<?> fieldType = field.getType();
+        if(List.class.isAssignableFrom(fieldType)) return;
+        if(!PageSection.class.isAssignableFrom(fieldType) &&
+                field.getAnnotation(Section.class) == null) return;
 
         WebDriver webDriver = dependencyInjector.get(WebDriver.class);
         Annotations annotations = new Annotations(field);
@@ -147,7 +148,7 @@ public class PageFactory {
                 field);
 
         try {
-            Object pageSection = dependencyInjector.get(field.getType());
+            Object pageSection = dependencyInjector.get(fieldType);
             this.initializeContainer(pageSection, container);
 
             field.setAccessible(true);

@@ -183,4 +183,9 @@ public class PageTest {
         assertEquals("List 1: Item 1", testPage.listItems.get(0).subItems.get(0).getText());
         assertEquals("List 2: Item 3", testPage.listItems.get(1).subItems.get(2).getText());
     }
+
+    @Test
+    public void canUsePrivateField() {
+        assertEquals("Headline", testPage.getPrivateHeadlineContents());
+    }
 }

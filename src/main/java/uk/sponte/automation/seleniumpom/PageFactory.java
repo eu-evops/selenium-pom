@@ -263,14 +263,14 @@ public class PageFactory {
     }
 
     private PageElement getPageElementProxy(WebDriver driver, By by, SearchContext searchContext, Field field) {
-        WebElementHandler elementHandler = new WebElementHandler(searchContext, by);
+        WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, by);
         WebElement proxyElement = (WebElement) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),
                 new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },
                 elementHandler
         );
 
-        PageElementImpl pageElement = new PageElementImpl(driver, proxyElement, field);
+        PageElementImpl pageElement = new PageElementImpl(driver, proxyElement);
         InvocationHandler pageElementHandler = new ElementHandler(driver, proxyElement, pageElement);
         return (PageElement) Proxy.newProxyInstance(
                 PageElement.class.getClassLoader(),
@@ -280,7 +280,7 @@ public class PageFactory {
 
     private PageElement getFrameProxy(WebDriver driver, By by, SearchContext searchContext, Field field) {
         // Handles return frameObject
-        WebElementHandler elementHandler = new WebElementHandler(searchContext, by);
+        WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, by);
         WebElement frameElement = (WebElement) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),
                 new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },
@@ -288,14 +288,14 @@ public class PageFactory {
         );
 
         // Handles return frameObject
-        WebElementHandler bodyHandler = new WebElementHandler(searchContext, By.tagName("body"));
+        WebElementHandler bodyHandler = new WebElementHandler(driver, searchContext, By.tagName("body"));
         WebElement bodyElement = (WebElement) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),
                 new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },
                 bodyHandler
         );
 
-        PageElementImpl pageElement = new PageElementImpl(driver, bodyElement, field);
+        PageElementImpl pageElement = new PageElementImpl(driver, bodyElement);
         pageElement.frame = frameElement;
 
         InvocationHandler pageElementHandler = new ElementHandler(driver, bodyElement, pageElement, frameElement);

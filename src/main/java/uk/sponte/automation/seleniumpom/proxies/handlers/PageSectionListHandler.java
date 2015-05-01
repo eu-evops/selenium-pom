@@ -44,7 +44,7 @@ public class PageSectionListHandler implements InvocationHandler {
         List<WebElement> elements = searchContext.findElements(by);
         List<Object> pageSections = new ArrayList<Object>();
         for (WebElement element : elements) {
-            PageElementImpl webElementExtensions = new PageElementImpl(driver, element, null);
+            PageElementImpl webElementExtensions = new PageElementImpl(driver, element);
 
             InvocationHandler pageElementHandler = new ElementHandler(driver, element, webElementExtensions);
             PageElement instance = (PageElement)Proxy.newProxyInstance(

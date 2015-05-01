@@ -32,6 +32,8 @@ public class ElementHandler implements InvocationHandler {
         try {
             if(frame != null) {
                 driver.switchTo().frame(frame);
+            } else {
+                driver.switchTo().defaultContent();
             }
 
             if (pageElement.canHandle(method)) {
@@ -41,8 +43,6 @@ public class ElementHandler implements InvocationHandler {
             return method.invoke(this.element, args);
         } catch(InvocationTargetException exception) {
             throw exception.getCause();
-        } finally {
-            driver.switchTo().defaultContent();
         }
     }
 }

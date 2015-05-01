@@ -24,7 +24,9 @@ public class BasePageTest {
 
     @BeforeClass
     public static void setup() {
+        System.setProperty("selenium.webdriver", "chrome");
         Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
+
 
         TestHelper testHelper = new TestHelper();
         url = testHelper.getTestPageAsBase64();

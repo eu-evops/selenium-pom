@@ -9,9 +9,6 @@ import uk.sponte.automation.seleniumpom.dependencies.DefaultDependencyInjectorIm
 import uk.sponte.automation.seleniumpom.helpers.TestHelper;
 import uk.sponte.automation.seleniumpom.testobjects.pages.TestPage;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Created by n450777 on 30/04/15.
  */
@@ -24,10 +21,6 @@ public class BasePageTest {
 
     @BeforeClass
     public static void setup() {
-        System.setProperty("selenium.webdriver", "chrome");
-        Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
-
-
         TestHelper testHelper = new TestHelper();
         url = testHelper.getTestPageAsBase64();
 

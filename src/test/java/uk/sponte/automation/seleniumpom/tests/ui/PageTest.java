@@ -1,6 +1,5 @@
 package uk.sponte.automation.seleniumpom.tests.ui;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.sponte.automation.seleniumpom.testobjects.pages.TestPage;
 
@@ -31,10 +30,9 @@ public class PageTest extends BasePageTest {
     }
 
     @Test
-    @Ignore // Need real browser to run this test
     public void canDragAndDrop() {
         testPage.drag.dropOnto(testPage.drop);
-        assertEquals("dropped!", testPage.drop.getText());
+        assertEquals("Dropped!", testPage.drop.getText());
     }
 
     @Test

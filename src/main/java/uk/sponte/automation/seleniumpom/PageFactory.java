@@ -11,13 +11,23 @@ import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.pagefactory.Annotations;
+import uk.sponte.automation.seleniumpom.annotations.Frame;
 import uk.sponte.automation.seleniumpom.annotations.Section;
 import uk.sponte.automation.seleniumpom.dependencies.DefaultDependencyInjectorImpl;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
-import uk.sponte.automation.seleniumpom.proxies.handlers.*;
+import uk.sponte.automation.seleniumpom.helpers.ClassHelper;
+import uk.sponte.automation.seleniumpom.proxies.handlers.ElementHandler;
+import uk.sponte.automation.seleniumpom.proxies.handlers.ElementListHandler;
+import uk.sponte.automation.seleniumpom.proxies.handlers.PageSectionListHandler;
+import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementHandler;
+import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementListHandler;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -41,11 +51,11 @@ public class PageFactory {
     }
 
     public <T> T get(Class<T> pageClass) throws PageFactoryError {
-        return this.get(pageClass, dependencyInjector.get(WebDriver.class));
+        return this.get(pageClass, getDriver());
     }
 
     public <T> T get(T page) {
-        return initializeContainer(page, dependencyInjector.get(WebDriver.class));
+        return initializeContainer(page, getDriver());
     }
 
     public <T> T get(Class<T> pageClass, SearchContext searchContext) throws PageFactoryError {
@@ -55,21 +65,51 @@ public class PageFactory {
 
     private <T> T initializeContainer(T page, SearchContext searchContext) {
         setRootElement(page, searchContext);
-        for (Field field : page.getClass().getFields()) {
+        for (Field field : ClassHelper.getFieldsFromClass(page.getClass())) {
+            if(field.getName().equals("rootElement")) continue;
+
             initializePageElements(field, page, searchContext);
-            initializePageElementLists(field, page, searchContext);
             initializePageSections(field, page, searchContext);
+            initializeFrames(field, page, searchContext);
+
+            initializePageElementLists(field, page, searchContext);
             initializePageSectionLists(field, page, searchContext);
         }
 
         return page;
     }
 
+    private <T> void initializeFrames(Field field, T page, SearchContext searchContext) {
+        Class<?> fieldType = field.getType();
+        if(List.class.isAssignableFrom(fieldType)) return;
+        if(field.getAnnotation(Frame.class) == null) return;
+
+        WebDriver webDriver = getDriver();
+        Annotations annotations = new Annotations(field);
+
+        SearchContext frame = getFrameProxy(
+                webDriver,
+                annotations.buildBy(),
+                searchContext,
+                field);
+
+        try {
+            Object pageSection = dependencyInjector.get(fieldType);
+            this.initializeContainer(pageSection, frame);
+
+            field.setAccessible(true);
+            field.set(page, pageSection);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private <T> void setRootElement(T pageObject, SearchContext searchContext) {
         if(!(searchContext instanceof PageElement)) return;
 
         try {
-            Field rootElement = findField(pageObject, "rootElement");
+            Field rootElement = findField(pageObject.getClass(), "rootElement");
             rootElement.setAccessible(true);
             rootElement.set(pageObject, searchContext);
         } catch (NoSuchFieldException e) {
@@ -79,9 +119,7 @@ public class PageFactory {
         }
     }
 
-    public Field findField(Object object, String name) throws NoSuchFieldException {
-        Class klass = object.getClass();
-
+    public Field findField(Class<?> klass, String name) throws NoSuchFieldException {
         while(klass != null) {
             for (Field field : klass.getDeclaredFields()) {
                 if (field.getName().equalsIgnoreCase(name))
@@ -127,17 +165,9 @@ public class PageFactory {
     }
 
     private <T> void initializePageSections(Field field, T page, SearchContext searchContext) {
-        if (List.class.isAssignableFrom(field.getType())) return;
-        if (PageElement.class.isAssignableFrom(field.getType())) return;
+        if(!isValidPageSection(field)) return;
 
-        if (PageSection.class.isAssignableFrom(field.getType()) &&
-                field.getAnnotation(Section.class) == null &&
-                field.getAnnotation(FindBy.class) == null &&
-                field.getAnnotation(FindBys.class) == null &&
-                field.getAnnotation(FindAll.class) == null
-                ) return;
-
-        WebDriver webDriver = dependencyInjector.get(WebDriver.class);
+        WebDriver webDriver = getDriver();
         Annotations annotations = new Annotations(field);
 
         SearchContext container = getPageElementProxy(
@@ -155,6 +185,31 @@ public class PageFactory {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    @SuppressWarnings("RedundantIfStatement")
+    private boolean isValidPageSection(Field field) {
+        Class<?> fieldType = field.getType();
+
+        if(PageSection.class.isAssignableFrom(fieldType)) return true;
+
+        if(List.class.isAssignableFrom(fieldType)) return false;
+        if(PageElement.class.isAssignableFrom(fieldType)) return false;
+        if(WebElement.class.isAssignableFrom(fieldType)) return false;
+
+        if(field.getAnnotation(Section.class) != null) return true;
+        if(hasSeleniumFindByAnnotation(field)) return true;
+
+        return false;
+    }
+
+    @SuppressWarnings("RedundantIfStatement")
+    private boolean hasSeleniumFindByAnnotation(Field field) {
+        if(field.getAnnotation(FindBy.class) != null) return true;
+        if(field.getAnnotation(FindBys.class) != null) return true;
+        if(field.getAnnotation(FindAll.class) != null) return true;
+
+        return false;
     }
 
     private <T> void initializePageElementLists(Field field, T page, SearchContext searchContext) {
@@ -193,7 +248,7 @@ public class PageFactory {
     private <T> void initializePageElements(Field field, T page, SearchContext searchContext) {
         if (PageElement.class.isAssignableFrom(field.getType())) {
 
-            WebDriver webDriver = dependencyInjector.get(WebDriver.class);
+            WebDriver webDriver = getDriver();
             Annotations annotations = new Annotations(field);
 
             try {
@@ -209,15 +264,42 @@ public class PageFactory {
     }
 
     private PageElement getPageElementProxy(WebDriver driver, By by, SearchContext searchContext, Field field) {
-        WebElementHandler elementHandler = new WebElementHandler(searchContext, by);
+        WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, by);
         WebElement proxyElement = (WebElement) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),
                 new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },
                 elementHandler
         );
 
-        PageElement pageElement = new PageElementImpl(driver, proxyElement, field);
-        InvocationHandler pageElementHandler = new ElementHandler(proxyElement, pageElement);
+        PageElementImpl pageElement = new PageElementImpl(driver, proxyElement);
+        InvocationHandler pageElementHandler = new ElementHandler(driver, proxyElement, pageElement);
+        return (PageElement) Proxy.newProxyInstance(
+                PageElement.class.getClassLoader(),
+                new Class[]{PageElement.class},
+                pageElementHandler);
+    }
+
+    private PageElement getFrameProxy(WebDriver driver, By by, SearchContext searchContext, Field field) {
+        // Handles return frameObject
+        WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, by);
+        WebElement frameElement = (WebElement) Proxy.newProxyInstance(
+                WebElement.class.getClassLoader(),
+                new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },
+                elementHandler
+        );
+
+        // Handles return frameObject
+        WebElementHandler bodyHandler = new WebElementHandler(driver, searchContext, By.tagName("body"));
+        WebElement bodyElement = (WebElement) Proxy.newProxyInstance(
+                WebElement.class.getClassLoader(),
+                new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },
+                bodyHandler
+        );
+
+        PageElementImpl pageElement = new PageElementImpl(driver, bodyElement);
+        pageElement.frame = frameElement;
+
+        InvocationHandler pageElementHandler = new ElementHandler(driver, bodyElement, pageElement, frameElement);
         return (PageElement) Proxy.newProxyInstance(
                 PageElement.class.getClassLoader(),
                 new Class[]{PageElement.class},

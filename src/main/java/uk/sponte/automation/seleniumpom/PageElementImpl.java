@@ -1,13 +1,19 @@
 package uk.sponte.automation.seleniumpom;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.Select;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.List;
@@ -22,17 +28,18 @@ import java.util.concurrent.TimeoutException;
 public class PageElementImpl implements PageElement {
     private final static Integer DEFAULT_TIMEOUT = 5000;
 
+    // packagePrivate
+    WebElement frame;
+
     private WebDriver driver;
     private WebElement element;
-    private Field field;
+    private String windowHandle;
 
     public PageElementImpl(
             WebDriver driver,
-            WebElement element,
-            Field field) {
+            WebElement element) {
         this.driver = driver;
         this.element = element;
-        this.field = field;
     }
 
     public boolean canHandle(Method methodName) {
@@ -100,7 +107,7 @@ public class PageElementImpl implements PageElement {
         long start = Calendar.getInstance().getTimeInMillis();
         while (true) {
             if (Calendar.getInstance().getTimeInMillis() - start > timeout) {
-                throw new TimeoutException("Timed out while waiting for element to be present: " + this.field);
+                throw new TimeoutException("Timed out while waiting for element to be present");
             }
             try {
                 this.element.getTagName();
@@ -129,7 +136,7 @@ public class PageElementImpl implements PageElement {
         long start = Calendar.getInstance().getTimeInMillis();
         while (true) {
             if (Calendar.getInstance().getTimeInMillis() - start > timeout) {
-                throw new TimeoutException("Timed out while waiting for element to be gone: " + this.field);
+                throw new TimeoutException("Timed out while waiting for element to be gone");
             }
             try {
                 this.element.getTagName();
@@ -151,7 +158,7 @@ public class PageElementImpl implements PageElement {
         long start = Calendar.getInstance().getTimeInMillis();
         while (this.element.isDisplayed()) {
             if (Calendar.getInstance().getTimeInMillis() - start > timeout) {
-                throw new TimeoutException("Timed out while waiting for element to be hidden: " + this.field);
+                throw new TimeoutException("Timed out while waiting for element to be hidden");
             }
             sleep(100);
         }
@@ -168,7 +175,7 @@ public class PageElementImpl implements PageElement {
 
         while (!this.element.isDisplayed()) {
             if (Calendar.getInstance().getTimeInMillis() - start > timeout) {
-                throw new TimeoutException("Timed out while waiting for element to be visible: " + this.field);
+                throw new TimeoutException("Timed out while waiting for element to be visible");
             }
             sleep(100);
         }
@@ -181,7 +188,7 @@ public class PageElementImpl implements PageElement {
     public WebElement getWrappedElement() {
         if (this.element instanceof RemoteWebElement) return this.element;
 
-        return null;
+        return this;
     }
 
     // DEMO ability to "decorate" selenium's logic, for instance adding retry logic

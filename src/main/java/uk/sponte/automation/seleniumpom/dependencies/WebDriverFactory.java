@@ -1,11 +1,9 @@
 package uk.sponte.automation.seleniumpom.dependencies;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 
 /**
  * Created by n450777 on 07/04/15.
@@ -23,20 +21,16 @@ public class WebDriverFactory implements DependencyFactory<WebDriver> {
     }
 
     private WebDriver createNewDriver() {
-        String webdriverProperty = System.getProperty("selenium.webdriver");
-
-        if(webdriverProperty == null)
-            return new HtmlUnitDriver(DesiredCapabilities.chrome());
+        String webdriverProperty = System.getProperty("selenium.webdriver", "firefox");
 
         if(webdriverProperty.equalsIgnoreCase("chrome"))
             return new ChromeDriver();
 
-        if(webdriverProperty.equalsIgnoreCase("firefox"))
-            return new FirefoxDriver();
+        if(webdriverProperty.equalsIgnoreCase("ie") ||
+            webdriverProperty.equalsIgnoreCase("iexplore") ||
+            webdriverProperty.equalsIgnoreCase("internet explorer"))
+            return new InternetExplorerDriver();
 
-        if(webdriverProperty.equalsIgnoreCase("htmlunit"))
-            return new HtmlUnitDriver(BrowserVersion.FIREFOX_24);
-
-        return null;
+        return new FirefoxDriver();
     }
 }

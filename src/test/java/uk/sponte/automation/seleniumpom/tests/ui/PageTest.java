@@ -1,10 +1,6 @@
 package uk.sponte.automation.seleniumpom.tests.ui;
 
-import org.junit.*;
-import org.openqa.selenium.WebDriver;
-import uk.sponte.automation.seleniumpom.PageFactory;
-import uk.sponte.automation.seleniumpom.dependencies.DefaultDependencyInjectorImpl;
-import uk.sponte.automation.seleniumpom.helpers.TestHelper;
+import org.junit.Test;
 import uk.sponte.automation.seleniumpom.testobjects.pages.TestPage;
 
 import java.util.concurrent.TimeoutException;
@@ -14,38 +10,7 @@ import static org.junit.Assert.*;
 /**
  * Created by swozniak on 03/04/15.
  */
-public class PageTest {
-
-    public static final int SHORT_TIMEOUT = 200;
-    private static WebDriver driver;
-    private static PageFactory pageFactory;
-    private static String url;
-    private TestPage testPage;
-
-    @BeforeClass
-    public static void setup() {
-        TestHelper testHelper = new TestHelper();
-        url = testHelper.getTestPageAsBase64();
-
-        DefaultDependencyInjectorImpl defaultDependencyInjector = new DefaultDependencyInjectorImpl();
-
-        driver = defaultDependencyInjector.get(WebDriver.class);
-        pageFactory = new PageFactory(defaultDependencyInjector);
-    }
-
-    @Before
-    public void navigateToTestPage() {
-        driver.navigate().to("about:blank");
-        driver.navigate().to(url);
-        testPage = pageFactory.get(TestPage.class);
-    }
-
-    @AfterClass
-    public static void tearDown() {
-        driver.quit();
-    }
-
-
+public class PageTest extends BasePageTest {
     @Test
     public void canGetHeadline() {
         assertEquals("Headline", testPage.headline.getText());
@@ -65,10 +30,9 @@ public class PageTest {
     }
 
     @Test
-    @Ignore // Need real browser to run this test
     public void canDragAndDrop() {
         testPage.drag.dropOnto(testPage.drop);
-        assertEquals("dropped!", testPage.drop.getText());
+        assertEquals("Dropped!", testPage.drop.getText());
     }
 
     @Test
@@ -182,5 +146,10 @@ public class PageTest {
 
         assertEquals("List 1: Item 1", testPage.listItems.get(0).subItems.get(0).getText());
         assertEquals("List 2: Item 3", testPage.listItems.get(1).subItems.get(2).getText());
+    }
+
+    @Test
+    public void canUsePrivateField() {
+        assertEquals("Headline", testPage.getPrivateHeadlineContents());
     }
 }

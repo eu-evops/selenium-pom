@@ -22,8 +22,13 @@ import java.util.concurrent.TimeoutException;
 public class PageElementImpl implements PageElement {
     private final static Integer DEFAULT_TIMEOUT = 5000;
 
+    // packagePrivate
+    WebElement frame;
+
     private WebDriver driver;
     private WebElement element;
+
+    private String windowHandle;
     private Field field;
 
     public PageElementImpl(

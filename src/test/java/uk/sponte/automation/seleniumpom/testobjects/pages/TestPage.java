@@ -2,8 +2,14 @@ package uk.sponte.automation.seleniumpom.testobjects.pages;
 
 import org.openqa.selenium.support.FindBy;
 import uk.sponte.automation.seleniumpom.PageElement;
+import uk.sponte.automation.seleniumpom.annotations.Frame;
 import uk.sponte.automation.seleniumpom.annotations.Section;
-import uk.sponte.automation.seleniumpom.testobjects.sections.*;
+import uk.sponte.automation.seleniumpom.testobjects.sections.FrameSection;
+import uk.sponte.automation.seleniumpom.testobjects.sections.ListItem;
+import uk.sponte.automation.seleniumpom.testobjects.sections.ParentSection;
+import uk.sponte.automation.seleniumpom.testobjects.sections.PlainSection;
+import uk.sponte.automation.seleniumpom.testobjects.sections.SectionListItem;
+import uk.sponte.automation.seleniumpom.testobjects.sections.TestSection;
 
 import java.util.List;
 
@@ -44,8 +50,10 @@ public class TestPage {
      */
     @Section public ParentSection parent;
 
+    public TestSection section;
 
-    @Section public TestSection section;
+    @FindBy(id = "plainSection")
+    public PlainSection basedOnFindByAnnotation;
 
     @FindBy(className = "sectionListItem")
     @Section public List<SectionListItem> sectionList;
@@ -55,6 +63,10 @@ public class TestPage {
     @Section public List<ListItem> listItems;
 
     public PageElement hidden;
+
+    @Frame
+    @FindBy(tagName = "iframe")
+    public FrameSection iframe;
 
     public String getPrivateHeadlineContents() {
         return this.privateHeadline.getText();

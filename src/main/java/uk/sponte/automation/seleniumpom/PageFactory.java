@@ -187,6 +187,7 @@ public class PageFactory {
         }
     }
 
+    @SuppressWarnings("RedundantIfStatement")
     private boolean isValidPageSection(Field field) {
         Class<?> fieldType = field.getType();
 
@@ -197,12 +198,12 @@ public class PageFactory {
         if(WebElement.class.isAssignableFrom(fieldType)) return false;
 
         if(field.getAnnotation(Section.class) != null) return true;
-
         if(hasSeleniumFindByAnnotation(field)) return true;
 
         return false;
     }
 
+    @SuppressWarnings("RedundantIfStatement")
     private boolean hasSeleniumFindByAnnotation(Field field) {
         if(field.getAnnotation(FindBy.class) != null) return true;
         if(field.getAnnotation(FindBys.class) != null) return true;

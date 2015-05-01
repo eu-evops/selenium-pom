@@ -51,7 +51,7 @@ public class PageFactory {
     }
 
     public <T> T get(Class<T> pageClass) throws PageFactoryError {
-        return this.get(pageClass, dependencyInjector.get(WebDriver.class));
+        return this.get(pageClass, getDriver());
     }
 
     public <T> T get(T page) {
@@ -84,7 +84,7 @@ public class PageFactory {
         if(List.class.isAssignableFrom(fieldType)) return;
         if(field.getAnnotation(Frame.class) == null) return;
 
-        WebDriver webDriver = dependencyInjector.get(WebDriver.class);
+        WebDriver webDriver = getDriver();
         Annotations annotations = new Annotations(field);
 
         SearchContext frame = getFrameProxy(
@@ -167,7 +167,7 @@ public class PageFactory {
     private <T> void initializePageSections(Field field, T page, SearchContext searchContext) {
         if(!isValidPageSection(field)) return;
 
-        WebDriver webDriver = dependencyInjector.get(WebDriver.class);
+        WebDriver webDriver = getDriver();
         Annotations annotations = new Annotations(field);
 
         SearchContext container = getPageElementProxy(
@@ -247,7 +247,7 @@ public class PageFactory {
     private <T> void initializePageElements(Field field, T page, SearchContext searchContext) {
         if (PageElement.class.isAssignableFrom(field.getType())) {
 
-            WebDriver webDriver = dependencyInjector.get(WebDriver.class);
+            WebDriver webDriver = getDriver();
             Annotations annotations = new Annotations(field);
 
             try {

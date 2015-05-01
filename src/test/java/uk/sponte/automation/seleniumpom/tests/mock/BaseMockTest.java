@@ -11,11 +11,10 @@ import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.testobjects.pages.TestPage;
 import uk.sponte.automation.seleniumpom.testobjects.sections.FrameSection;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
+ * Base test class for mocked tests
  * Created by n450777 on 01/05/15.
  */
 public class BaseMockTest {
@@ -31,7 +30,6 @@ public class BaseMockTest {
     public void setup() {
         dependencyInjector = spy(new DefaultDependencyInjectorImpl());
         WebDriver.TargetLocator targetLocatorMock = mock(WebDriver.TargetLocator.class);
-
         webDriverMock = mock(WebDriver.class);
         when(webDriverMock.switchTo()).thenReturn(targetLocatorMock);
 
@@ -50,8 +48,7 @@ public class BaseMockTest {
         when(webDriverMock.findElement(new ByIdOrName("someInput"))).thenReturn(someInputWebElementMock);
 
         pageFactory = spy(new PageFactory(dependencyInjector));
-
-        when(pageFactory.getDriver()).thenReturn(webDriverMock);
+        doReturn(webDriverMock).when(pageFactory).getDriver();
 
         testPage = pageFactory.get(TestPage.class);
     }

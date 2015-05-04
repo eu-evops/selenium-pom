@@ -6,7 +6,6 @@
     <groupId>uk.sponte.automation</groupId>
     <artifactId>selenium-pom</artifactId>
     <version>1.0.3-SNAPSHOT</version>
-    <version>1.0.2</version>
     <packaging>jar</packaging>
 
     <name>selenium-pom</name>

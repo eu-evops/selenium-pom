@@ -57,9 +57,9 @@ for(int i=0; i<searchResults.results.size(); i++) {
 
 With Sponte Selenium-POM you can define a collection of SearchResult objects as follows:
 
-*WIP*
+**WIP**
 
-Please refer to ![TestPage.java](src/test/java/uk/sponte/automation/seleniumpom/testobjects/pages/TestPage.java) for examples
+Please refer to [TestPage.java](src/test/java/uk/sponte/automation/seleniumpom/testobjects/pages/TestPage.java) for examples
 
 ## Requirements ##
 

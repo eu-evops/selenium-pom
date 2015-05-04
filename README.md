@@ -59,7 +59,7 @@ With Sponte Selenium-POM you can define a collection of SearchResult objects as 
 
 *WIP*
 
-Please refer to ![src/test/java/uk/sponte/automation/seleniumpom/testobjects/pages/TestPage.java] for examples
+Please refer to ![TestPage.java](src/test/java/uk/sponte/automation/seleniumpom/testobjects/pages/TestPage.java) for examples
 
 ## Requirements ##
 

@@ -101,4 +101,3 @@ public static class Application {
 }
 ```
 
-(c) 2015

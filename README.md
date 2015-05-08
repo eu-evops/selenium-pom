@@ -101,4 +101,4 @@ public static class Application {
 }
 ```
 
-(C) 2015
+(c) 2015

@@ -1,4 +1,4 @@
-# Selenium Page Object Model [![Build Status](https://travis-ci.org/sponte/selenium-pom.svg?branch=develop)](https://travis-ci.org/sponte/selenium-pom) #
+# Selenium Page Object Model [![Build Status](https://teamcity.sponte.uk/app/rest/builds/buildType:(id:SeleniumPom_Ci)/statusIcon)](https://teamcity.sponte.uk/project.html?projectId=SeleniumPom&tab=projectOverview) #
 
 THIS DOCUMENTATION IS WORK IN PROGRESS
 

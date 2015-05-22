@@ -7,6 +7,9 @@ import uk.sponte.automation.seleniumpom.PageElement;
 
 import java.util.ArrayList;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,6 +39,10 @@ public class PageTest extends BaseMockTest {
         verify(headlineWebElementMock).getAttribute("value");
     }
 
+    @Test
+    public void canUseListOfSectionsFieldWithoutSectionAnnotation() {
+        assertThat(testPage.sectionListWithoutAnnotation, is(not(nullValue())));
+    }
 
     @Test
     public void returnsPageElement() {

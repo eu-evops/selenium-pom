@@ -59,6 +59,10 @@ public class TestPage {
     @Section public List<SectionListItem> sectionList;
     @Section public PlainSection plainClassSection;
 
+
+    @FindBy(className = "sectionListItem")
+    public List<SectionListItem> sectionListWithoutAnnotation;
+
     @FindBy(className = "listItem")
     @Section public List<ListItem> listItems;
 

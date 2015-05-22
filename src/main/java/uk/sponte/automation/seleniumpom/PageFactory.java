@@ -133,13 +133,11 @@ public class PageFactory {
     }
 
     private <T> void initializePageSectionLists(Field field, T page, SearchContext searchContext) {
-        if (!List.class.isAssignableFrom(field.getType())) return;
-        Type genericType = field.getGenericType();
-        if (!(genericType instanceof ParameterizedType)) return;
-        ParameterizedType genericTypeImpl = (ParameterizedType) genericType;
-        if (PageElement.class.isAssignableFrom((Class<?>) genericTypeImpl.getActualTypeArguments()[0])) return;
-        if (field.getAnnotation(Section.class) == null) return;
+        if(!isValidPageSectionList(field))
+            return;
 
+        Type genericType = field.getGenericType();
+        ParameterizedType genericTypeImpl = (ParameterizedType) genericType;
         Type genericTypeArgument = genericTypeImpl.getActualTypeArguments()[0];
         Annotations annotations = new Annotations(field);
 
@@ -191,14 +189,36 @@ public class PageFactory {
     private boolean isValidPageSection(Field field) {
         Class<?> fieldType = field.getType();
 
-        if(PageSection.class.isAssignableFrom(fieldType)) return true;
-
         if(List.class.isAssignableFrom(fieldType)) return false;
         if(PageElement.class.isAssignableFrom(fieldType)) return false;
         if(WebElement.class.isAssignableFrom(fieldType)) return false;
 
         if(field.getAnnotation(Section.class) != null) return true;
+        if(PageSection.class.isAssignableFrom(fieldType)) return true;
+
         if(hasSeleniumFindByAnnotation(field)) return true;
+
+        return false;
+    }
+
+    @SuppressWarnings("RedundantIfStatement")
+    private boolean isValidPageSectionList(Field field) {
+        // return false if it's not a list
+        if (!List.class.isAssignableFrom(field.getType())) return false;
+
+        // If we marked field with Section annotation, I'll assume you know what you're doing
+        if (field.getAnnotation(Section.class) != null) return true;
+
+        // If it's not generic, return false
+        Type genericType = field.getGenericType();
+        if (!(genericType instanceof ParameterizedType)) return false;
+
+        ParameterizedType genericTypeImpl = (ParameterizedType) genericType;
+        Class<?> genericTypeArgument = (Class<?>) genericTypeImpl.getActualTypeArguments()[0];
+
+        // PageElement list is not pageSection
+        if (PageElement.class.isAssignableFrom(genericTypeArgument)) return false;
+        if (PageSection.class.isAssignableFrom(genericTypeArgument)) return true;
 
         return false;
     }
@@ -218,7 +238,7 @@ public class PageFactory {
         Type genericType = field.getGenericType();
         if (!(genericType instanceof ParameterizedType)) return;
         ParameterizedType genericTypeImpl = (ParameterizedType) genericType;
-        if (!PageElement.class.isAssignableFrom((Class<?>) genericTypeImpl.getActualTypeArguments()[0])) return;
+        if (!PageElement.class.isAssignableFrom((Class<?>)genericTypeImpl.getActualTypeArguments()[0])) return;
 
         Annotations annotations = new Annotations(field);
         WebElementListHandler elementListHandler = new WebElementListHandler(searchContext, annotations.buildBy());

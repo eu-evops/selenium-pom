@@ -12,7 +12,7 @@ You might be thinking _but selenium already has [Page Object Model](https://code
 
 ![Google search results page](https://cdn.pbrd.co/images/8mWndwr.png)
 
-More information can be found in the ![wiki](https://github.com/sponte/selenium-pom.wiki)
+More information can be found in the [wiki](https://github.com/sponte/selenium-pom/wiki)
 
 ## Requirements ##
 

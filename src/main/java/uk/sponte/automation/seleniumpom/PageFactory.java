@@ -17,6 +17,7 @@ import uk.sponte.automation.seleniumpom.dependencies.DefaultDependencyInjectorIm
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
 import uk.sponte.automation.seleniumpom.helpers.ClassHelper;
+import uk.sponte.automation.seleniumpom.helpers.ImplementationFinder;
 import uk.sponte.automation.seleniumpom.proxies.handlers.ElementHandler;
 import uk.sponte.automation.seleniumpom.proxies.handlers.ElementListHandler;
 import uk.sponte.automation.seleniumpom.proxies.handlers.PageSectionListHandler;
@@ -28,7 +29,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.util.List;
+import java.util.*;
 
 /**
  * Selenium POM page factory - responsible for initialising pages with proxies
@@ -59,8 +60,14 @@ public class PageFactory {
     }
 
     public <T> T get(Class<T> pageClass, SearchContext searchContext) throws PageFactoryError {
-        T page = dependencyInjector.get(pageClass);
+        T page = findImplementationBasedOnPageFilter(pageClass);
+
         return initializeContainer(page, searchContext);
+    }
+
+    private <T> T findImplementationBasedOnPageFilter(Class<T> pageClass) {
+        ImplementationFinder<T> implementationFinder = new ImplementationFinder<T>(pageClass, dependencyInjector);
+        return implementationFinder.find();
     }
 
     private <T> T initializeContainer(T page, SearchContext searchContext) {

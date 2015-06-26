@@ -24,4 +24,3 @@ Selenium POM (Page Object Model) is a Java framework that provides ability to de
 
 ## Documentation
 Please visit our [wiki](https://github.com/sponte/selenium-pom/wiki) to find documentation.
-

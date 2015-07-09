@@ -21,7 +21,7 @@ public class DifferentModelImplementationTests extends BaseMockTest {
     @Test
     public void pageWillReturnDefaultImplementation() {
         Homepage homepage = pageFactory.get(Homepage.class);
-        Assert.assertEquals(homepage.getClass(), Homepage.class);
+        Assert.assertEquals(Homepage.class, homepage.getClass());
     }
 
     @Test
@@ -29,7 +29,7 @@ public class DifferentModelImplementationTests extends BaseMockTest {
         System.setProperty("Pretty", "true");
 
         Homepage homepage = pageFactory.get(Homepage.class);
-        Assert.assertEquals(homepage.getClass(), PrettyHomepageImpl.class);
+        Assert.assertEquals(PrettyHomepageImpl.class, homepage.getClass());
     }
 
     @Test
@@ -38,6 +38,6 @@ public class DifferentModelImplementationTests extends BaseMockTest {
         System.setProperty("Mobile", "true");
 
         Homepage homepage = pageFactory.get(Homepage.class);
-        Assert.assertEquals(homepage.getClass(), ZPrettyAndMobileHomepageImpl.class);
+        Assert.assertEquals(ZPrettyAndMobileHomepageImpl.class, homepage.getClass());
     }
 }

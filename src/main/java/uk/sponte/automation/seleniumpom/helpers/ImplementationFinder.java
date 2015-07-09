@@ -56,7 +56,7 @@ public class ImplementationFinder<T> {
             return reflectionsCache.get(packageName);
         }
 
-        Reflections reflections = new Reflections(pageClass.getPackage());
+        Reflections reflections = new Reflections(pageClass.getPackage().getName());
         reflectionsCache.put(packageName, reflections);
 
         return reflections;

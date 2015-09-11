@@ -77,7 +77,7 @@ public class ImplementationFinder<T> {
             if (pageFilterO2 != null)
                 o1ValidatorsCount = pageFilterO2.value().length;
 
-            return Integer.compare(o1ValidatorsCount, o2ValidatorsCount);
+            return Integer.valueOf(o1ValidatorsCount).compareTo(Integer.valueOf(o2ValidatorsCount));
         }
     }
 }

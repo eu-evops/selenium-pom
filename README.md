@@ -17,7 +17,7 @@ Selenium POM (Page Object Model) is a Java framework that provides ability to de
 <dependency>
     <groupId>uk.sponte.automation</groupId>
     <artifactId>selenium-pom</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.6</version>
     <scope>test</scope>
 </dependency>
 ```

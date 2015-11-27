@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by swozniak-ba on 02/04/15.
+ * Test page object
  */
 public class TestPage {
     @FindBy(tagName = "h1")
@@ -22,6 +23,9 @@ public class TestPage {
 
     @FindBy(tagName = "h1")
     private PageElement privateHeadline;
+
+    @FindBy(css = ".numberOfUsers")
+    public Integer numberOfUsers;
 
     @FindBy(tagName = "h2")
     public PageElement subtitle;
@@ -52,6 +56,7 @@ public class TestPage {
 
     public TestSection section;
 
+    @Section
     @FindBy(id = "plainSection")
     public PlainSection basedOnFindByAnnotation;
 

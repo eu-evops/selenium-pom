@@ -1,6 +1,7 @@
 package uk.sponte.automation.seleniumpom;
 
 import com.google.inject.Singleton;
+import net.sf.cglib.proxy.Enhancer;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -21,15 +22,18 @@ import uk.sponte.automation.seleniumpom.helpers.ImplementationFinder;
 import uk.sponte.automation.seleniumpom.proxies.handlers.ElementHandler;
 import uk.sponte.automation.seleniumpom.proxies.handlers.ElementListHandler;
 import uk.sponte.automation.seleniumpom.proxies.handlers.PageSectionListHandler;
+import uk.sponte.automation.seleniumpom.proxies.handlers.TypeConversionPageElementInvocationHandler;
 import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementHandler;
 import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementListHandler;
+import uk.sponte.automation.seleniumpom.typeconverters.IntegerTypeConverter;
+import uk.sponte.automation.seleniumpom.typeconverters.TypeConverter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.List;
 
 /**
  * Selenium POM page factory - responsible for initialising pages with proxies
@@ -77,6 +81,7 @@ public class PageFactory {
 
             initializePageElements(field, page, searchContext);
             initializePageSections(field, page, searchContext);
+            initializeTypeConversion(field, page, searchContext);
             initializeFrames(field, page, searchContext);
 
             initializePageElementLists(field, page, searchContext);
@@ -84,6 +89,37 @@ public class PageFactory {
         }
 
         return page;
+    }
+
+    private <T> void initializeTypeConversion(Field field, T page,
+            SearchContext searchContext) {
+
+        if(field.getAnnotation(Frame.class) != null) return;
+        if(isValidPageSection(field)) return;
+        if(PageElement.class.isAssignableFrom(field.getType())) return;
+        if(PageElement.class.isAssignableFrom(field.getType())) return;
+        if(List.class.isAssignableFrom(field.getType())) return;
+        if(!hasSeleniumFindByAnnotation(field)) return;
+
+        WebDriver webDriver = getDriver();
+        Annotations annotations = new Annotations(field);
+
+
+        try {
+            final PageElement pageElementProxy = getPageElementProxy(webDriver, annotations.buildBy(), searchContext, field);
+            final TypeConverter typeConverter = new IntegerTypeConverter();
+
+            TypeConversionPageElementInvocationHandler typeConversionPageElementInvocationHandler = new TypeConversionPageElementInvocationHandler(
+                    pageElementProxy, typeConverter);
+
+            field.setAccessible(true);
+            field.set(page, Enhancer.create(field.getType(), typeConversionPageElementInvocationHandler));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            System.out.printf("Field %s%n", field);
+            e.printStackTrace();
+        }
     }
 
     private <T> void initializeFrames(Field field, T page, SearchContext searchContext) {
@@ -203,7 +239,8 @@ public class PageFactory {
         if(field.getAnnotation(Section.class) != null) return true;
         if(PageSection.class.isAssignableFrom(fieldType)) return true;
 
-        if(hasSeleniumFindByAnnotation(field)) return true;
+        // TODO This is being removed due to type converters
+        // if(hasSeleniumFindByAnnotation(field)) return true;
 
         return false;
     }

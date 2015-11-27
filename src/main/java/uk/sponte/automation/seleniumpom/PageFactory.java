@@ -75,6 +75,8 @@ public class PageFactory {
         for (Field field : ClassHelper.getFieldsFromClass(page.getClass())) {
             if(field.getName().equals("rootElement")) continue;
 
+            initializeSeleniumLegacy(field, page, searchContext);
+            initializeSeleniumLegacyLists(field, page, searchContext);
             initializePageElements(field, page, searchContext);
             initializePageSections(field, page, searchContext);
             initializeFrames(field, page, searchContext);
@@ -84,6 +86,66 @@ public class PageFactory {
         }
 
         return page;
+    }
+
+    private <T> void initializeSeleniumLegacyLists(Field field, T page,
+            SearchContext searchContext) {
+        Class<?> fieldType = field.getType();
+        if (!List.class.isAssignableFrom(fieldType)) return;
+        Type genericType = field.getGenericType();
+        if (!(genericType instanceof ParameterizedType)) return;
+        ParameterizedType genericTypeImpl = (ParameterizedType) genericType;
+        if (!WebElement.class.isAssignableFrom((Class<?>)genericTypeImpl.getActualTypeArguments()[0])) return;
+
+        Annotations annotations = new Annotations(field);
+        WebElementListHandler elementListHandler = new WebElementListHandler(searchContext, annotations.buildBy());
+
+        List webElementListProxy = (List) Proxy.newProxyInstance(
+                WebElement.class.getClassLoader(),
+                new Class[]{List.class},
+                elementListHandler
+        );
+
+        ElementListImpl webElementListExtensions = new ElementListImpl(searchContext, webElementListProxy);
+        InvocationHandler pageElementHandler = new ElementListHandler(webElementListProxy, webElementListExtensions);
+
+        List pageElementListProxy = (List) Proxy.newProxyInstance(
+                PageElement.class.getClassLoader(),
+                new Class[]{List.class},
+                pageElementHandler);
+
+        try {
+            field.setAccessible(true);
+            field.set(page, pageElementListProxy);
+        } catch (IllegalAccessException e) {
+            throw new PageFactoryError(e.getCause());
+        }
+
+    }
+
+    private <T> void initializeSeleniumLegacy(Field field, T page,
+            SearchContext searchContext) {
+        if (!PageElement.class.isAssignableFrom(field.getType()) &&
+                WebElement.class.isAssignableFrom(field.getType())) {
+
+            WebDriver webDriver = getDriver();
+            Annotations annotations = new Annotations(field);
+
+            try {
+                WebElementHandler elementHandler = new WebElementHandler(webDriver, searchContext, annotations.buildBy());
+                WebElement proxyElement = (WebElement) Proxy.newProxyInstance(
+                        WebElement.class.getClassLoader(),
+                        new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },
+                        elementHandler
+                );
+
+                field.setAccessible(true);
+                field.set(page, proxyElement);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private <T> void initializeFrames(Field field, T page, SearchContext searchContext) {

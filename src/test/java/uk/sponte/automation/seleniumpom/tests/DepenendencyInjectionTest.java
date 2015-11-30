@@ -10,6 +10,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Created by n450777 on 07/04/15.
+ * Verifies custom DI framework works
  */
 public class DepenendencyInjectionTest {
 
@@ -22,7 +23,7 @@ public class DepenendencyInjectionTest {
 
     @Test
     public void simpleTypeReturnedFromDiMechanism() {
-        di.registerFactory(TestDiInstance.class, new TestDiInstanceFactory());
+        di.registerFactory(new TestDiInstanceFactory());
         TestDiInstance testDiInstance = di.get(TestDiInstance.class);
         assertEquals("This instance is called 'secret'", testDiInstance.toString());
     }

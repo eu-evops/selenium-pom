@@ -14,6 +14,7 @@ import org.openqa.selenium.support.pagefactory.Annotations;
 import uk.sponte.automation.seleniumpom.annotations.Frame;
 import uk.sponte.automation.seleniumpom.annotations.Section;
 import uk.sponte.automation.seleniumpom.dependencies.DefaultDependencyInjectorImpl;
+import uk.sponte.automation.seleniumpom.dependencies.DependencyFactory;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
 import uk.sponte.automation.seleniumpom.helpers.ClassHelper;
@@ -39,16 +40,27 @@ import java.util.*;
 public class PageFactory {
     private DependencyInjector dependencyInjector;
 
-    public PageFactory() {
-        this(new DefaultDependencyInjectorImpl());
+    public PageFactory(
+            DependencyInjector dependencyInjector,
+            DependencyFactory... dependencyFactories) {
+
+        this.dependencyInjector = dependencyInjector;
+
+        for (DependencyFactory dependencyFactory : dependencyFactories) {
+            ((DefaultDependencyInjectorImpl)this.dependencyInjector).registerFactory(dependencyFactory);
+        }
+    }
+
+
+    public PageFactory(DependencyFactory... dependencyFactories) {
+        this(new DefaultDependencyInjectorImpl(), dependencyFactories);
+
+        DefaultDependencyInjectorImpl defaultDependencyInjector = new DefaultDependencyInjectorImpl();
+
     }
 
     public WebDriver getDriver() {
         return dependencyInjector.get(WebDriver.class);
-    }
-
-    public PageFactory(DependencyInjector dependencyInjector) {
-        this.dependencyInjector = dependencyInjector;
     }
 
     public <T> T get(Class<T> pageClass) throws PageFactoryError {

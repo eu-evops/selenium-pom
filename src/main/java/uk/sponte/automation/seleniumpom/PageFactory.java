@@ -54,9 +54,6 @@ public class PageFactory {
 
     public PageFactory(DependencyFactory... dependencyFactories) {
         this(new DefaultDependencyInjectorImpl(), dependencyFactories);
-
-        DefaultDependencyInjectorImpl defaultDependencyInjector = new DefaultDependencyInjectorImpl();
-
     }
 
     public WebDriver getDriver() {

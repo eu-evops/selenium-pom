@@ -6,6 +6,8 @@ import org.openqa.selenium.WebElement;
 
 /**
  * Created by evops on 03/02/2016.
+ *
+ * Manages automatic switching of WebDriver frames in Selenium POM.
  */
 public class WebDriverFrameSwitchingOrchestrator {
     private By frame;
@@ -19,14 +21,13 @@ public class WebDriverFrameSwitchingOrchestrator {
     public void useFrame(By frame) {
         if(this.frame != null && this.frame.equals(frame)) return;
 
-        System.out.printf("[%d] Switching to frame (%s)%n", System.identityHashCode(this), frame);
         this.frame = frame;
         driver.switchTo().frame(driver.findElement(frame));
     }
 
     public void useDefault() {
         if(this.frame == null) return;
-        System.out.printf("[%d] Switching to default%n", System.identityHashCode(this));
+
         this.frame = null;
         driver.switchTo().defaultContent();
     }

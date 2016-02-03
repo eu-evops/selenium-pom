@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Created by n450777 on 30/04/15.
+ * Test class
  */
 public class FrameTest extends BasePageTest {
 
@@ -34,10 +35,7 @@ public class FrameTest extends BasePageTest {
     public void canAccessElementsOnAPageInsideFrame() {
         PageInsideFrame pageInsideFrame = pageFactory.get(PageInsideFrame.class);
 
-        System.out.println(pageInsideFrame.headline.getText());
-
         assertEquals("Inside a frame", pageInsideFrame.headline.getText());
-
         assertEquals("Section title", pageInsideFrame.frameSubSection.title.getText());
 
         PageElement pageElement = pageInsideFrame.frameSubSectionWithList.items.get(0);

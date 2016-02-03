@@ -122,7 +122,7 @@ public class PageElementImpl implements PageElement {
 
     private void sleep(int timeout) {
         try {
-            Thread.sleep(timeout);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

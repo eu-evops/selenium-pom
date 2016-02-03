@@ -22,6 +22,7 @@ import java.util.List;
 
 /**
  * Created by evops on 02/02/2016.
+ * Initialises fields with page sections
  */
 public class PageSectionFieldInitialiser implements FieldInitialiser {
     @Override
@@ -52,6 +53,7 @@ public class PageSectionFieldInitialiser implements FieldInitialiser {
     }
 
 
+    @SuppressWarnings("RedundantIfStatement")
     private boolean isValidPageSection(Field field) {
         Class<?> fieldType = field.getType();
 
@@ -67,6 +69,7 @@ public class PageSectionFieldInitialiser implements FieldInitialiser {
         return false;
     }
 
+    @SuppressWarnings("RedundantIfStatement")
     private boolean hasSeleniumFindByAnnotation(Field field) {
         if(field.getAnnotation(FindBy.class) != null) return true;
         if(field.getAnnotation(FindBys.class) != null) return true;
@@ -77,7 +80,6 @@ public class PageSectionFieldInitialiser implements FieldInitialiser {
 
     private PageElement getPageElementProxy(WebDriver driver, By by, SearchContext searchContext, Field field, By frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         if(frame != null && frame.equals(by)) {
-            System.out.printf("Frame specified, overriding existing by %s with body%n", by);
             by = By.tagName("body");
         }
 
@@ -89,7 +91,7 @@ public class PageSectionFieldInitialiser implements FieldInitialiser {
         );
 
         PageElementImpl pageElement = new PageElementImpl(driver, proxyElement);
-        InvocationHandler pageElementHandler = new PageElementHandler(driver, proxyElement, pageElement, frame, webDriverOrchestrator);
+        InvocationHandler pageElementHandler = new PageElementHandler(pageElement, frame, webDriverOrchestrator);
         return (PageElement) Proxy.newProxyInstance(
                 PageElement.class.getClassLoader(),
                 new Class[]{PageElement.class},

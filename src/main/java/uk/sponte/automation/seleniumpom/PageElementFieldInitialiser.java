@@ -50,7 +50,7 @@ public class PageElementFieldInitialiser implements FieldInitialiser {
         );
 
         PageElementImpl pageElement = new PageElementImpl(driver, proxyElement);
-        InvocationHandler pageElementHandler = new PageElementHandler(driver, proxyElement, pageElement, frame, webDriverFrameSwitchingOrchestrator);
+        InvocationHandler pageElementHandler = new PageElementHandler(pageElement, frame, webDriverFrameSwitchingOrchestrator);
         return (PageElement) Proxy.newProxyInstance(
                 PageElement.class.getClassLoader(),
                 new Class[]{PageElement.class},

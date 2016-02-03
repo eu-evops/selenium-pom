@@ -31,6 +31,7 @@ public class PageFactory implements WebDriverEventListener {
     protected DependencyInjector dependencyInjector;
 
     private ArrayList<FieldInitialiser> fieldInitialisers = new ArrayList<FieldInitialiser>();
+    private EventFiringWebDriver eventFiringWebDriver;
 
     public PageFactory(
             DependencyInjector dependencyInjector,
@@ -61,10 +62,13 @@ public class PageFactory implements WebDriverEventListener {
     }
 
     public WebDriver getDriver() {
-        EventFiringWebDriver webDriver = new EventFiringWebDriver(dependencyInjector.get(WebDriver.class));
-        webDriver.register(this);
+        if(eventFiringWebDriver != null)
+            return eventFiringWebDriver;
 
-        return webDriver;
+        eventFiringWebDriver = new EventFiringWebDriver(dependencyInjector.get(WebDriver.class));
+        eventFiringWebDriver.register(this);
+
+        return eventFiringWebDriver;
     }
 
     public <T> T get(Class<T> pageClass) throws PageFactoryError {

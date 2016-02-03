@@ -28,7 +28,7 @@ public class ImplementationFinder<T> {
         ArrayList<Class<? extends T>> sortedListOfImplementationClasses = new ArrayList<Class<? extends T>>(subTypesOf);
         Collections.sort(sortedListOfImplementationClasses, new PageFilterAnnotatedClassComparator());
 
-        for (Class<? extends T> klass : subTypesOf) {
+        for (Class<? extends T> klass : sortedListOfImplementationClasses) {
             PageFilter annotation = klass.getAnnotation(PageFilter.class);
             if (annotation != null) {
                 boolean valid = true;
@@ -47,7 +47,6 @@ public class ImplementationFinder<T> {
         }
 
         return dependencyInjector.get(pageClass);
-
     }
 
     private Reflections getReflections(Class<T> pageClass) {
@@ -75,9 +74,9 @@ public class ImplementationFinder<T> {
                 o1ValidatorsCount = pageFilterO1.value().length;
 
             if (pageFilterO2 != null)
-                o1ValidatorsCount = pageFilterO2.value().length;
+                o2ValidatorsCount = pageFilterO2.value().length;
 
-            return Integer.valueOf(o1ValidatorsCount).compareTo(Integer.valueOf(o2ValidatorsCount));
+            return Integer.valueOf(o2ValidatorsCount).compareTo(Integer.valueOf(o1ValidatorsCount));
         }
     }
 }

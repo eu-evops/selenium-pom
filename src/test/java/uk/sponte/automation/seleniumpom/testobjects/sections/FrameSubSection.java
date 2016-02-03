@@ -9,4 +9,8 @@ import uk.sponte.automation.seleniumpom.PageElement;
 public class FrameSubSection {
     @FindBy(tagName = "h2")
     public PageElement title;
+
+
+    @FindBy(id = "subsection")
+    public FrameSubSectionWithList frameSubSectionWithList;
 }

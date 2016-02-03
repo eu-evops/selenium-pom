@@ -8,5 +8,6 @@ import uk.sponte.automation.seleniumpom.annotations.Section;
  */
 public class PlainSection {
     @FindBy(id = "plainSectionChild")
-    @Section public ChildSection childInheritingFromPageSection;
+    @Section
+    public ChildSection childInheritingFromPageSection;
 }

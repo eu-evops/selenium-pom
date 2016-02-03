@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import uk.sponte.automation.seleniumpom.PageFactory;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyFactory;
 
@@ -24,6 +25,6 @@ public class RegisteringCustomFactoriesTests {
         };
 
         PageFactory pageFactory = new PageFactory(driverFactory);
-        Assert.assertEquals(HtmlUnitDriver.class, pageFactory.getDriver().getClass());
+        Assert.assertEquals(EventFiringWebDriver.class, pageFactory.getDriver().getClass());
     }
 }

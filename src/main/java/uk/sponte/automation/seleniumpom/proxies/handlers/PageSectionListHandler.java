@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import uk.sponte.automation.seleniumpom.PageElement;
 import uk.sponte.automation.seleniumpom.PageElementImpl;
 import uk.sponte.automation.seleniumpom.PageFactory;
+import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -25,18 +26,22 @@ public class PageSectionListHandler implements InvocationHandler {
     private By by;
     private Type pageSectionType;
     private PageFactory pageFactory;
+    private By frame;
+    private WebDriverFrameSwitchingOrchestrator webDriverOrchestrator;
 
     public PageSectionListHandler(
             WebDriver driver,
             SearchContext searchContext,
             By by,
             Type pageSectionType,
-            PageFactory pageFactory) {
+            PageFactory pageFactory, By frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         this.driver = driver;
         this.searchContext = searchContext;
         this.by = by;
         this.pageSectionType = pageSectionType;
         this.pageFactory = pageFactory;
+        this.frame = frame;
+        this.webDriverOrchestrator = webDriverOrchestrator;
     }
 
     @Override
@@ -46,7 +51,7 @@ public class PageSectionListHandler implements InvocationHandler {
         for (WebElement element : elements) {
             PageElementImpl webElementExtensions = new PageElementImpl(driver, element);
 
-            InvocationHandler pageElementHandler = new ElementHandler(driver, element, webElementExtensions);
+            InvocationHandler pageElementHandler = new PageElementHandler(driver, element, webElementExtensions, frame, webDriverOrchestrator);
             PageElement instance = (PageElement)Proxy.newProxyInstance(
                     PageElement.class.getClassLoader(),
                     new Class[]{PageElement.class},

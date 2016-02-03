@@ -1,5 +1,7 @@
 package uk.sponte.automation.seleniumpom.annotations;
 
+import org.openqa.selenium.By;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 

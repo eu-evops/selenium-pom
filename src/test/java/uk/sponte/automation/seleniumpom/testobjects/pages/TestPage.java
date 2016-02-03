@@ -1,15 +1,15 @@
 package uk.sponte.automation.seleniumpom.testobjects.pages;
 
 import org.openqa.selenium.support.FindBy;
+import uk.sponte.automation.seleniumpom.testobjects.sections.ParentSection;
+import uk.sponte.automation.seleniumpom.testobjects.sections.SectionListItem;
+import uk.sponte.automation.seleniumpom.testobjects.sections.TestSection;
 import uk.sponte.automation.seleniumpom.PageElement;
 import uk.sponte.automation.seleniumpom.annotations.Frame;
 import uk.sponte.automation.seleniumpom.annotations.Section;
 import uk.sponte.automation.seleniumpom.testobjects.sections.FrameSection;
 import uk.sponte.automation.seleniumpom.testobjects.sections.ListItem;
-import uk.sponte.automation.seleniumpom.testobjects.sections.ParentSection;
 import uk.sponte.automation.seleniumpom.testobjects.sections.PlainSection;
-import uk.sponte.automation.seleniumpom.testobjects.sections.SectionListItem;
-import uk.sponte.automation.seleniumpom.testobjects.sections.TestSection;
 
 import java.util.List;
 
@@ -68,7 +68,7 @@ public class TestPage {
 
     public PageElement hidden;
 
-    @Frame
+    @Frame()
     @FindBy(tagName = "iframe")
     public FrameSection iframe;
 

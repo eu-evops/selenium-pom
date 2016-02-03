@@ -1,4 +1,7 @@
-# Selenium Page Object Model [![Build Status](https://travis-ci.org/sponte/selenium-pom.svg?branch=develop)](https://travis-ci.org/sponte/selenium-pom)
+# Selenium Page Object Model
+
+[![Build Status](https://travis-ci.org/sponte/selenium-pom.svg?branch=develop)](https://travis-ci.org/sponte/selenium-pom)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/7818/badge.svg)](https://scan.coverity.com/projects/sponte-selenium-pom)
 
 ## What is it
 

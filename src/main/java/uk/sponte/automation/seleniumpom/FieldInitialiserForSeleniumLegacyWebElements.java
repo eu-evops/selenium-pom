@@ -16,7 +16,7 @@ import java.lang.reflect.Proxy;
 /**
  * Created by evops on 02/02/2016.
  */
-public class SeleniumLegacyWebElementFieldInitialiser implements FieldInitialiser {
+public class FieldInitialiserForSeleniumLegacyWebElements implements FieldInitialiser {
     @Override
     public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         {
@@ -26,7 +26,7 @@ public class SeleniumLegacyWebElementFieldInitialiser implements FieldInitialise
                 Annotations annotations = new Annotations(field);
 
                 try {
-                    WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, annotations.buildBy());
+                    WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, annotations.buildBy(), frame, webDriverOrchestrator);
                     WebElement proxyElement = (WebElement) Proxy.newProxyInstance(
                             WebElement.class.getClassLoader(),
                             new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },

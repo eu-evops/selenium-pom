@@ -19,7 +19,7 @@ import java.lang.reflect.Proxy;
 /**
  * Created by evops on 02/02/2016.
  */
-public class PageElementFieldInitialiser implements FieldInitialiser {
+public class FieldInitialiserForPageElements implements FieldInitialiser {
     @Override
     public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         if (PageElement.class.isAssignableFrom(field.getType())) {
@@ -43,19 +43,20 @@ public class PageElementFieldInitialiser implements FieldInitialiser {
 
 
     private PageElement getPageElementProxy(WebDriver driver, By by, SearchContext searchContext, Field field, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator) {
-        WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, by);
+        WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, by, frame, webDriverFrameSwitchingOrchestrator);
         WebElement proxyElement = (WebElement) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),
                 new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },
                 elementHandler
         );
 
-        PageElementImpl pageElement = new PageElementImpl(driver, proxyElement);
-        InvocationHandler pageElementHandler = new PageElementHandler(pageElement, frame, webDriverFrameSwitchingOrchestrator);
-        return (PageElement) Proxy.newProxyInstance(
-                PageElement.class.getClassLoader(),
-                new Class[]{PageElement.class},
-                pageElementHandler);
+        return new PageElementImpl(driver, proxyElement);
+//        PageElementImpl pageElement = new PageElementImpl(driver, proxyElement);
+//        InvocationHandler pageElementHandler = new PageElementHandler(pageElement, frame, webDriverFrameSwitchingOrchestrator);
+//        return (PageElement) Proxy.newProxyInstance(
+//                PageElement.class.getClassLoader(),
+//                new Class[]{PageElement.class},
+//                pageElementHandler);
     }
 
 }

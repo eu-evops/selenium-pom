@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Created by evops on 02/02/2016.
  */
-public class PageSectionListFieldInitialiser implements FieldInitialiser {
+public class FieldInitialiserForPageSectionLists implements FieldInitialiser {
     @Override
     public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         if(!isValidPageSectionList(field))

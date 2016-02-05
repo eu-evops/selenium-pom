@@ -13,11 +13,9 @@ import org.openqa.selenium.support.pagefactory.Annotations;
 import uk.sponte.automation.seleniumpom.annotations.Section;
 import uk.sponte.automation.seleniumpom.helpers.FrameWrapper;
 import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
-import uk.sponte.automation.seleniumpom.proxies.handlers.PageElementHandler;
 import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementHandler;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.List;
 
@@ -25,7 +23,7 @@ import java.util.List;
  * Created by evops on 02/02/2016.
  * Initialises fields with page sections
  */
-public class PageSectionFieldInitialiser implements FieldInitialiser {
+public class FieldInitialiserForPageSections implements FieldInitialiser {
     @Override
     public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         if(!isValidPageSection(field)) return false;
@@ -84,19 +82,19 @@ public class PageSectionFieldInitialiser implements FieldInitialiser {
             by = By.xpath("//*");
         }
 
-        WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, by);
+        WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, by, frame, webDriverOrchestrator);
         WebElement proxyElement = (WebElement) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),
                 new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },
                 elementHandler
         );
 
-        PageElementImpl pageElement = new PageElementImpl(driver, proxyElement);
-        InvocationHandler pageElementHandler = new PageElementHandler(pageElement, frame, webDriverOrchestrator);
-        return (PageElement) Proxy.newProxyInstance(
-                PageElement.class.getClassLoader(),
-                new Class[]{PageElement.class},
-                pageElementHandler);
+        return new PageElementImpl(driver, proxyElement);
+//        InvocationHandler pageElementHandler = new PageElementHandler(pageElement, frame, webDriverOrchestrator);
+//        return (PageElement) Proxy.newProxyInstance(
+//                PageElement.class.getClassLoader(),
+//                new Class[]{PageElement.class},
+//                pageElementHandler);
     }
 
 }

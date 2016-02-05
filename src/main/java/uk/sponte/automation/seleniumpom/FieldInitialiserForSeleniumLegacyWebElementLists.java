@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by evops on 02/02/2016.
  */
-public class SeleniumLegacyListFieldInitialiser implements FieldInitialiser {
+public class FieldInitialiserForSeleniumLegacyWebElementLists implements FieldInitialiser {
     @Override
     public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         Class<?> fieldType = field.getType();

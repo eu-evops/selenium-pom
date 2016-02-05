@@ -1,9 +1,13 @@
 package uk.sponte.automation.seleniumpom.tests.ui;
 
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import uk.sponte.automation.seleniumpom.PageElement;
 import uk.sponte.automation.seleniumpom.testobjects.pages.PageInsideFrame;
 import uk.sponte.automation.seleniumpom.testobjects.sections.Result;
+
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -55,5 +59,45 @@ public class FrameTest extends BasePageTest {
 
         PageElement pageElement = pageInsideFrame.frameSubSectionWithList.items.get(0);
         assertEquals("one", pageElement.getText());
+    }
+
+    @Test
+    public void canWaitForElementsInsideNestedFrames() throws TimeoutException {
+        System.out.println("Before getting the title object");
+        PageElement title = testPage.iframe.innerFrame.innerInnerFrameSection.title;
+        System.out.println("Before printing");
+        // System.out.println(title.getText());
+        System.out.println("Before clicking");
+        title.click();
+        System.out.println("After clicking");
+        System.out.println(testPage.iframe.innerFrame.innerInnerFrameSection.newElement.getTagName());
+        assertEquals("Hello World", testPage.iframe.innerFrame.innerInnerFrameSection.clickAndWaitForNewContent().getText());
+    }
+
+    @Test
+    public void standardSeleniumTest() throws InterruptedException {
+        driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
+        driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
+        driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
+
+        WebElement buttonInAFrame = driver.findElement(By.id("createElementAfterDelay"));
+
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
+        driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
+        driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
+
+        buttonInAFrame.click();
+
+        Thread.sleep(100);
+
+        WebElement textElement = driver.findElement(By.id("newElement"));
+
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
+        driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
+        driver.switchTo().frame(driver.findElement(By.tagName("iframe")));
+
+        System.out.println(textElement.getText());
     }
 }

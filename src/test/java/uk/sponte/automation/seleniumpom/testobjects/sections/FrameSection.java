@@ -15,7 +15,7 @@ public class FrameSection {
     @Section
     public FrameSubSection frameSubSection;
 
-    @Frame(1)
+    @Frame
     @FindBy(tagName = "iframe")
     public InnerFrameSection innerFrame;
 }

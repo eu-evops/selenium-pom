@@ -33,7 +33,6 @@ public class PageElementImpl implements PageElement {
 
     private WebDriver driver;
     private WebElement element;
-    private String windowHandle;
 
     public PageElementImpl(
             WebDriver driver,

@@ -26,7 +26,7 @@ public class WebDriverFrameSwitchingOrchestrator {
         if(this.frame != null && this.frame.equals(frame)) return;
 
         useDefault(true);
-        LOG.log(Level.INFO, "Switching to frame {0}", frame);
+        LOG.log(Level.INFO, "Switching to frame {0} ({1})", new Object[] { frame, frame.hashCode() });
 
         this.frame = frame;
         frame.use();

@@ -21,6 +21,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 /**
  * Selenium POM page factory - responsible for initialising pages with proxies
@@ -28,6 +29,7 @@ import java.util.Collection;
  */
 @Singleton
 public class PageFactory implements WebDriverEventListener {
+    private final static Logger LOG = Logger.getLogger(PageFactory.class.getName());
     private WebDriverFrameSwitchingOrchestrator webDriverOrchestrator;
     protected DependencyInjector dependencyInjector;
 

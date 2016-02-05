@@ -14,7 +14,9 @@ import uk.sponte.automation.seleniumpom.dependencies.DependencyFactory;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
 import uk.sponte.automation.seleniumpom.helpers.ClassHelper;
+import uk.sponte.automation.seleniumpom.helpers.FieldInitialiserSort;
 import uk.sponte.automation.seleniumpom.helpers.ImplementationFinder;
+import uk.sponte.automation.seleniumpom.helpers.SortingHelper;
 import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
 import uk.sponte.automation.seleniumpom.stolen.Annotations;
 
@@ -44,7 +46,11 @@ public class PageFactory implements WebDriverEventListener {
         }
 
         Reflections reflections = new Reflections(this.getClass().getPackage().getName());
-        for (Class<? extends FieldInitialiser> aClass : reflections.getSubTypesOf(FieldInitialiser.class)) {
+        Collection<Class<? extends FieldInitialiser>> subTypesOf = reflections.getSubTypesOf(FieldInitialiser.class);
+
+        subTypesOf = SortingHelper.asSortedList(subTypesOf, new FieldInitialiserSort());
+
+        for (Class<? extends FieldInitialiser> aClass : subTypesOf) {
             try {
                 FieldInitialiser fieldInitialiser = aClass.newInstance();
                 fieldInitialisers.add(fieldInitialiser);

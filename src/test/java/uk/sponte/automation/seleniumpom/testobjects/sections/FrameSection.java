@@ -2,6 +2,7 @@ package uk.sponte.automation.seleniumpom.testobjects.sections;
 
 import org.openqa.selenium.support.FindBy;
 import uk.sponte.automation.seleniumpom.PageElement;
+import uk.sponte.automation.seleniumpom.annotations.Frame;
 import uk.sponte.automation.seleniumpom.annotations.Section;
 
 /**
@@ -13,4 +14,8 @@ public class FrameSection {
 
     @Section
     public FrameSubSection frameSubSection;
+
+    @Frame(1)
+    @FindBy(tagName = "iframe")
+    public InnerFrameSection innerFrame;
 }

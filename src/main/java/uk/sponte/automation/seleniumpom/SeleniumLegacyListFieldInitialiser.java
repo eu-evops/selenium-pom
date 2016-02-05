@@ -1,11 +1,11 @@
 package uk.sponte.automation.seleniumpom;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.Annotations;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
+import uk.sponte.automation.seleniumpom.helpers.FrameWrapper;
 import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
 import uk.sponte.automation.seleniumpom.proxies.handlers.ElementListHandler;
 import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementListHandler;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class SeleniumLegacyListFieldInitialiser implements FieldInitialiser {
     @Override
-    public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, By frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
+    public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         Class<?> fieldType = field.getType();
         if (!List.class.isAssignableFrom(fieldType)) return false;
         Type genericType = field.getGenericType();

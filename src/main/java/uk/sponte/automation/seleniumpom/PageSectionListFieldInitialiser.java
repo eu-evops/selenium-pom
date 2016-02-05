@@ -1,11 +1,15 @@
 package uk.sponte.automation.seleniumpom;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindAll;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.pagefactory.Annotations;
 import uk.sponte.automation.seleniumpom.annotations.Section;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
+import uk.sponte.automation.seleniumpom.helpers.FrameWrapper;
 import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
 import uk.sponte.automation.seleniumpom.proxies.handlers.PageSectionListHandler;
 
@@ -20,7 +24,7 @@ import java.util.List;
  */
 public class PageSectionListFieldInitialiser implements FieldInitialiser {
     @Override
-    public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, By frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
+    public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         if(!isValidPageSectionList(field))
             return false;
 
@@ -57,7 +61,7 @@ public class PageSectionListFieldInitialiser implements FieldInitialiser {
         if (!List.class.isAssignableFrom(field.getType())) return false;
 
         // If we marked field with Section annotation, I'll assume you know what you're doing
-        if (field.getAnnotation(Section.class) != null) return true;
+        if (field.isAnnotationPresent(Section.class)) return true;
 
         // If it's not generic, return false
         Type genericType = field.getGenericType();
@@ -68,7 +72,13 @@ public class PageSectionListFieldInitialiser implements FieldInitialiser {
 
         // PageElement list is not pageSection
         if (PageElement.class.isAssignableFrom(genericTypeArgument)) return false;
+        if (WebElement.class.isAssignableFrom(genericTypeArgument)) return false;
         if (PageSection.class.isAssignableFrom(genericTypeArgument)) return true;
+
+        // If it's a list and has FindBy annotation it's a valid page section list as far as we're concerned
+        if (field.isAnnotationPresent(FindBy.class)) return true;
+        if (field.isAnnotationPresent(FindBys.class)) return true;
+        if (field.isAnnotationPresent(FindAll.class)) return true;
 
         return false;
     }

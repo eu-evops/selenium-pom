@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.pagefactory.Annotations;
+import uk.sponte.automation.seleniumpom.helpers.FrameWrapper;
 import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
 import uk.sponte.automation.seleniumpom.proxies.handlers.PageElementHandler;
 import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementHandler;
@@ -20,7 +21,7 @@ import java.lang.reflect.Proxy;
  */
 public class PageElementFieldInitialiser implements FieldInitialiser {
     @Override
-    public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, By frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
+    public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         if (PageElement.class.isAssignableFrom(field.getType())) {
 
             Annotations annotations = new Annotations(field);
@@ -41,7 +42,7 @@ public class PageElementFieldInitialiser implements FieldInitialiser {
     }
 
 
-    private PageElement getPageElementProxy(WebDriver driver, By by, SearchContext searchContext, Field field, By frame, WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator) {
+    private PageElement getPageElementProxy(WebDriver driver, By by, SearchContext searchContext, Field field, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator) {
         WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, by);
         WebElement proxyElement = (WebElement) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),

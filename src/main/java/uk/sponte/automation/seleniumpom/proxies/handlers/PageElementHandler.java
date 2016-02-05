@@ -1,7 +1,7 @@
 package uk.sponte.automation.seleniumpom.proxies.handlers;
 
-import org.openqa.selenium.By;
 import uk.sponte.automation.seleniumpom.PageElementImpl;
+import uk.sponte.automation.seleniumpom.helpers.FrameWrapper;
 import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
 
 import java.lang.reflect.InvocationHandler;
@@ -13,10 +13,10 @@ import java.lang.reflect.Method;
  */
 public class PageElementHandler implements InvocationHandler {
     private PageElementImpl pageElement;
-    private By frame;
+    private FrameWrapper frame;
     private WebDriverFrameSwitchingOrchestrator webDriverOrchestrator;
 
-    public PageElementHandler(PageElementImpl pageElement, By frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
+    public PageElementHandler(PageElementImpl pageElement, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         this.pageElement = pageElement;
         this.frame = frame;
         this.webDriverOrchestrator = webDriverOrchestrator;

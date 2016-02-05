@@ -6,6 +6,7 @@ import uk.sponte.automation.seleniumpom.PageElement;
 import uk.sponte.automation.seleniumpom.annotations.Frame;
 import uk.sponte.automation.seleniumpom.annotations.Section;
 import uk.sponte.automation.seleniumpom.testobjects.sections.FrameSubSectionWithList;
+import uk.sponte.automation.seleniumpom.testobjects.sections.InnerFrameSection;
 
 /**
  * Created by evops on 02/02/2016.
@@ -22,5 +23,9 @@ public class PageInsideFrame {
     @Section
     @FindBy(id = "subsection")
     public FrameSubSectionWithList frameSubSectionWithList;
+
+    @Frame()
+    @FindBy(tagName = "iframe")
+    public InnerFrameSection innerFrameSection;
 
 }

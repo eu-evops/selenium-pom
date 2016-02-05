@@ -13,15 +13,14 @@ import uk.sponte.automation.seleniumpom.dependencies.DefaultDependencyInjectorIm
 import uk.sponte.automation.seleniumpom.dependencies.DependencyFactory;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
-import uk.sponte.automation.seleniumpom.helpers.ClassHelper;
-import uk.sponte.automation.seleniumpom.helpers.FieldInitialiserSort;
-import uk.sponte.automation.seleniumpom.helpers.ImplementationFinder;
-import uk.sponte.automation.seleniumpom.helpers.SortingHelper;
+import uk.sponte.automation.seleniumpom.helpers.*;
 import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
 import uk.sponte.automation.seleniumpom.stolen.Annotations;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Selenium POM page factory - responsible for initialising pages with proxies
@@ -45,6 +44,10 @@ public class PageFactory implements WebDriverEventListener {
             ((DefaultDependencyInjectorImpl) this.dependencyInjector).registerFactory(dependencyFactory);
         }
 
+        initialiseFieldInitialisers();
+    }
+
+    private void initialiseFieldInitialisers() {
         Reflections reflections = new Reflections(this.getClass().getPackage().getName());
         Collection<Class<? extends FieldInitialiser>> subTypesOf = reflections.getSubTypesOf(FieldInitialiser.class);
 
@@ -86,10 +89,10 @@ public class PageFactory implements WebDriverEventListener {
     }
 
     public <T> T get(Class<T> pageClass, SearchContext searchContext) throws PageFactoryError {
-        return get(pageClass, searchContext, getFrame(pageClass, pageClass.getName()));
+        return get(pageClass, searchContext, getFrame(pageClass, pageClass.getName(), searchContext));
     }
 
-    public <T> T get(Class<T> pageClass, SearchContext searchContext, By frame) throws PageFactoryError {
+    public <T> T get(Class<T> pageClass, SearchContext searchContext, FrameWrapper frame) throws PageFactoryError {
         T page = findImplementationBasedOnPageFilter(pageClass);
         return initializeContainer(page, searchContext, frame);
     }
@@ -101,28 +104,32 @@ public class PageFactory implements WebDriverEventListener {
     }
 
     protected <T> T initializeContainer(T page, SearchContext searchContext) {
-        return this.initializeContainer(page, searchContext, getFrame(page.getClass(), page.getClass().getName()));
+        return this.initializeContainer(page, searchContext, getFrame(page.getClass(), page.getClass().getName(), searchContext));
     }
 
-    private By getFrame(AnnotatedElement element, String name) {
-        By frame = null;
+    private FrameWrapper getFrame(AnnotatedElement element, String name, SearchContext searchContext) {
         Frame annotation = element.getAnnotation(Frame.class);
-        if (annotation != null) {
-            Annotations annotations = new Annotations(element, name);
-            frame = annotations.buildBy();
-        }
 
-        return frame;
+        if(annotation == null) return null;
+
+        Annotations annotations = new Annotations(element, name);
+        By frameIdentifier = annotations.buildBy();
+
+        return new FrameWrapper(getDriver(), frameIdentifier, searchContext);
     }
 
-    protected <T> T initializeContainer(T page, SearchContext searchContext, By frame) {
+    protected <T> T initializeContainer(T page, SearchContext searchContext, FrameWrapper frame) {
         useWebDriverOrchestrator();
         setRootElement(page, searchContext);
         for (Field field : ClassHelper.getFieldsFromClass(page.getClass())) {
             if (field.getName().equals("rootElement")) continue;
 
-            By fieldFrame = getFrame(field, field.getName());
-            if (fieldFrame != null) frame = fieldFrame;
+            FrameWrapper fieldFrame = getFrame(field, field.getName(), searchContext);
+            if(fieldFrame != null && frame == null) {
+                frame = fieldFrame;
+            } else if (frame != null && fieldFrame != null) {
+                frame = fieldFrame.setParent(frame);
+            }
 
             for (FieldInitialiser fieldInitialiser : fieldInitialisers) {
                 if (fieldInitialiser.initialiseField(field, page, searchContext, getDriver(), this, frame, this.webDriverOrchestrator)) {

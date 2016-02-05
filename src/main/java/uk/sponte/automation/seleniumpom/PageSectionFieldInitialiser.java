@@ -11,6 +11,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.pagefactory.Annotations;
 import uk.sponte.automation.seleniumpom.annotations.Section;
+import uk.sponte.automation.seleniumpom.helpers.FrameWrapper;
 import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
 import uk.sponte.automation.seleniumpom.proxies.handlers.PageElementHandler;
 import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementHandler;
@@ -26,7 +27,7 @@ import java.util.List;
  */
 public class PageSectionFieldInitialiser implements FieldInitialiser {
     @Override
-    public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, By frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
+    public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         if(!isValidPageSection(field)) return false;
 
         Annotations annotations = new Annotations(field);
@@ -78,9 +79,9 @@ public class PageSectionFieldInitialiser implements FieldInitialiser {
         return false;
     }
 
-    private PageElement getPageElementProxy(WebDriver driver, By by, SearchContext searchContext, Field field, By frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
-        if(frame != null && frame.equals(by)) {
-            by = By.tagName("body");
+    private PageElement getPageElementProxy(WebDriver driver, By by, SearchContext searchContext, Field field, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
+        if(frame != null && frame.frameBy.equals(by)) {
+            by = By.xpath("//*");
         }
 
         WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, by);

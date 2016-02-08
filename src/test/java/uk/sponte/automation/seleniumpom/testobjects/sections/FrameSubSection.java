@@ -10,7 +10,7 @@ import java.util.List;
  * Created by n450777 on 01/05/15.
  */
 public class FrameSubSection {
-    @FindBy(tagName = "h2")
+    @FindBy(css = "h2.inner")
     public PageElement title;
 
 

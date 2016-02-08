@@ -1,5 +1,7 @@
-package uk.sponte.automation.seleniumpom;
+package uk.sponte.automation.seleniumpom.fieldInitialisers;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -7,7 +9,11 @@ import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.pagefactory.Annotations;
+import uk.sponte.automation.seleniumpom.PageElement;
+import uk.sponte.automation.seleniumpom.PageFactory;
+import uk.sponte.automation.seleniumpom.PageSection;
 import uk.sponte.automation.seleniumpom.annotations.Section;
+import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
 import uk.sponte.automation.seleniumpom.helpers.FrameWrapper;
 import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
@@ -23,8 +29,12 @@ import java.util.List;
  * Created by evops on 02/02/2016.
  */
 public class FieldInitialiserForPageSectionLists implements FieldInitialiser {
+    @Inject private DependencyInjector dependencyInjector;
+    @Inject private Provider<PageFactory> pageFactoryProvider;
+    @Inject private WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator;
+
     @Override
-    public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
+    public Boolean initialiseField(Field field, Object page, SearchContext searchContext, FrameWrapper frame) {
         if(!isValidPageSectionList(field))
             return false;
 
@@ -34,10 +44,10 @@ public class FieldInitialiserForPageSectionLists implements FieldInitialiser {
         Annotations annotations = new Annotations(field);
 
         PageSectionListHandler pageSectionListHandler = new PageSectionListHandler(
-                driver,
+                dependencyInjector,
                 searchContext,
                 annotations.buildBy(),
-                genericTypeArgument, pageFactory, frame, webDriverOrchestrator);
+                genericTypeArgument, pageFactoryProvider, frame, webDriverFrameSwitchingOrchestrator);
 
         Object proxyInstance = Proxy.newProxyInstance(
                 Section.class.getClassLoader(),

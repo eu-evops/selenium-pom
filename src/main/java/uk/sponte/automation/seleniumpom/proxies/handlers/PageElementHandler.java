@@ -29,13 +29,7 @@ public class PageElementHandler implements InvocationHandler {
     public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
         LOG.log(Level.FINER, "Invoking {0}", method.getName());
         try {
-            if(frame != null) {
-                LOG.log(Level.FINER, "Frame associated with element");
-                webDriverOrchestrator.useFrame(this.frame);
-            } else {
-                LOG.log(Level.FINER, "No frame associated with element");
-                webDriverOrchestrator.useDefault();
-            }
+            webDriverOrchestrator.useFrame(this.frame);
 
             if (pageElement.canHandle(method)) {
                 return method.invoke(pageElement, args);

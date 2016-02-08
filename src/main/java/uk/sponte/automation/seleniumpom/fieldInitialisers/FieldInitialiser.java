@@ -1,7 +1,8 @@
-package uk.sponte.automation.seleniumpom;
+package uk.sponte.automation.seleniumpom.fieldInitialisers;
 
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
+import uk.sponte.automation.seleniumpom.PageFactory;
 import uk.sponte.automation.seleniumpom.helpers.FrameWrapper;
 import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
 
@@ -15,9 +16,6 @@ public interface FieldInitialiser {
             Field field,
             Object page,
             SearchContext searchContext,
-            WebDriver driver,
-            PageFactory pageFactory,
-            FrameWrapper frame,
-            WebDriverFrameSwitchingOrchestrator webDriverOrchestrator
+            FrameWrapper frame
     );
 }

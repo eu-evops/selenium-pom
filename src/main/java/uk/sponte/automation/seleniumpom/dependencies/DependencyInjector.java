@@ -5,4 +5,6 @@ package uk.sponte.automation.seleniumpom.dependencies;
  */
 public interface DependencyInjector {
     <T> T get(Class<T> klass) throws InjectionError;
+    void injectMembers(Object o);
+    <T> void registerFactory(DependencyFactory<T> factory);
 }

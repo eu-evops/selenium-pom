@@ -1,5 +1,6 @@
 package uk.sponte.automation.seleniumpom;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
@@ -7,20 +8,21 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
-import org.reflections.Reflections;
 import uk.sponte.automation.seleniumpom.annotations.Frame;
-import uk.sponte.automation.seleniumpom.dependencies.DefaultDependencyInjectorImpl;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyFactory;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
+import uk.sponte.automation.seleniumpom.dependencies.GuiceDependencyInjector;
+import uk.sponte.automation.seleniumpom.dependencies.WebDriverFactory;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
+import uk.sponte.automation.seleniumpom.fieldInitialisers.FieldInitialiser;
 import uk.sponte.automation.seleniumpom.helpers.*;
 import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
 import uk.sponte.automation.seleniumpom.stolen.Annotations;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -28,54 +30,59 @@ import java.util.logging.Logger;
  * Created by swozniak-ba on 02/04/15.
  */
 @Singleton
-public class PageFactory implements WebDriverEventListener {
+public class PageFactory implements WebDriverEventListener, DependencyFactory<PageFactory> {
     private final static Logger LOG = Logger.getLogger(PageFactory.class.getName());
-    private WebDriverFrameSwitchingOrchestrator webDriverOrchestrator;
-    protected DependencyInjector dependencyInjector;
 
-    private ArrayList<FieldInitialiser> fieldInitialisers = new ArrayList<FieldInitialiser>();
+    // TODO Removing public access
+    @Inject
+    public DependencyInjector dependencyInjector;
+
+    @Inject
+    private Set<FieldInitialiser> fieldInitialisers;
     private EventFiringWebDriver eventFiringWebDriver;
 
-    public PageFactory(
-            DependencyInjector dependencyInjector,
-            DependencyFactory... dependencyFactories) {
+    @Inject
+    private WebDriverFrameSwitchingOrchestrator webDriverOrchestrator;
+    private GuiceDependencyInjector internalDependencyInjector;
 
-        this.dependencyInjector = dependencyInjector;
-
-        for (DependencyFactory dependencyFactory : dependencyFactories) {
-            ((DefaultDependencyInjectorImpl) this.dependencyInjector).registerFactory(dependencyFactory);
-        }
-
-        initialiseFieldInitialisers();
+    /*
+    Default constructor using built in guice dependency injection
+     */
+    public PageFactory() {
+        this(new GuiceDependencyInjector(new WebDriverFactory()));
     }
 
-    private void initialiseFieldInitialisers() {
-        Reflections reflections = new Reflections(this.getClass().getPackage().getName());
-        Collection<Class<? extends FieldInitialiser>> subTypesOf = reflections.getSubTypesOf(FieldInitialiser.class);
+    /*
+    If users don't want to use their own DI then they can register factories
+     */
+    public PageFactory(DependencyFactory... factories) {
+        this(new GuiceDependencyInjector(new GuiceDependencyInjector(), factories));
+    }
 
-        subTypesOf = SortingHelper.asSortedList(subTypesOf, new FieldInitialiserSort());
+    /*
+    Custom Di - recommended approach
+     */
+    public PageFactory(final DependencyInjector dependencyInjector) {
+        final PageFactory self = this;
 
-        for (Class<? extends FieldInitialiser> aClass : subTypesOf) {
-            try {
-                FieldInitialiser fieldInitialiser = aClass.newInstance();
-                fieldInitialisers.add(fieldInitialiser);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+        LOG.info("Creating PageFactory");
+        this.internalDependencyInjector = new GuiceDependencyInjector(dependencyInjector, new DependencyFactory<PageFactory>() {
+            @Override
+            public PageFactory get() {
+                return self;
             }
-        }
-    }
+        });
 
-
-    public PageFactory(DependencyFactory... dependencyFactories) {
-        this(new DefaultDependencyInjectorImpl(), dependencyFactories);
+        internalDependencyInjector.injectMembers(this);
     }
 
     public WebDriver getDriver() {
+        LOG.log(Level.FINE, "Requested a driver instance");
         if(eventFiringWebDriver != null)
             return eventFiringWebDriver;
 
+        LOG.log(Level.FINE, "Webdriver was not initialised, creating new");
+        // TODO need to look into this - this is not right lol
         eventFiringWebDriver = new EventFiringWebDriver(dependencyInjector.get(WebDriver.class));
         eventFiringWebDriver.register(this);
 
@@ -91,7 +98,7 @@ public class PageFactory implements WebDriverEventListener {
     }
 
     public <T> T get(Class<T> pageClass, SearchContext searchContext) throws PageFactoryError {
-        return get(pageClass, searchContext, getFrame(pageClass, pageClass.getName(), searchContext));
+        return get(pageClass, searchContext, getFrame(pageClass, pageClass.getName(), null));
     }
 
     public <T> T get(Class<T> pageClass, SearchContext searchContext, FrameWrapper frame) throws PageFactoryError {
@@ -106,35 +113,37 @@ public class PageFactory implements WebDriverEventListener {
     }
 
     protected <T> T initializeContainer(T page, SearchContext searchContext) {
-        return this.initializeContainer(page, searchContext, getFrame(page.getClass(), page.getClass().getName(), searchContext));
+        return this.initializeContainer(page, searchContext, getFrame(page.getClass(), page.getClass().getName(), null));
     }
 
-    private FrameWrapper getFrame(AnnotatedElement element, String name, SearchContext searchContext) {
+    private FrameWrapper getFrame(AnnotatedElement element, String name, FrameWrapper parentFrame) {
         Frame annotation = element.getAnnotation(Frame.class);
 
-        if(annotation == null) return null;
+        if(annotation == null) return parentFrame;
 
         Annotations annotations = new Annotations(element, name);
         By frameIdentifier = annotations.buildBy();
 
-        return new FrameWrapper(getDriver(), frameIdentifier, searchContext);
+        FrameWrapper frameWrapper = new FrameWrapper(getDriver(), frameIdentifier);
+        frameWrapper.setParent(parentFrame);
+
+        return frameWrapper;
     }
 
-    protected <T> T initializeContainer(T page, SearchContext searchContext, FrameWrapper frame) {
-        useWebDriverOrchestrator();
+    public <T> T initializeContainer(T page, SearchContext searchContext, FrameWrapper frameWrapper) {
         setRootElement(page, searchContext);
         for (Field field : ClassHelper.getFieldsFromClass(page.getClass())) {
             if (field.getName().equals("rootElement")) continue;
 
-            FrameWrapper fieldFrame = getFrame(field, field.getName(), searchContext);
-            if(fieldFrame != null && frame == null) {
-                frame = fieldFrame;
-            } else if (frame != null && fieldFrame != null) {
-                frame = fieldFrame.setParent(frame);
-            }
+            frameWrapper = getFrame(field, field.getName(), frameWrapper);
 
             for (FieldInitialiser fieldInitialiser : fieldInitialisers) {
-                if (fieldInitialiser.initialiseField(field, page, searchContext, getDriver(), this, frame, this.webDriverOrchestrator)) {
+                internalDependencyInjector.injectMembers(fieldInitialiser);
+                if (fieldInitialiser.initialiseField(
+                        field,
+                        page,
+                        searchContext,
+                        frameWrapper)) {
                     break;
                 }
             }
@@ -142,12 +151,6 @@ public class PageFactory implements WebDriverEventListener {
 
         return page;
     }
-
-    private void useWebDriverOrchestrator() {
-        if(webDriverOrchestrator != null) return;
-        this.webDriverOrchestrator = new WebDriverFrameSwitchingOrchestrator(getDriver());
-    }
-
 
     private <T> void setRootElement(T pageObject, SearchContext searchContext) {
         if (!(searchContext instanceof PageElement)) return;
@@ -183,8 +186,7 @@ public class PageFactory implements WebDriverEventListener {
 
     @Override
     public void afterNavigateTo(String s, WebDriver webDriver) {
-        useWebDriverOrchestrator();
-        this.webDriverOrchestrator.useDefault();
+        this.webDriverOrchestrator.useFrame(null);
     }
 
     @Override
@@ -250,5 +252,10 @@ public class PageFactory implements WebDriverEventListener {
     @Override
     public void onException(Throwable throwable, WebDriver webDriver) {
 
+    }
+
+    @Override
+    public PageFactory get() {
+        return this;
     }
 }

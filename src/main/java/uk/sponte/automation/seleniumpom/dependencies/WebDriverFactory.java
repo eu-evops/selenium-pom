@@ -1,5 +1,7 @@
 package uk.sponte.automation.seleniumpom.dependencies;
 
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -8,7 +10,8 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 /**
  * Created by n450777 on 07/04/15.
  */
-public class WebDriverFactory implements DependencyFactory<WebDriver> {
+@Singleton
+public class WebDriverFactory implements DependencyFactory<WebDriver>, Provider<WebDriver> {
 
     private WebDriver driver;
 

@@ -9,7 +9,7 @@ import java.util.concurrent.TimeoutException;
  * Created by evops on 05/02/2016.
  */
 public class InnerInnerFrameSection {
-    @FindBy(tagName = "h2")
+    @FindBy(css = "h2.inner2")
     public PageElement title;
 
     @FindBy(id = "createElementAfterDelay")

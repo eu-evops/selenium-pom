@@ -1,5 +1,6 @@
 package uk.sponte.automation.seleniumpom;
 
+import com.google.inject.Provider;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -13,6 +14,7 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.Select;
+import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 
 import java.lang.reflect.Method;
 import java.util.Calendar;
@@ -28,14 +30,11 @@ import java.util.concurrent.TimeoutException;
 public class PageElementImpl implements PageElement {
     private final static Integer DEFAULT_TIMEOUT = 5000;
 
-    // packagePrivate
-    WebElement frame;
-
-    private WebDriver driver;
+    private DependencyInjector driver;
     private WebElement element;
 
     public PageElementImpl(
-            WebDriver driver,
+            DependencyInjector driver,
             WebElement element) {
         this.driver = driver;
         this.element = element;
@@ -95,11 +94,11 @@ public class PageElementImpl implements PageElement {
 
     // DEMO custom actions made easier
     public void doubleClick() {
-        new Actions(driver).doubleClick(this.element).perform();
+        new Actions(driver.get(WebDriver.class)).doubleClick(this.element).perform();
     }
 
     public void dropOnto(PageElement target) {
-        new Actions(driver).dragAndDrop(this.element, target).perform();
+        new Actions(driver.get(WebDriver.class)).dragAndDrop(this.element, target).perform();
     }
 
     public void waitFor(Integer timeout) throws TimeoutException {

@@ -1,5 +1,7 @@
-package uk.sponte.automation.seleniumpom;
+package uk.sponte.automation.seleniumpom.fieldInitialisers;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -10,7 +12,12 @@ import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.pagefactory.Annotations;
+import uk.sponte.automation.seleniumpom.PageElement;
+import uk.sponte.automation.seleniumpom.PageElementImpl;
+import uk.sponte.automation.seleniumpom.PageFactory;
+import uk.sponte.automation.seleniumpom.PageSection;
 import uk.sponte.automation.seleniumpom.annotations.Section;
+import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.helpers.FrameWrapper;
 import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrchestrator;
 import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementHandler;
@@ -24,23 +31,27 @@ import java.util.List;
  * Initialises fields with page sections
  */
 public class FieldInitialiserForPageSections implements FieldInitialiser {
+    @Inject private DependencyInjector dependencyInjector;
+    @Inject private Provider<PageFactory> pageFactoryProvider;
+    @Inject private WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator;
+
     @Override
-    public Boolean initialiseField(Field field, Object page, SearchContext searchContext, WebDriver driver, PageFactory pageFactory, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
+    public Boolean initialiseField(Field field, Object page, SearchContext searchContext, FrameWrapper frame) {
         if(!isValidPageSection(field)) return false;
 
         Annotations annotations = new Annotations(field);
 
         SearchContext container = getPageElementProxy(
-                driver,
+                dependencyInjector,
                 annotations.buildBy(),
                 searchContext,
                 field,
                 frame,
-                webDriverOrchestrator);
+                webDriverFrameSwitchingOrchestrator);
 
         try {
-            Object pageSection = pageFactory.dependencyInjector.get(field.getType());
-            pageFactory.initializeContainer(pageSection, container, frame);
+            Object pageSection = dependencyInjector.get(field.getType());
+            pageFactoryProvider.get().initializeContainer(pageSection, container, frame);
 
             field.setAccessible(true);
             field.set(page, pageSection);
@@ -77,19 +88,19 @@ public class FieldInitialiserForPageSections implements FieldInitialiser {
         return false;
     }
 
-    private PageElement getPageElementProxy(WebDriver driver, By by, SearchContext searchContext, Field field, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
+    private PageElement getPageElementProxy(DependencyInjector driver, By by, SearchContext searchContext, Field field, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
         if(frame != null && frame.frameBy.equals(by)) {
             by = By.xpath("//*");
         }
 
-        WebElementHandler elementHandler = new WebElementHandler(driver, searchContext, by, frame, webDriverOrchestrator);
+        WebElementHandler elementHandler = new WebElementHandler(dependencyInjector, searchContext, by, frame, webDriverFrameSwitchingOrchestrator);
         WebElement proxyElement = (WebElement) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),
                 new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },
                 elementHandler
         );
 
-        return new PageElementImpl(driver, proxyElement);
+        return new PageElementImpl(dependencyInjector, proxyElement);
 //        InvocationHandler pageElementHandler = new PageElementHandler(pageElement, frame, webDriverOrchestrator);
 //        return (PageElement) Proxy.newProxyInstance(
 //                PageElement.class.getClassLoader(),

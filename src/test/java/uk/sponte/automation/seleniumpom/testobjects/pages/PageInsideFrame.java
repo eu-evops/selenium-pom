@@ -14,7 +14,7 @@ import uk.sponte.automation.seleniumpom.testobjects.sections.InnerFrameSection;
 @Frame()
 @FindBy(tagName = "iframe")
 public class PageInsideFrame {
-    @FindBy(tagName = "h1")
+    @FindBy(css = "h1.inner")
     public PageElement headline;
 
     @Section

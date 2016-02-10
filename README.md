@@ -28,4 +28,4 @@ Please visit our [wiki](https://github.com/sponte/selenium-pom/wiki) to find doc
 
 ## Examples
 
-Example project can be found at https://github.com/sponte/selenium-pom-example
+Example project can be found inside this repo at selenium-pom-example

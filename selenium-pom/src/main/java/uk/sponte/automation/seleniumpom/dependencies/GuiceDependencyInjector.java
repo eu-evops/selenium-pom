@@ -1,7 +1,10 @@
 package uk.sponte.automation.seleniumpom.dependencies;
 
-import com.google.inject.*;
-import org.openqa.selenium.WebDriver;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Stage;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -62,7 +65,6 @@ public class GuiceDependencyInjector extends AbstractModule implements Dependenc
         getInjector().injectMembers(object);
     }
 
-    @Override
     public <T> void registerFactory(DependencyFactory<T> factory) {
         Type[] typeParameters = factory.getClass().getGenericInterfaces();
         ParameterizedType parameterizedType = (ParameterizedType) typeParameters[0];

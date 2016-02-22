@@ -1,14 +1,17 @@
 package uk.sponte.automation.seleniumpom.guice;
 
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Provides;
+import com.google.inject.Stage;
 import com.google.inject.matcher.Matchers;
 import uk.sponte.automation.seleniumpom.PageFactory;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyFactory;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.dependencies.InjectionError;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,12 +65,5 @@ public class SeleniumPomGuiceModule extends AbstractModule
 
     public void injectMembers(Object object) {
         getInjector().injectMembers(object);
-    }
-
-    @Override
-    public <T> void registerFactory(DependencyFactory<T> factory) {
-        Type[] typeParameters = factory.getClass().getGenericInterfaces();
-        ParameterizedType parameterizedType = (ParameterizedType) typeParameters[0];
-        this.factories.put((Class) parameterizedType.getActualTypeArguments()[0], factory);
     }
 }

@@ -1,6 +1,5 @@
 package uk.sponte.automation.seleniumpom;
 
-import com.google.inject.Provider;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -62,7 +61,7 @@ public class PageElementImpl implements PageElement {
     }
 
     public String getHiddenText() {
-        return (String) ((JavascriptExecutor) driver).executeScript(
+        return (String) ((JavascriptExecutor) driver.get(WebDriver.class)).executeScript(
                 "return arguments[0].innerText;", element);
     }
 

@@ -1,9 +1,7 @@
 package uk.sponte.automation.seleniumpom.proxies.handlers;
 
-import com.google.inject.Provider;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import uk.sponte.automation.seleniumpom.PageElementImpl;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
@@ -48,12 +46,13 @@ public class WebElementHandler implements InvocationHandler {
             webDriverOrchestrator.useFrame(this.frame);
         }
 
-        if(this.webElement == null) {
-            this.webElement = new PageElementImpl(driver, searchContext.findElement(this.by));
+        WebElement element = this.webElement;
+        if(element == null) {
+            element = new PageElementImpl(driver, searchContext.findElement(this.by));
         }
 
         try {
-            return method.invoke(this.webElement, args);
+            return method.invoke(element, args);
         } catch(InvocationTargetException ex) {
             throw ex.getCause();
         }

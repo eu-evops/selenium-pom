@@ -68,9 +68,13 @@ public class TestPage {
 
     public PageElement hidden;
 
+    @FindBy(css = ".longList li")
+    public List<PageElement> longListElements;
+
     @Frame()
     @FindBy(tagName = "iframe")
     public FrameSection iframe;
+
 
     public String getPrivateHeadlineContents() {
         return this.privateHeadline.getText();

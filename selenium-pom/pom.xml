@@ -29,21 +29,6 @@
     </licenses>
 
 
-    <developers>
-        <developer>
-            <name>Stanislaw Wozniak</name>
-            <email>swozniak@sponte.uk</email>
-            <organization>Sponte</organization>
-        </developer>
-    </developers>
-
-    <scm>
-        <connection>scm:git:git@github.com:sponte/selenium-pom.git</connection>
-        <developerConnection>scm:git:git@github.com:sponte/selenium-pom.git</developerConnection>
-        <url>scm:git:git@github.com:sponte/selenium-pom.git</url>
-        <tag>v1.0.2</tag>
-    </scm>
-
     <profiles>
         <profile>
             <id>sign</id>

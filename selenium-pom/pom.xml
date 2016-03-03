@@ -12,10 +12,6 @@
         <version>2.0.3-SNAPSHOT</version>
     </parent>
 
-    <name>selenium-pom</name>
-    <description>Selenium hierarchical page object model</description>
-    <url>https://github.com/sponte/selenium-pom</url>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

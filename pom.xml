@@ -29,6 +29,9 @@
         <tag>v${project.version}</tag>
     </scm>
 
+    <name>selenium-pom</name>
+    <description>Selenium hierarchical page object model</description>
+    <url>https://github.com/sponte/selenium-pom</url>
 
     <licenses>
         <license>

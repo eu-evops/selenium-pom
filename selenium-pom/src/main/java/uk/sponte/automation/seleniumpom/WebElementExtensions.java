@@ -1,7 +1,5 @@
 package uk.sponte.automation.seleniumpom;
 
-import java.util.concurrent.TimeoutException;
-
 /**
  * Created by swozniak on 03/04/15.
  */
@@ -49,14 +47,12 @@ public interface WebElementExtensions {
 
     /**
      * Waits for element to be available in DOM
-     * @throws TimeoutException
      */
     PageElement waitFor(Integer timeout);
     PageElement waitFor();
 
     /**
      * Waits for element to not be available in DOM
-     * @throws TimeoutException
      */
     void waitUntilGone(Integer timeout);
     void waitUntilGone();
@@ -64,7 +60,6 @@ public interface WebElementExtensions {
     /**
      * Waits for element to be hidden (display: none)
      * @param timeout amount of milliseconds to timeout after
-     * @throws TimeoutException
      */
     PageElement waitUntilHidden(Integer timeout);
     PageElement waitUntilHidden();
@@ -72,7 +67,6 @@ public interface WebElementExtensions {
     /**
      * Waits until element is visible on the page
      * @param timeout amount of milliseconds to timeout after
-     * @throws TimeoutException
      */
     PageElement waitUntilVisible(Integer timeout);
     PageElement waitUntilVisible();

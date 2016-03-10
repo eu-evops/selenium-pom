@@ -6,7 +6,6 @@ import org.openqa.selenium.WebElement;
 import uk.sponte.automation.seleniumpom.proxies.handlers.Refreshable;
 
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by n450777 on 07/04/15.
@@ -76,7 +75,6 @@ public abstract class PageSection implements SearchContext, Refreshable, WebElem
      * Waits for element to be available in DOM
      *
      * @param timeout
-     * @throws TimeoutException
      */
     @Override
     public PageElement waitFor(Integer timeout) {
@@ -92,7 +90,6 @@ public abstract class PageSection implements SearchContext, Refreshable, WebElem
      * Waits for element to be hidden (display: none)
      *
      * @param timeout amount of milliseconds to timeout after
-     * @throws TimeoutException
      */
     @Override
     public PageElement waitUntilHidden(Integer timeout) {
@@ -108,7 +105,6 @@ public abstract class PageSection implements SearchContext, Refreshable, WebElem
      * Waits until element is visible on the page
      *
      * @param timeout amount of milliseconds to timeout after
-     * @throws TimeoutException
      */
     @Override
     public PageElement waitUntilVisible(Integer timeout) {

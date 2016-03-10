@@ -91,7 +91,7 @@ public class PageSectionListHandler
     private PageElementImpl getPageElement(WebElement element) {
         WebElement elementProxy = getWebElement(element);
 
-        PageElementImpl pageElement = new PageElementImpl(driver, elementProxy);
+        PageElementImpl pageElement = new PageElementImpl(elementProxy);
         pageElement.setParent(this);
         return pageElement;
     }

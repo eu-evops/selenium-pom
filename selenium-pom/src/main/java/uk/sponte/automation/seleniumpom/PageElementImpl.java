@@ -11,10 +11,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.proxies.handlers.Refreshable;
+import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementHandler;
+import uk.sponte.automation.seleniumpom.webdriverConditions.ElementLocationStaticCondition;
 import uk.sponte.automation.seleniumpom.webdriverConditions.ElementPresentCondition;
 
 import java.lang.reflect.InvocationHandler;
@@ -35,15 +37,10 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 public class PageElementImpl implements PageElement {
     private final static Integer DEFAULT_TIMEOUT = 5000;
 
-    private DependencyInjector dependencyInjector;
     private WebElement webElement;
-
     private Refreshable parent;
 
-    public PageElementImpl(
-            DependencyInjector dependencyInjector,
-            WebElement webElement) {
-        this.dependencyInjector = dependencyInjector;
+    public PageElementImpl(WebElement webElement) {
         this.webElement = webElement;
     }
 
@@ -71,7 +68,7 @@ public class PageElementImpl implements PageElement {
 
     @Override
     public String getHiddenText() {
-        return (String) ((JavascriptExecutor) dependencyInjector.get(WebDriver.class)).executeScript(
+        return (String) ((JavascriptExecutor)getDriver()).executeScript(
                 "return arguments[0].innerText;", webElement);
     }
 
@@ -107,12 +104,12 @@ public class PageElementImpl implements PageElement {
     // DEMO custom actions made easier
     @Override
     public void doubleClick() {
-        new Actions(dependencyInjector.get(WebDriver.class)).doubleClick(this.webElement).perform();
+        new Actions(getDriver()).doubleClick(this.webElement).perform();
     }
 
     @Override
     public void dropOnto(PageElement target) {
-        new Actions(dependencyInjector.get(WebDriver.class)).dragAndDrop(this.webElement, target).perform();
+        new Actions(getDriver()).dragAndDrop(this.webElement, target).perform();
     }
 
     @Override
@@ -160,9 +157,23 @@ public class PageElementImpl implements PageElement {
         return waitUntilVisible(DEFAULT_TIMEOUT);
     }
 
-    public WebElement getWrappedElement() {
-//        if (this.webElement instanceof RemoteWebElement) return this.webElement;
+    @Override
+    public PageElement waitUntilStopsMoving() {
+        return waitUntilStopsMoving(DEFAULT_TIMEOUT);
+    }
 
+    /**
+     * Waits until element's location does not change between intervals
+     *
+     * @param timeout
+     */
+    @Override
+    public PageElement waitUntilStopsMoving(Integer timeout) {
+        getWebDriverWait(timeout).until(new ElementLocationStaticCondition(this.webElement));
+        return this;
+    }
+
+    public WebElement getWrappedElement() {
         return this.webElement;
     }
 
@@ -245,8 +256,12 @@ public class PageElementImpl implements PageElement {
         return ((Locatable) this.webElement).getCoordinates();
     }
 
-    private WebDriverWait getWebDriverWait(Integer timeout) {
-        return new WebDriverWait(dependencyInjector.get(WebDriver.class), timeout / 1000, 100);
+    private WebDriverWait getWebDriverWait(long timeout) {
+        return getWebDriverWait(timeout, 100);
+    }
+
+    private WebDriverWait getWebDriverWait(long timeout, long interval) {
+        return new WebDriverWait(getDriver(), Math.round(timeout / 1000f), interval);
     }
 
     @Override
@@ -268,5 +283,23 @@ public class PageElementImpl implements PageElement {
     @Override
     public void setParent(Refreshable refreshable) {
         this.parent = refreshable;
+    }
+
+
+    private WebDriver getDriver(){
+        if(this.webElement instanceof WrapsDriver) {
+            return ((WrapsDriver) this.webElement).getWrappedDriver();
+        }
+
+        if(this.webElement instanceof Proxy){
+            InvocationHandler invocationHandler = Proxy
+                    .getInvocationHandler(this.webElement);
+
+            if(invocationHandler instanceof WebElementHandler) {
+                return ((WebElementHandler) invocationHandler).getDriver();
+            }
+        }
+
+        return null;
     }
 }

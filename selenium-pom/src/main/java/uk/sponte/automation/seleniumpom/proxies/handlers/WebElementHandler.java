@@ -2,6 +2,7 @@ package uk.sponte.automation.seleniumpom.proxies.handlers;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.helpers.FrameWrapper;
@@ -40,6 +41,10 @@ public class WebElementHandler implements InvocationHandler, Refreshable {
         this.frame = frame;
         this.webDriverOrchestrator = webDriverFrameSwitchingOrchestrator;
         this.webElement = webElement;
+    }
+
+    public WebDriver getDriver(){
+        return this.dependencyInjector.get(WebDriver.class);
     }
 
     public void invalidate() {

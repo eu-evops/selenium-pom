@@ -97,7 +97,7 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
                         handler
                 );
 
-        return new PageElementImpl(driver, webElementProxy);
+        return new PageElementImpl(webElementProxy);
     }
 
     @Override

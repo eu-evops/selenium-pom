@@ -76,4 +76,10 @@ public interface WebElementExtensions {
      */
     PageElement waitUntilVisible(Integer timeout);
     PageElement waitUntilVisible();
+
+    /**
+     * Waits until element's location does not change between intervals
+     */
+    PageElement waitUntilStopsMoving(Integer timeout);
+    PageElement waitUntilStopsMoving();
 }

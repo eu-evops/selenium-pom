@@ -68,7 +68,7 @@ public class FieldInitialiserForPageSections implements FieldInitialiser {
                 elementHandler
         );
 
-        return new PageElementImpl(this.dependencyInjector, proxyElement);
+        return new PageElementImpl(proxyElement);
     }
 
 }

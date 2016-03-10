@@ -15,8 +15,8 @@ import java.util.Map;
  * Created by swozniak on 03/04/15.
  */
 public class TestHelper {
-    public String getTestPageAsBase64() {
-        String resourcePath = "uk/sponte/automation/seleniumpom/test.page.html";
+    public String getTestPageAsBase64(String testPagePath) {
+        String resourcePath = String.format("uk/sponte/automation/seleniumpom/%s", testPagePath);
 
         Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_22);
         freemarkerConfiguration.setClassForTemplateLoading(this.getClass(), "/");
@@ -41,7 +41,7 @@ public class TestHelper {
             e.printStackTrace();
         }
 
-        return "file://" + this.getClass().getResource("../test.page.html").getFile();
+        return "file://" + this.getClass().getResource(String.format("../%s", testPagePath)).getFile();
     }
 
     public String getResourceAsString(String resourcePath) {

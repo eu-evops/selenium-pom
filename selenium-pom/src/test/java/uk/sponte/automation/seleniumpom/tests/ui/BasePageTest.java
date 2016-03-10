@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openqa.selenium.WebDriver;
 import uk.sponte.automation.seleniumpom.PageFactory;
-import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.helpers.TestHelper;
 import uk.sponte.automation.seleniumpom.testobjects.pages.TestPage;
 
@@ -14,17 +13,19 @@ import uk.sponte.automation.seleniumpom.testobjects.pages.TestPage;
  * BaseClass for UI tests
  */
 public class BasePageTest {
-    protected static final int SHORT_TIMEOUT = 200;
-    protected static WebDriver driver;
-    protected static PageFactory pageFactory;
-    protected static String url;
-    protected TestPage testPage;
-    protected static DependencyInjector dependencyInjector;
+    static final int SHORT_TIMEOUT = 200;
+    static WebDriver driver;
+    static PageFactory pageFactory;
+    static TestHelper testHelper = new TestHelper();
+
+    TestPage testPage;
+
+    String getTestPagePath() {
+        return "test.page.html";
+    }
 
     @BeforeClass
     public static void setup() {
-        TestHelper testHelper = new TestHelper();
-        url = testHelper.getTestPageAsBase64();
 
         pageFactory = new PageFactory();
         driver = pageFactory.getDriver();
@@ -32,6 +33,7 @@ public class BasePageTest {
 
     @Before
     public void navigateToTestPage() {
+        String url = testHelper.getTestPageAsBase64(getTestPagePath());
         driver.navigate().to("about:blank");
         driver.navigate().to(url);
         testPage = pageFactory.get(TestPage.class);
@@ -42,3 +44,4 @@ public class BasePageTest {
         driver.quit();
     }
 }
+

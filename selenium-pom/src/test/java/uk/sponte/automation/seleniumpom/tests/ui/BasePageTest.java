@@ -1,9 +1,5 @@
 package uk.sponte.automation.seleniumpom.tests.ui;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Stage;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -12,8 +8,6 @@ import uk.sponte.automation.seleniumpom.PageFactory;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.helpers.TestHelper;
 import uk.sponte.automation.seleniumpom.testobjects.pages.TestPage;
-
-import java.lang.reflect.Field;
 
 /**
  * Created by n450777 on 30/04/15.
@@ -34,17 +28,6 @@ public class BasePageTest {
 
         pageFactory = new PageFactory();
         driver = pageFactory.getDriver();
-
-        Field dependencyInjectorField;
-        try {
-            dependencyInjectorField = PageFactory.class.getDeclaredField("internalDependencyInjector");
-            dependencyInjectorField.setAccessible(true);
-            dependencyInjector = (DependencyInjector) dependencyInjectorField.get(pageFactory);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
     }
 
     @Before

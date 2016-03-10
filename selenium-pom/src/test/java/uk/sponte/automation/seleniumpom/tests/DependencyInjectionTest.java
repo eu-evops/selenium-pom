@@ -28,7 +28,7 @@ public class DependencyInjectionTest {
 
     @Before
     public void setupDi() {
-        di = new GuiceDependencyInjector();
+        di = new GuiceDependencyInjector(null);
     }
 
     @Test

@@ -3,7 +3,6 @@ package uk.sponte.automation.seleniumpom.fieldInitialisers;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.Annotations;
 import uk.sponte.automation.seleniumpom.ElementListImpl;
@@ -16,7 +15,9 @@ import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrc
 import uk.sponte.automation.seleniumpom.proxies.handlers.ElementListHandler;
 import uk.sponte.automation.seleniumpom.proxies.handlers.WebElementListHandler;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.List;
 
 /**
@@ -25,10 +26,11 @@ import java.util.List;
 public class FieldInitialiserForSeleniumLegacyWebElementLists implements FieldInitialiser {
     @Inject private DependencyInjector dependencyInjector;
     @Inject private WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator;
+    @Inject private Provider<PageFactory> pageFactory;
 
     @Override
     public Boolean initialiseField(Field field, Object page, SearchContext searchContext, FrameWrapper frame) {
-        if (isValidWebElementField(field)) return false;
+        if (!FieldAssessor.isValidWebElementList(field)) return false;
 
         Annotations annotations = new Annotations(field);
         WebElementListHandler elementListHandler = new WebElementListHandler(dependencyInjector, searchContext, annotations.buildBy(), frame, webDriverFrameSwitchingOrchestrator);
@@ -55,15 +57,5 @@ public class FieldInitialiserForSeleniumLegacyWebElementLists implements FieldIn
         }
 
         return true;
-    }
-
-    private boolean isValidWebElementField(Field field) {
-        Class<?> fieldType = field.getType();
-        if (!List.class.isAssignableFrom(fieldType)) return true;
-        Type genericType = field.getGenericType();
-        if (!(genericType instanceof ParameterizedType)) return true;
-        ParameterizedType genericTypeImpl = (ParameterizedType) genericType;
-        if (!WebElement.class.isAssignableFrom((Class<?>)genericTypeImpl.getActualTypeArguments()[0])) return true;
-        return false;
     }
 }

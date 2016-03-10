@@ -7,7 +7,6 @@ import uk.sponte.automation.seleniumpom.orchestration.WebDriverFrameSwitchingOrc
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -20,14 +19,7 @@ public class PageElementHandler implements InvocationHandler {
     private FrameWrapper frame;
     private WebDriverFrameSwitchingOrchestrator webDriverOrchestrator;
 
-    public PageElementHandler(PageElementImpl pageElement, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverOrchestrator) {
-        this.pageElement = pageElement;
-        this.frame = frame;
-        this.webDriverOrchestrator = webDriverOrchestrator;
-    }
-
     public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
-        LOG.log(Level.FINER, "Invoking {0}", method.getName());
         try {
             webDriverOrchestrator.useFrame(this.frame);
 

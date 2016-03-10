@@ -1,13 +1,10 @@
 package uk.sponte.automation.seleniumpom.helpers;
 
-import org.apache.commons.codec.binary.StringUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import uk.sponte.automation.seleniumpom.annotations.Frame;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,10 +51,9 @@ public class FrameWrapper {
             this.parent.use();
         }
 
-        LOG.log(Level.INFO, "Switching to frame {0}", this);
+        LOG.log(Level.FINE, "Switching to frame {0}", this);
         WebElement frameElement = driver.findElement(this.frameBy);
         driver.switchTo().frame(frameElement);
-        LOG.log(Level.FINE, "URL after the swtich {0}", driver.getCurrentUrl());
     }
 
     public FrameWrapper setParent(FrameWrapper parent) {

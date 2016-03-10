@@ -3,15 +3,8 @@ package uk.sponte.automation.seleniumpom.fieldInitialisers;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindAll;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.pagefactory.Annotations;
-import uk.sponte.automation.seleniumpom.PageElement;
 import uk.sponte.automation.seleniumpom.PageFactory;
-import uk.sponte.automation.seleniumpom.PageSection;
 import uk.sponte.automation.seleniumpom.annotations.Section;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
@@ -30,12 +23,13 @@ import java.util.List;
  */
 public class FieldInitialiserForPageSectionLists implements FieldInitialiser {
     @Inject private DependencyInjector dependencyInjector;
-    @Inject private Provider<PageFactory> pageFactoryProvider;
+    @Inject private Provider<PageFactory> pageFactory;
     @Inject private WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator;
+
 
     @Override
     public Boolean initialiseField(Field field, Object page, SearchContext searchContext, FrameWrapper frame) {
-        if(!isValidPageSectionList(field))
+        if(!FieldAssessor.isValidPageSectionList(field))
             return false;
 
         Type genericType = field.getGenericType();
@@ -47,7 +41,7 @@ public class FieldInitialiserForPageSectionLists implements FieldInitialiser {
                 dependencyInjector,
                 searchContext,
                 annotations.buildBy(),
-                genericTypeArgument, pageFactoryProvider, frame, webDriverFrameSwitchingOrchestrator);
+                genericTypeArgument, pageFactory, frame, webDriverFrameSwitchingOrchestrator);
 
         Object proxyInstance = Proxy.newProxyInstance(
                 Section.class.getClassLoader(),
@@ -63,33 +57,5 @@ public class FieldInitialiserForPageSectionLists implements FieldInitialiser {
         }
 
         return true;
-    }
-
-    @SuppressWarnings("RedundantIfStatement")
-    private boolean isValidPageSectionList(Field field) {
-        // return false if it's not a list
-        if (!List.class.isAssignableFrom(field.getType())) return false;
-
-        // If we marked field with Section annotation, I'll assume you know what you're doing
-        if (field.isAnnotationPresent(Section.class)) return true;
-
-        // If it's not generic, return false
-        Type genericType = field.getGenericType();
-        if (!(genericType instanceof ParameterizedType)) return false;
-
-        ParameterizedType genericTypeImpl = (ParameterizedType) genericType;
-        Class<?> genericTypeArgument = (Class<?>) genericTypeImpl.getActualTypeArguments()[0];
-
-        // PageElement list is not pageSection
-        if (PageElement.class.isAssignableFrom(genericTypeArgument)) return false;
-        if (WebElement.class.isAssignableFrom(genericTypeArgument)) return false;
-        if (PageSection.class.isAssignableFrom(genericTypeArgument)) return true;
-
-        // If it's a list and has FindBy annotation it's a valid page section list as far as we're concerned
-        if (field.isAnnotationPresent(FindBy.class)) return true;
-        if (field.isAnnotationPresent(FindBys.class)) return true;
-        if (field.isAnnotationPresent(FindAll.class)) return true;
-
-        return false;
     }
 }

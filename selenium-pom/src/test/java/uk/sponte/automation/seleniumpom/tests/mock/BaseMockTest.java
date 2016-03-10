@@ -1,6 +1,5 @@
 package uk.sponte.automation.seleniumpom.tests.mock;
 
-import com.google.inject.Provider;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.By;
@@ -32,7 +31,7 @@ public class BaseMockTest {
 
     @Before
     public void setup() {
-        dependencyInjector = spy(new GuiceDependencyInjector());
+        dependencyInjector = spy(new GuiceDependencyInjector(null));
 
         webDriverFactoryMock = mock(WebDriverFactory.class);
 

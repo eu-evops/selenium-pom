@@ -1,6 +1,7 @@
 package uk.sponte.automation.seleniumpom.testobjects.pages;
 
 import org.openqa.selenium.support.FindBy;
+import uk.sponte.automation.seleniumpom.testobjects.sections.ListSubItem;
 import uk.sponte.automation.seleniumpom.testobjects.sections.ParentSection;
 import uk.sponte.automation.seleniumpom.testobjects.sections.SectionListItem;
 import uk.sponte.automation.seleniumpom.testobjects.sections.TestSection;
@@ -52,7 +53,7 @@ public class TestPage {
 
     public TestSection section;
 
-    @FindBy(id = "plainSection")
+    @FindBy(id = "plainClassSection")
     public PlainSection basedOnFindByAnnotation;
 
     @FindBy(className = "sectionListItem")
@@ -70,6 +71,9 @@ public class TestPage {
 
     @FindBy(css = ".longList li")
     public List<PageElement> longListElements;
+
+    @FindBy(css = ".longList li")
+    public List<ListSubItem> longListSections;
 
     @Frame()
     @FindBy(tagName = "iframe")

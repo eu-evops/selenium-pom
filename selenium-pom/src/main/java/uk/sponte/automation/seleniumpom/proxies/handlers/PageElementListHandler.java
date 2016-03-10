@@ -26,10 +26,10 @@ import static java.util.logging.Logger.getLogger;
 /**
  * Created by swozniak on 03/04/15.
  */
-public class WebElementListHandler implements InvocationHandler, Refreshable {
+public class PageElementListHandler implements InvocationHandler, Refreshable {
 
     private final static Logger LOG = getLogger(
-            WebElementListHandler.class.getName());
+            PageElementListHandler.class.getName());
 
     private DependencyInjector driver;
 
@@ -45,7 +45,7 @@ public class WebElementListHandler implements InvocationHandler, Refreshable {
 
     private Refreshable parent;
 
-    public WebElementListHandler(DependencyInjector driver,
+    public PageElementListHandler(DependencyInjector driver,
             SearchContext searchContext, By by, FrameWrapper frame,
             WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator) {
         this.driver = driver;
@@ -58,11 +58,11 @@ public class WebElementListHandler implements InvocationHandler, Refreshable {
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
         if (webElements == null) {
-            List<WebElement> elements = searchContext.findElements(this.by);
+            List<WebElement> elements = this.searchContext.findElements(this.by);
             webElements = new ArrayList<WebElement>();
 
             for (WebElement webElement : elements) {
-                webElements.add(getWebElementProxy(webElement));
+                webElements.add(getPageElementProxy(webElement));
             }
         }
 
@@ -75,7 +75,7 @@ public class WebElementListHandler implements InvocationHandler, Refreshable {
         }
     }
 
-    private WebElement getWebElementProxy(WebElement webElement) {
+    private WebElement getPageElementProxy(WebElement webElement) {
         WebElementHandler handler = new WebElementHandler(driver,
                 searchContext,
                 By.id(Constants.DUMMY_PAGE_LOCATOR_FOR_LISTS),
@@ -85,7 +85,7 @@ public class WebElementListHandler implements InvocationHandler, Refreshable {
         );
         handler.setParent(this);
 
-        return (WebElement) Proxy
+        WebElement webElementProxy = (WebElement) Proxy
                 .newProxyInstance(
                         WebElement.class.getClassLoader(),
                         new Class[] {
@@ -96,31 +96,41 @@ public class WebElementListHandler implements InvocationHandler, Refreshable {
                         },
                         handler
                 );
+
+        return new PageElementImpl(driver, webElementProxy);
     }
 
+    @Override
     public void invalidate() {
         if(webElements == null) return;
-
-        for (WebElement webElement : webElements) {
-            if(webElement instanceof Proxy) {
-                InvocationHandler invocationHandler = Proxy
-                        .getInvocationHandler(webElement);
-
-                if(invocationHandler instanceof Refreshable) {
-                    ((Refreshable) invocationHandler).refresh();
+        for (WebElement webElement : this.webElements) {
+            if(webElement instanceof PageElementImpl) {
+                WebElement wrappedElement = ((PageElementImpl) webElement)
+                        .getWrappedElement();
+                if(wrappedElement instanceof Proxy) {
+                    InvocationHandler invocationHandler = Proxy
+                            .getInvocationHandler(wrappedElement);
+                    if(invocationHandler instanceof Refreshable) {
+                        ((Refreshable) invocationHandler).invalidate();
+                    }
                 }
             }
         }
     }
 
-    @Override
     public void refresh() {
         if(webElements == null) return;
 
-        List<WebElement> elements = searchContext.findElements(by);
+        List<WebElement> elements = this.searchContext.findElements(by);
         Field elementField = ReflectionHelper
                 .getField(PageElementImpl.class,
                         Constants.PAGE_ELEMENT_CONTAINER_FIELD_NAME);
+
+        Field webElementInvocationHandlerWebElementField = ReflectionHelper
+                .getField(WebElementHandler.class,
+                        Constants.PAGE_ELEMENT_CONTAINER_FIELD_NAME);
+        webElementInvocationHandlerWebElementField.setAccessible(true);
+
 
         assert elementField != null;
         elementField.setAccessible(true);
@@ -130,10 +140,17 @@ public class WebElementListHandler implements InvocationHandler, Refreshable {
             Object s = webElements.get(i);
 
             if (s == null) {
-                webElements.set(i, getWebElementProxy(e));
+                webElements.set(i, getPageElementProxy(e));
             } else {
                 try {
-                    elementField.set(s, e);
+                    Object webElementProxy = elementField.get(s);
+                    if(webElementProxy instanceof Proxy) {
+                        InvocationHandler invocationHandler = Proxy
+                                .getInvocationHandler(webElementProxy);
+                        if(invocationHandler instanceof WebElementHandler) {
+                            webElementInvocationHandlerWebElementField.set(invocationHandler, e);
+                        }
+                    }
                 } catch (IllegalAccessException e1) {
                     e1.printStackTrace();
                 } catch (IllegalArgumentException e2) {

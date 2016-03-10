@@ -11,14 +11,20 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
+import uk.sponte.automation.seleniumpom.proxies.handlers.Refreshable;
+import uk.sponte.automation.seleniumpom.webdriverConditions.ElementPresentCondition;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Calendar;
+import java.lang.reflect.Proxy;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+
 
 /**
  * Thin wrapper around selenium WebElement. It also adds
@@ -29,14 +35,16 @@ import java.util.concurrent.TimeoutException;
 public class PageElementImpl implements PageElement {
     private final static Integer DEFAULT_TIMEOUT = 5000;
 
-    private DependencyInjector driver;
-    private WebElement element;
+    private DependencyInjector dependencyInjector;
+    private WebElement webElement;
+
+    private Refreshable parent;
 
     public PageElementImpl(
-            DependencyInjector driver,
-            WebElement element) {
-        this.driver = driver;
-        this.element = element;
+            DependencyInjector dependencyInjector,
+            WebElement webElement) {
+        this.dependencyInjector = dependencyInjector;
+        this.webElement = webElement;
     }
 
     public boolean canHandle(Method methodName) {
@@ -48,9 +56,10 @@ public class PageElementImpl implements PageElement {
         return false;
     }
 
+    @Override
     public boolean isPresent() {
         try {
-            this.element.getTagName();
+            this.webElement.getTagName();
         } catch (NoSuchElementException e) {
             return false;
         } catch (StaleElementReferenceException ex) {
@@ -60,25 +69,28 @@ public class PageElementImpl implements PageElement {
         return true;
     }
 
+    @Override
     public String getHiddenText() {
-        return (String) ((JavascriptExecutor) driver.get(WebDriver.class)).executeScript(
-                "return arguments[0].innerText;", element);
+        return (String) ((JavascriptExecutor) dependencyInjector.get(WebDriver.class)).executeScript(
+                "return arguments[0].innerText;", webElement);
     }
 
+    @Override
     public String getValue() {
-        return this.element.getAttribute("value");
+        return this.webElement.getAttribute("value");
     }
 
+    @Override
     public void set(String text) {
-        String tagName = this.element.getTagName();
+        String tagName = this.webElement.getTagName();
         if (tagName.equalsIgnoreCase("input")) {
-            this.element.clear();
-            this.element.sendKeys(text);
+            this.webElement.clear();
+            this.webElement.sendKeys(text);
             return;
         }
 
         if (tagName.equalsIgnoreCase("select")) {
-            Select select = new Select(this.element);
+            Select select = new Select(this.webElement);
             select.selectByValue(text);
             return;
         }
@@ -86,184 +98,175 @@ public class PageElementImpl implements PageElement {
         throw new Error("Cannot set elements value: " + tagName);
     }
 
+    @Override
     public void set(String format, Object... args) {
         this.set(String.format(format, args));
     }
 
 
     // DEMO custom actions made easier
+    @Override
     public void doubleClick() {
-        new Actions(driver.get(WebDriver.class)).doubleClick(this.element).perform();
+        new Actions(dependencyInjector.get(WebDriver.class)).doubleClick(this.webElement).perform();
     }
 
+    @Override
     public void dropOnto(PageElement target) {
-        new Actions(driver.get(WebDriver.class)).dragAndDrop(this.element, target).perform();
+        new Actions(dependencyInjector.get(WebDriver.class)).dragAndDrop(this.webElement, target).perform();
     }
 
-    public void waitFor(Integer timeout) throws TimeoutException {
-        long start = Calendar.getInstance().getTimeInMillis();
-        while (true) {
-            if (Calendar.getInstance().getTimeInMillis() - start > timeout) {
-                throw new TimeoutException("Timed out while waiting for element to be present");
-            }
-            try {
-                this.element.getTagName();
-                return;
-            } catch (NoSuchElementException webDriverException) {
-                sleep(100);
-            } catch (StaleElementReferenceException webDriverException) {
-                sleep(100);
-            }
-        }
+    @Override
+    public PageElement waitFor(Integer timeout) {
+        getWebDriverWait(timeout).until(new ElementPresentCondition(this.webElement));
+        return this;
     }
 
-    private void sleep(int timeout) {
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public PageElement waitFor() {
+        return waitFor(DEFAULT_TIMEOUT);
     }
 
-    public void waitFor() throws TimeoutException {
-        waitFor(DEFAULT_TIMEOUT);
+    @Override
+    public void waitUntilGone(Integer timeout)  {
+        getWebDriverWait(timeout).until(not(new ElementPresentCondition(
+                webElement)));
     }
 
-    public void waitUntilGone(Integer timeout) throws TimeoutException {
-        long start = Calendar.getInstance().getTimeInMillis();
-        while (true) {
-            if (Calendar.getInstance().getTimeInMillis() - start > timeout) {
-                throw new TimeoutException("Timed out while waiting for element to be gone");
-            }
-            try {
-                this.element.getTagName();
-                sleep(100);
-            } catch (StaleElementReferenceException ex) {
-                return;
-            } catch (NoSuchElementException ex) {
-                return;
-            }
-        }
-    }
-
-    public void waitUntilGone() throws TimeoutException {
+    @Override
+    public void waitUntilGone() {
         waitUntilGone(DEFAULT_TIMEOUT);
     }
 
     // DEMO waiting for things to happen, for instance waiting for element to disappear from the page
-    public void waitUntilHidden(Integer timeout) throws TimeoutException {
-        long start = Calendar.getInstance().getTimeInMillis();
-        while (this.element.isDisplayed()) {
-            if (Calendar.getInstance().getTimeInMillis() - start > timeout) {
-                throw new TimeoutException("Timed out while waiting for element to be hidden");
-            }
-            sleep(100);
-        }
+    @Override
+    public PageElement waitUntilHidden(Integer timeout) {
+        getWebDriverWait(timeout).until(not(visibilityOf(this.webElement)));
+        return this;
     }
 
-    public void waitUntilHidden() throws TimeoutException {
-        waitUntilHidden(DEFAULT_TIMEOUT);
+    @Override
+    public PageElement waitUntilHidden() {
+        return waitUntilHidden(DEFAULT_TIMEOUT);
     }
 
-    public void waitUntilVisible(Integer timeout) throws TimeoutException {
-        long start = Calendar.getInstance().getTimeInMillis();
-
-        waitFor(timeout);
-
-        while (!this.element.isDisplayed()) {
-            if (Calendar.getInstance().getTimeInMillis() - start > timeout) {
-                throw new TimeoutException("Timed out while waiting for element to be visible");
-            }
-            sleep(100);
-        }
+    @Override
+    public PageElement waitUntilVisible(Integer timeout) {
+        getWebDriverWait(timeout).until(visibilityOf(this.webElement));
+        return this;
     }
 
-    public void waitUntilVisible() throws TimeoutException {
-        waitUntilVisible(DEFAULT_TIMEOUT);
+    @Override
+    public PageElement waitUntilVisible() {
+        return waitUntilVisible(DEFAULT_TIMEOUT);
     }
 
     public WebElement getWrappedElement() {
-        if (this.element instanceof RemoteWebElement) return this.element;
+//        if (this.webElement instanceof RemoteWebElement) return this.webElement;
 
-        return this;
+        return this.webElement;
     }
 
     // DEMO ability to "decorate" selenium's logic, for instance adding retry logic
     @Override
     public void click() {
-        this.element.click();
+        this.webElement.click();
     }
 
     @Override
     public void submit() {
-        this.element.submit();
+        this.webElement.submit();
     }
 
     @Override
     public void sendKeys(CharSequence... charSequences) {
-        this.element.sendKeys(charSequences);
+        this.webElement.sendKeys(charSequences);
     }
 
     @Override
     public void clear() {
-        this.element.clear();
+        this.webElement.clear();
     }
 
     @Override
     public String getTagName() {
-        return this.element.getTagName();
+        return this.webElement.getTagName();
     }
 
     @Override
     public String getAttribute(String s) {
-        return this.element.getAttribute(s);
+        return this.webElement.getAttribute(s);
     }
 
     @Override
     public boolean isSelected() {
-        return this.element.isSelected();
+        return this.webElement.isSelected();
     }
 
     @Override
     public boolean isEnabled() {
-        return this.element.isEnabled();
+        return this.webElement.isEnabled();
     }
 
     @Override
     public String getText() {
-        return this.element.getText();
+        return this.webElement.getText();
     }
 
     public List<WebElement> findElements(By by) {
-        return this.element.findElements(by);
+        return this.webElement.findElements(by);
     }
 
     public WebElement findElement(By by) {
-        return this.element.findElement(by);
+        return this.webElement.findElement(by);
     }
 
     @Override
     public boolean isDisplayed() {
-        return this.element.isDisplayed();
+        return this.webElement.isDisplayed();
     }
 
     @Override
     public Point getLocation() {
-        return this.element.getLocation();
+        return this.webElement.getLocation();
     }
 
     @Override
     public Dimension getSize() {
-        return this.element.getSize();
+        return this.webElement.getSize();
     }
 
     @Override
     public String getCssValue(String s) {
-        return this.element.getCssValue(s);
+        return this.webElement.getCssValue(s);
     }
 
     @Override
     public Coordinates getCoordinates() {
-        return ((Locatable) this.element).getCoordinates();
+        return ((Locatable) this.webElement).getCoordinates();
+    }
+
+    private WebDriverWait getWebDriverWait(Integer timeout) {
+        return new WebDriverWait(dependencyInjector.get(WebDriver.class), timeout / 1000, 100);
+    }
+
+    @Override
+    public void invalidate() {
+        InvocationHandler invocationHandler = Proxy
+                .getInvocationHandler(this.webElement);
+        if(invocationHandler != null) {
+            if(invocationHandler instanceof Refreshable) {
+                ((Refreshable) invocationHandler).invalidate();
+            }
+        }
+    }
+
+    @Override
+    public void refresh() {
+        if(this.parent != null) parent.refresh();
+    }
+
+    @Override
+    public void setParent(Refreshable refreshable) {
+        this.parent = refreshable;
     }
 }

@@ -45,8 +45,8 @@ public interface WebElementExtensions {
      * Waits for element to be available in DOM
      * @throws TimeoutException
      */
-    void waitFor(Integer timeout) throws TimeoutException;
-    void waitFor() throws TimeoutException;
+    PageElement waitFor(Integer timeout) throws TimeoutException;
+    PageElement waitFor() throws TimeoutException;
 
     /**
      * Waits for element to not be available in DOM
@@ -60,14 +60,14 @@ public interface WebElementExtensions {
      * @param timeout amount of milliseconds to timeout after
      * @throws TimeoutException
      */
-    void waitUntilHidden(Integer timeout) throws TimeoutException;
-    void waitUntilHidden() throws TimeoutException;
+    PageElement waitUntilHidden(Integer timeout) throws TimeoutException;
+    PageElement waitUntilHidden() throws TimeoutException;
 
     /**
      * Waits until element is visible on the page
      * @param timeout amount of milliseconds to timeout after
      * @throws TimeoutException
      */
-    void waitUntilVisible(Integer timeout) throws TimeoutException;
-    void waitUntilVisible() throws TimeoutException;
+    PageElement waitUntilVisible(Integer timeout) throws TimeoutException;
+    PageElement waitUntilVisible() throws TimeoutException;
 }

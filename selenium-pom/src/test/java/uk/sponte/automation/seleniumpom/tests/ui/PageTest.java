@@ -1,9 +1,9 @@
 package uk.sponte.automation.seleniumpom.tests.ui;
 
 import org.junit.Test;
+import org.openqa.selenium.TimeoutException;
+import uk.sponte.automation.seleniumpom.testobjects.pages.Homepage;
 import uk.sponte.automation.seleniumpom.testobjects.pages.TestPage;
-
-import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.*;
 
@@ -11,6 +11,12 @@ import static org.junit.Assert.*;
  * Created by swozniak on 03/04/15.
  */
 public class PageTest extends BasePageTest {
+    @Test
+    public void pageFactoryInitialisationTest() {
+        pageFactory.get(Homepage.class);
+    }
+
+
     @Test
     public void canGetHeadline() {
         assertEquals("Headline", testPage.headline.getText());
@@ -42,7 +48,7 @@ public class PageTest extends BasePageTest {
     }
 
     @Test
-    public void waitsForElement() throws TimeoutException {
+    public void waitsForElement() {
         testPage.createElementAfterDelay.click();
         testPage.newElement.waitFor();
 
@@ -50,44 +56,44 @@ public class PageTest extends BasePageTest {
     }
 
     @Test(expected = TimeoutException.class)
-    public void timesOutWaitingForAnElement() throws TimeoutException {
+    public void timesOutWaitingForAnElement() {
         testPage.createElementAfterDelay.click();
         testPage.newElement.waitFor(SHORT_TIMEOUT);
     }
 
     @Test
-    public void waitsForAnElementToBeGone() throws TimeoutException {
+    public void waitsForAnElementToBeGone() {
         testPage.removeElementAfterDelay.click();
         testPage.headline.waitUntilGone();
     }
 
     @Test(expected = TimeoutException.class)
-    public void timesOutWaitingForAnElementToBeGone() throws TimeoutException {
+    public void timesOutWaitingForAnElementToBeGone() {
         testPage.removeElementAfterDelay.click();
 
         testPage.headline.waitUntilGone(SHORT_TIMEOUT);
     }
 
     @Test
-    public void waitsforElementToBeHidden() throws TimeoutException {
+    public void waitsforElementToBeHidden() {
         testPage.hideElementAfterDelay.click();
         testPage.headline.waitUntilHidden();
     }
 
     @Test(expected = TimeoutException.class)
-    public void timesOutWhileWaitingforElementToBeHidden() throws TimeoutException {
+    public void timesOutWhileWaitingforElementToBeHidden() {
         testPage.hideElementAfterDelay.click();
         testPage.headline.waitUntilHidden(SHORT_TIMEOUT);
     }
 
     @Test
-    public void waitForElementToBecomeVisible() throws TimeoutException {
+    public void waitForElementToBecomeVisible() {
         testPage.showElementAfterDelay.click();
         testPage.subtitle.waitUntilVisible();
     }
 
     @Test(expected = TimeoutException.class)
-    public void timesOutWhileWaitingForElementToBecomeVisible() throws TimeoutException {
+    public void timesOutWhileWaitingForElementToBecomeVisible() {
         testPage.showElementAfterDelay.click();
         testPage.subtitle.waitUntilVisible(SHORT_TIMEOUT);
     }
@@ -100,11 +106,11 @@ public class PageTest extends BasePageTest {
     }
 
     @Test
-    public void canGetPageSection() throws Exception {
+    public void canGetPageSection() {
         assertEquals("There should only be 1 child element", 1, testPage.parent.child.children.size());
     }
     @Test
-    public void returnsAListOfElements() throws Exception {
+    public void returnsAListOfElements() {
         assertEquals("There should be 9 child elements", 9, testPage.listPageElements.size());
     }
 

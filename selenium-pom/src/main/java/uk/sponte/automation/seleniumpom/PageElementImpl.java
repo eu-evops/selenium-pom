@@ -4,9 +4,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.internal.Coordinates;
@@ -246,6 +249,14 @@ public class PageElementImpl implements PageElement {
         return this.webElement.getSize();
     }
 
+    /**
+     * @return The location and size of the rendered element
+     */
+    @Override
+    public Rectangle getRect() {
+        return return this.webElement.getRect();
+    }
+
     @Override
     public String getCssValue(String s) {
         return this.webElement.getCssValue(s);
@@ -301,5 +312,32 @@ public class PageElementImpl implements PageElement {
         }
 
         return null;
+    }
+
+    /**
+     * Capture the screenshot and store it in the specified location.
+     * <p>
+     * <p>For WebDriver extending TakesScreenshot, this makes a best effort
+     * depending on the browser to return the following in order of preference:
+     * <ul>
+     * <li>Entire page</li>
+     * <li>Current window</li>
+     * <li>Visible portion of the current frame</li>
+     * <li>The screenshot of the entire display containing the browser</li>
+     * </ul>
+     * <p>
+     * <p>For WebElement extending TakesScreenshot, this makes a best effort
+     * depending on the browser to return the following in order of preference:
+     * - The entire content of the HTML element
+     * - The visisble portion of the HTML element
+     *
+     * @param target target type, @see OutputType
+     * @return Object in which is stored information about the screenshot.
+     * @throws WebDriverException on failure.
+     */
+    @Override
+    public <X> X getScreenshotAs(OutputType<X> target)
+            throws WebDriverException {
+        return this.webElement.getScreenshotAs(target);
     }
 }

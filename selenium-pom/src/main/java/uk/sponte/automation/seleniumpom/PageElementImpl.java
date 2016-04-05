@@ -254,7 +254,7 @@ public class PageElementImpl implements PageElement {
      */
     @Override
     public Rectangle getRect() {
-        return return this.webElement.getRect();
+        return this.webElement.getRect();
     }
 
     @Override

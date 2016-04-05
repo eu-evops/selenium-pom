@@ -5,6 +5,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.Stage;
 import com.google.inject.matcher.Matchers;
 import uk.sponte.automation.seleniumpom.PageFactory;
@@ -40,7 +41,7 @@ public class SeleniumPomGuiceModule extends AbstractModule
         bindListener(Matchers.any(), new PageObjectModelTypeListener());
     }
 
-    @Provides
+    @Provides @Singleton
     PageFactory providePageFactory() {
         if(pageFactory != null) return pageFactory;
 

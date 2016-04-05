@@ -1,0 +1,331 @@
+<html>
+<title>Animations Test page</title>
+
+<script src="jquery-2.1.3.js"></script>
+<script src="jquery-ui.js"></script>
+
+<script type="text/javascript">
+    var DEFAULT_TIMEOUT = 500;
+
+    $(function() {
+        $($(".listItem")[2]).click(function(event, ui) {
+            $(this).text("Clicked!");
+        });
+        $("#moveButton").click(function(event, ui) {
+            $("#list").animate({
+                top: "+=500",
+                left: "+=500"
+            }, 300);
+        });
+    });
+
+</script>
+<style>
+    #list {
+        position: absolute;
+        top: 40px;
+        border: 1px solid blue;
+    }
+
+    #list .listItem {
+        padding: 10px 50px;
+        border: 1px solid red;
+        background-color: rgba(255, 0, 0, 0.5);
+        margin-bottom: 10px;
+    }
+</style>
+<body>
+    <button id="moveButton">Move button</button>
+
+    <div id="list">
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+        <div class="listItem"></div>
+    </div>
+</body>
+</html>

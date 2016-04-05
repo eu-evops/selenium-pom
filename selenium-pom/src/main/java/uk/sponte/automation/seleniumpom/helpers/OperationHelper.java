@@ -2,10 +2,13 @@ package uk.sponte.automation.seleniumpom.helpers;
 
 import uk.sponte.automation.seleniumpom.exceptions.RetryException;
 
+import java.util.logging.Logger;
+
 /**
  * Created by n450777 on 13/04/15.
  */
 public class OperationHelper {
+    private final static Logger LOG = Logger.getLogger(OperationHelper.class.getName());
     public static void withRetry(int maxAttempts, Runnable runnable) throws RetryException {
         withRetry(maxAttempts, 500, runnable);
     }
@@ -17,7 +20,7 @@ public class OperationHelper {
                 runnable.run();
                 return;
             } catch (Exception e) {
-                System.out.printf("[%s] Retrying %s%n because of %s %n", count, runnable, e);
+                LOG.fine(String.format("[%s] Retrying %s%n because of %s %n", count, runnable, e));
                 exceptionThrown = e;
                 sleep(delay);
             }

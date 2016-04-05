@@ -1,7 +1,5 @@
 package uk.sponte.automation.seleniumpom;
 
-import java.util.concurrent.TimeoutException;
-
 /**
  * Created by swozniak on 03/04/15.
  */
@@ -25,6 +23,12 @@ public interface WebElementExtensions {
     void set(String value);
 
     /**
+     * Gets text from a hidden element
+     * @return String
+     */
+    String getHiddenText();
+
+    /**
      * Performs clear() sendKeys() action on a given element
      * @param format Text format to enter into a text field
      */
@@ -43,31 +47,33 @@ public interface WebElementExtensions {
 
     /**
      * Waits for element to be available in DOM
-     * @throws TimeoutException
      */
-    void waitFor(Integer timeout) throws TimeoutException;
-    void waitFor() throws TimeoutException;
+    PageElement waitFor(Integer timeout);
+    PageElement waitFor();
 
     /**
      * Waits for element to not be available in DOM
-     * @throws TimeoutException
      */
-    void waitUntilGone(Integer timeout) throws TimeoutException;
-    void waitUntilGone() throws TimeoutException;
+    void waitUntilGone(Integer timeout);
+    void waitUntilGone();
 
     /**
      * Waits for element to be hidden (display: none)
      * @param timeout amount of milliseconds to timeout after
-     * @throws TimeoutException
      */
-    void waitUntilHidden(Integer timeout) throws TimeoutException;
-    void waitUntilHidden() throws TimeoutException;
+    PageElement waitUntilHidden(Integer timeout);
+    PageElement waitUntilHidden();
 
     /**
      * Waits until element is visible on the page
      * @param timeout amount of milliseconds to timeout after
-     * @throws TimeoutException
      */
-    void waitUntilVisible(Integer timeout) throws TimeoutException;
-    void waitUntilVisible() throws TimeoutException;
+    PageElement waitUntilVisible(Integer timeout);
+    PageElement waitUntilVisible();
+
+    /**
+     * Waits until element's location does not change between intervals
+     */
+    PageElement waitUntilStopsMoving(Integer timeout);
+    PageElement waitUntilStopsMoving();
 }

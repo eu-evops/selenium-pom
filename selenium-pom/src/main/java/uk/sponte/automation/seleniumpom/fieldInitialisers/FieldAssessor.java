@@ -23,7 +23,10 @@ public class FieldAssessor {
         if (!List.class.isAssignableFrom(fieldType)) return false;
         Type genericType = field.getGenericType();
         if (!(genericType instanceof ParameterizedType)) return false;
+
         ParameterizedType genericTypeImpl = (ParameterizedType) genericType;
+        if(!(genericTypeImpl.getActualTypeArguments()[0] instanceof Class<?>)) return false;
+
         if (!PageElement.class.isAssignableFrom((Class<?>)genericTypeImpl.getActualTypeArguments()[0])) return false;
         return true;
     }
@@ -44,6 +47,8 @@ public class FieldAssessor {
         if (!(genericType instanceof ParameterizedType)) return false;
 
         ParameterizedType genericTypeImpl = (ParameterizedType) genericType;
+        if(!(genericTypeImpl.getActualTypeArguments()[0] instanceof Class<?>)) return false;
+
         Class<?> genericTypeArgument = (Class<?>) genericTypeImpl.getActualTypeArguments()[0];
 
         // PageElement list is not pageSection
@@ -94,6 +99,8 @@ public class FieldAssessor {
         Type genericType = field.getGenericType();
         if (!(genericType instanceof ParameterizedType)) return false;
         ParameterizedType genericTypeImpl = (ParameterizedType) genericType;
+        if(!(genericTypeImpl.getActualTypeArguments()[0] instanceof Class<?>)) return false;
+
         if (!WebElement.class.isAssignableFrom((Class<?>)genericTypeImpl.getActualTypeArguments()[0])) return false;
 
         return true;

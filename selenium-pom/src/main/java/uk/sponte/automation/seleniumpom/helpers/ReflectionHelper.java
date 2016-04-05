@@ -14,7 +14,8 @@ public class ReflectionHelper {
 
     public static Object getFieldValue(Object object, String fieldName) {
         Field field = getField(object, fieldName);
-        if(field == null) return null;
+        if (field == null)
+            return null;
 
         field.setAccessible(true);
         try {
@@ -25,9 +26,12 @@ public class ReflectionHelper {
     }
 
     public static List<Field> getAllFields(Object object) {
+        return getAllClassFields(object.getClass());
+    }
+
+    public static List<Field> getAllClassFields(Class klass) {
         ArrayList<Field> fields = new ArrayList<Field>();
-        Class klass = object.getClass();
-        while(klass != null) {
+        while (klass != null) {
             Collections.addAll(fields, klass.getDeclaredFields());
             klass = klass.getSuperclass();
         }
@@ -40,7 +44,7 @@ public class ReflectionHelper {
     }
 
     public static Field getField(Class klass, String fieldName) {
-        while(klass != null) {
+        while (klass != null) {
             try {
                 Field field = klass.getDeclaredField(fieldName);
                 return field;
@@ -53,13 +57,11 @@ public class ReflectionHelper {
         return null;
     }
 
-    public static boolean isWrapperType(Class<?> clazz)
-    {
+    public static boolean isWrapperType(Class<?> clazz) {
         return getWrapperTypes().contains(clazz);
     }
 
-    private static Set<Class<?>> getWrapperTypes()
-    {
+    private static Set<Class<?>> getWrapperTypes() {
         Set<Class<?>> ret = new HashSet<Class<?>>();
         ret.add(Boolean.class);
         ret.add(Character.class);

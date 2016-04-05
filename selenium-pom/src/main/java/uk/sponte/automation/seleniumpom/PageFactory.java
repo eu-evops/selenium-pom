@@ -33,7 +33,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -96,11 +95,6 @@ public class PageFactory implements
     }
 
     public WebDriver getDriver() {
-        if (eventFiringWebDriver != null)
-            return eventFiringWebDriver;
-
-        LOG.log(Level.FINE, "Webdriver was not initialised, creating new");
-        // TODO need to look into this - this is not right lol
         eventFiringWebDriver = new EventFiringWebDriver(
                 dependencyInjector.get(WebDriver.class));
         eventFiringWebDriver.register(this);

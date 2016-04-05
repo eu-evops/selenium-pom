@@ -3,6 +3,7 @@ package uk.sponte.automation.seleniumpom.helpers;
 import com.google.common.collect.Lists;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,8 +11,7 @@ import java.util.List;
  */
 public class ClassHelper {
     public static Iterable<Field> getFieldsFromClass(Class<?> startClass) {
-
-        List<Field> currentClassFields = Lists.newArrayList(startClass.getDeclaredFields());
+        List<Field> currentClassFields = new ArrayList<Field>();
         Class<?> parentClass = startClass.getSuperclass();
 
         if (parentClass != null) {
@@ -20,6 +20,7 @@ public class ClassHelper {
             currentClassFields.addAll(parentClassFields);
         }
 
+        currentClassFields.addAll(Lists.newArrayList(startClass.getDeclaredFields()));
         return currentClassFields;
     }
 }

@@ -16,6 +16,9 @@ public class TestSection extends PageSection {
     @FindBy(tagName = "h2")
     public PageElement subtitle;
 
+    @FindBy(css = "input[type=button]")
+    public PageElement addNewItemButton;
+
     @FindBy(tagName = "li")
     public List<PageElement> listItems;
 }

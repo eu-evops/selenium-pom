@@ -66,4 +66,36 @@ public class CachingTest extends BasePageTest {
         assertEquals("List 2: Item 2", headline.getText());
         assertEquals(elementText, cachingTestPage.pageSection.listItems.get(0).getText());
     }
+
+    @Test
+    public void returnsNewElementsAfterInvalidate() {
+        CachingTestPage cachingTestPage = pageFactory
+                .get(CachingTestPage.class);
+
+        // Need to access first to trigger element finding
+        assertEquals(3, cachingTestPage.pageSection.listItems.size());
+
+        cachingTestPage.pageSection.addNewItemButton.click();
+        pageFactory.invalidate(cachingTestPage);
+
+        assertEquals("New Element", cachingTestPage.pageSection.listItems.get(3).getText());
+        assertEquals(4, cachingTestPage.pageSection.listItems.size());
+    }
+
+    @Test
+    public void returnsNewElementsAfterInvalidateWhileAccessingOriginalItemsFirst() {
+        CachingTestPage cachingTestPage = pageFactory
+                .get(CachingTestPage.class);
+
+        // Need to access first to trigger element finding
+        assertEquals(3, cachingTestPage.pageSection.listItems.size());
+
+        cachingTestPage.pageSection.addNewItemButton.click();
+        pageFactory.invalidate(cachingTestPage);
+
+        // Can still read elements
+        assertEquals("three", cachingTestPage.pageSection.listItems.get(2).getText());
+        assertEquals("New Element", cachingTestPage.pageSection.listItems.get(3).getText());
+        assertEquals(4, cachingTestPage.pageSection.listItems.size());
+    }
 }

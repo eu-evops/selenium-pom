@@ -45,6 +45,8 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
 
     private Refreshable parent;
 
+    private boolean needsRefresh;
+
     public PageElementListHandler(DependencyInjector driver,
             SearchContext searchContext, By by, FrameWrapper frame,
             WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator) {
@@ -64,6 +66,9 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
             for (WebElement webElement : elements) {
                 webElements.add(getPageElementProxy(webElement));
             }
+        } else if (this.needsRefresh) {
+            refresh();
+            this.needsRefresh = false;
         }
 
         try {
@@ -102,6 +107,7 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
 
     @Override
     public void invalidate() {
+        this.needsRefresh = true;
         if(webElements == null) return;
         for (WebElement webElement : this.webElements) {
             if(webElement instanceof PageElementImpl) {
@@ -137,11 +143,11 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
 
         for (int i = 0; i < elements.size(); i++) {
             WebElement e = elements.get(i);
-            Object s = webElements.get(i);
 
-            if (s == null) {
-                webElements.set(i, getPageElementProxy(e));
+            if (webElements.size() == i) {
+                webElements.add(getPageElementProxy(e));
             } else {
+                Object s = webElements.get(i);
                 try {
                     Object webElementProxy = elementField.get(s);
                     if(webElementProxy instanceof Proxy) {

@@ -14,6 +14,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
+ * Caching tests - test caching features of selenium-pom framework
  * Created by n450777 on 04/03/2016.
  */
 public class CachingTest extends BasePageTest {
@@ -97,5 +98,36 @@ public class CachingTest extends BasePageTest {
         assertEquals("three", cachingTestPage.pageSection.listItems.get(2).getText());
         assertEquals("New Element", cachingTestPage.pageSection.listItems.get(3).getText());
         assertEquals(4, cachingTestPage.pageSection.listItems.size());
+    }
+
+    @Test
+    public void returnsMultipleNewElementsAfterInvalidateWhileAccessingOriginalItemsFirst() {
+        CachingTestPage cachingTestPage = pageFactory
+                .get(CachingTestPage.class);
+
+        // Need to access first to trigger element finding
+        assertEquals(3, cachingTestPage.pageSection.listItems.size());
+
+        cachingTestPage.pageSection.addTwoNewItemsButton.click();
+        pageFactory.invalidate(cachingTestPage);
+
+        assertEquals("New Element", cachingTestPage.pageSection.listItems.get(3).getText());
+        assertEquals("New Element 2", cachingTestPage.pageSection.listItems.get(4).getText());
+        assertEquals(5, cachingTestPage.pageSection.listItems.size());
+    }
+
+    @Test
+    public void returnsNewListWithLessElementsThanOriginalAfterRemovingItems() {
+        CachingTestPage cachingTestPage = pageFactory
+                .get(CachingTestPage.class);
+
+        // Need to access first to trigger element finding
+        assertEquals(3, cachingTestPage.pageSection.listItems.size());
+
+        cachingTestPage.pageSection.removeItemButton.click();
+        pageFactory.invalidate(cachingTestPage);
+
+        assertEquals("two", cachingTestPage.pageSection.listItems.get(1).getText());
+        assertEquals(2, cachingTestPage.pageSection.listItems.size());
     }
 }

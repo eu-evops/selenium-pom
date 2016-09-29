@@ -6,7 +6,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.MarionetteDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -32,7 +34,7 @@ public class WebDriverFactory
 
     private WebDriver createNewDriver() {
         String webdriverProperty = System
-                .getProperty("selenium.webdriver", "firefox");
+                .getProperty("selenium.webdriver", "firefoxCapabilities");
         String webDriverServer = System
                 .getProperty("selenium.webdriver.remote.server", null);
 
@@ -67,6 +69,12 @@ public class WebDriverFactory
 
         FirefoxProfile firefoxProfile = new FirefoxProfile();
         firefoxProfile.setEnableNativeEvents(false);
-        return new FirefoxDriver(firefoxProfile);
+
+        DesiredCapabilities firefoxCapabilities = DesiredCapabilities.firefox();
+        firefoxCapabilities.setCapability("marionette", true);
+        firefoxCapabilities.setCapability(FirefoxDriver.PROFILE, firefoxProfile);
+        System.setProperty("webdriver.gecko.driver", "geckodriver");
+
+        return new MarionetteDriver(firefoxCapabilities);
     }
 }

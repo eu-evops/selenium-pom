@@ -8,7 +8,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import uk.sponte.automation.seleniumpom.PageFactory;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
@@ -40,7 +40,7 @@ public class DependencyInjectionTest {
 
     @Test
     public void canUseMyOwnDependencyInjection() {
-        WebDriver webDriver = new FirefoxDriver();
+        WebDriver webDriver = new ChromeDriver();
         PageFactory pageFactory = new PageFactory(new MyCustomGuiceInjector(webDriver));
         EventFiringWebDriver driver = (EventFiringWebDriver) pageFactory.getDriver();
         Assert.assertEquals(webDriver, driver.getWrappedDriver());

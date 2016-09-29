@@ -1,0 +1,283 @@
+<html>
+<title>Test page</title>
+
+<style type="text/css">
+    #drag {
+    cursor: move;
+    }
+
+    #drag, #drop, #dblClick {
+    width: 100px;
+    height: 100px;
+    border: 1px solid blue;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: rgb(215, 232, 255);
+    }
+
+    .item {
+    border: 1px solid blue;
+    padding: 5px;
+    margin-bottom: 5px;
+    }
+
+    #hidden { display: none }
+
+    .item:hover {
+    background-color: blue;
+    color: white;
+    }
+</style>
+
+<script src="jquery-2.1.3.js"></script>
+<script src="jquery-ui.js"></script>
+
+<script>
+
+    var DEFAULT_TIMEOUT = 500;
+
+    $(function() {
+        $("#dblClick").dblclick(function(event, ui) {
+            $(this).text("Double clicked");
+        });
+        $("#drag").draggable();
+        $("#drop").droppable({
+            drop: function(event, ui) {
+                $(this).text("Dropped!");
+                $(ui.draggable).remove();
+            }
+        });
+
+        $('#createElementAfterDelay').click(function() {
+                setTimeout(function() {
+                    $('body').append('<div id="newElement">Hello World</div>');
+                }, DEFAULT_TIMEOUT);
+        });
+        $('#removeElementAfterDelay').click(function() {
+            setTimeout(function() {
+                    $('h1').remove();
+                }, DEFAULT_TIMEOUT);
+
+        });
+        $('#hideElementAfterDelay').click(function() {
+            setTimeout(function() {
+                    $('h1').hide();
+                }, DEFAULT_TIMEOUT);
+
+        });
+        $('#showElementAfterDelay').click(function() {
+            setTimeout(function() {
+                    $('h2').show();
+                }, DEFAULT_TIMEOUT);
+
+        });
+    });
+
+</script>
+
+<body>
+
+<h1>Headline</h1>
+
+<h2 style="display: none">Hidden subtitle</h2>
+
+<p>
+    <input type="text" id="someInput"/>
+</p>
+
+<p>
+    <select>
+        <option value="1">one</option>
+        <option value="2">two</option>
+        <option value="3">three</option>
+    </select>
+</p>
+
+<p>
+    <input type="checkbox" name="checkbox"/>
+    <input type="checkbox" name="checkbox"/>
+</p>
+
+<p>
+    <input type="radio" name="radio" value="value1"/>
+    <input type="radio" name="radio" value="value2"/>
+</p>
+
+<p>
+    <input type="range"/>
+</p>
+
+<div id="drag">drag</div>
+<div id="drop">drop</div>
+<div id="dblClick">dblClick</div>
+
+
+<div id="parent" class="item">
+    <div id="child" class="item">
+        <div class="item">inside</div>
+    </div>
+</div>
+
+<div class="item">outside</div>
+<div class="item">outside</div>
+<div class="item">outside</div>
+
+<button id="createElementAfterDelay">Create element after delay</button>
+<button id="removeElementAfterDelay">Remove element after delay</button>
+<button id="hideElementAfterDelay">Hide element after delay</button>
+<button id="showElementAfterDelay">Show element after delay</button>
+
+<div id="section">
+    <h1>Section heading</h1>
+
+    <h2>Section subtitle</h2>
+    <ul>
+        <li>one</li>
+        <li>two</li>
+        <li>three</li>
+    </ul>
+</div>
+
+<ul class="listOutsideASection">
+    <li>one</li>
+    <li>two</li>
+    <li>three</li>
+</ul>
+
+<div class="sectionListItem">
+    <span class="one">one-one</span>
+    <span class="two">one-two</span>
+</div>
+<div class="sectionListItem">
+    <span class="one">two-one</span>
+    <span class="two">two-two</span>
+</div>
+
+<div id="plainClassSection">
+    <div id="plainSectionChild">Hello World
+        <span class="item">one</span>
+        <span class="item">two</span>
+        <span class="item">three</span>
+    </div>
+</div>
+
+<div class="listItem">
+    <div class="listSubItem"><h5>List 1: Item 1</h5></div>
+    <div class="listSubItem"><h5>List 1: Item 2</h5></div>
+    <div class="listSubItem"><h5>List 1: Item 3</h5></div>
+</div>
+<div class="listItem">
+    <div class="listSubItem"><h5>List 2: Item 1</h5></div>
+    <div class="listSubItem"><h5>List 2: Item 2</h5></div>
+    <div class="listSubItem"><h5>List 2: Item 3</h5></div>
+</div>
+
+<div id="hidden">secret</div>
+
+<iframe src="frame.content.html" width="100%" height="600px" style="border: 1px solid blue"></iframe>
+
+<ul class="longList">
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+    <li>HelloWorld</li>
+</ul>
+
+</body>
+</html>

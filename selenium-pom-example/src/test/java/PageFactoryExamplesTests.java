@@ -23,7 +23,7 @@ public class PageFactoryExamplesTests {
 
     @Before
     public void setup() {
-        System.setProperty("selenium.webdriver", "firefox");
+        System.setProperty("selenium.webdriver", "chrome");
 
         pageFactory = new PageFactory();
         driver = pageFactory.getDriver();

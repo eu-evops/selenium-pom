@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 /**
+ * Proxy object handler for page element lists
  * Created by swozniak on 03/04/15.
  */
 public class PageElementListHandler implements InvocationHandler, Refreshable {
@@ -45,6 +46,8 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
 
     private Refreshable parent;
 
+    private boolean needsRefresh;
+
     public PageElementListHandler(DependencyInjector driver,
             SearchContext searchContext, By by, FrameWrapper frame,
             WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator) {
@@ -64,6 +67,9 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
             for (WebElement webElement : elements) {
                 webElements.add(getPageElementProxy(webElement));
             }
+        } else if (this.needsRefresh) {
+            refresh();
+            this.needsRefresh = false;
         }
 
         try {
@@ -102,6 +108,7 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
 
     @Override
     public void invalidate() {
+        this.needsRefresh = true;
         if(webElements == null) return;
         for (WebElement webElement : this.webElements) {
             if(webElement instanceof PageElementImpl) {
@@ -129,19 +136,27 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
         Field webElementInvocationHandlerWebElementField = ReflectionHelper
                 .getField(WebElementHandler.class,
                         Constants.PAGE_ELEMENT_CONTAINER_FIELD_NAME);
-        webElementInvocationHandlerWebElementField.setAccessible(true);
 
+        assert webElementInvocationHandlerWebElementField != null;
+        webElementInvocationHandlerWebElementField.setAccessible(true);
 
         assert elementField != null;
         elementField.setAccessible(true);
 
+        // Remove access to extra elements
+        for(int i=elements.size(); i < webElements.size(); i++) {
+            webElements.remove(i);
+        }
+
         for (int i = 0; i < elements.size(); i++) {
             WebElement e = elements.get(i);
-            Object s = webElements.get(i);
 
-            if (s == null) {
-                webElements.set(i, getPageElementProxy(e));
+            if (webElements.size() == i) {
+                // this adds new element to the list
+                webElements.add(getPageElementProxy(e));
             } else {
+                // This resets web element handler in the existing list item so that references are still valid
+                Object s = webElements.get(i);
                 try {
                     Object webElementProxy = elementField.get(s);
                     if(webElementProxy instanceof Proxy) {

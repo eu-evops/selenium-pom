@@ -33,6 +33,9 @@ public class AnimationsTest extends BasePageTest {
         // this will cache element in selenium pom
         thirdListItem.getText();
         animatedTestPage.moveButton.click();
+
+        thirdListItem.waitUntilStopsMoving();
+        
         thirdListItem.click();
         Thread.sleep(100);
         assertEquals("Clicked!", thirdListItem.getText());

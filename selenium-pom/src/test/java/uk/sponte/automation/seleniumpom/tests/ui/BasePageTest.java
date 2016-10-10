@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openqa.selenium.WebDriver;
 import uk.sponte.automation.seleniumpom.PageFactory;
+import uk.sponte.automation.seleniumpom.helpers.SauceAwareSeleniumDriverFactory;
 import uk.sponte.automation.seleniumpom.helpers.TestHelper;
 import uk.sponte.automation.seleniumpom.testobjects.pages.TestPage;
 
@@ -26,7 +27,7 @@ public class BasePageTest {
 
     @BeforeClass
     public static void setup() {
-
+        System.setProperty("selenium.webdriver", "chrome");
         pageFactory = new PageFactory();
         driver = pageFactory.getDriver();
     }

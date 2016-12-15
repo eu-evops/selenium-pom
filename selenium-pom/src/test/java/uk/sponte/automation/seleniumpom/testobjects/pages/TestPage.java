@@ -1,6 +1,7 @@
 package uk.sponte.automation.seleniumpom.testobjects.pages;
 
 import org.openqa.selenium.support.FindBy;
+import uk.sponte.automation.seleniumpom.Page;
 import uk.sponte.automation.seleniumpom.testobjects.sections.ListSubItem;
 import uk.sponte.automation.seleniumpom.testobjects.sections.ParentSection;
 import uk.sponte.automation.seleniumpom.testobjects.sections.SectionListItem;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * Created by swozniak-ba on 02/04/15.
  */
-public class TestPage {
+public class TestPage implements Page {
     @FindBy(tagName = "h1")
     public PageElement headline;
 
@@ -79,6 +80,8 @@ public class TestPage {
     @FindBy(tagName = "iframe")
     public FrameSection iframe;
 
+    @FindBy(id = "automaticallyExtracted")
+    public String automaticallyExtracted;
 
     public String getPrivateHeadlineContents() {
         return this.privateHeadline.getText();

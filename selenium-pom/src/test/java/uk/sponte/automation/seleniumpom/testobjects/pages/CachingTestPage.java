@@ -2,6 +2,7 @@ package uk.sponte.automation.seleniumpom.testobjects.pages;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import uk.sponte.automation.seleniumpom.PageElement;
 import uk.sponte.automation.seleniumpom.testobjects.sections.ListItem;
 import uk.sponte.automation.seleniumpom.testobjects.sections.TestSection;
 
@@ -23,4 +24,10 @@ public class CachingTestPage {
 
     @FindBy(className = "listItem")
     public List<ListItem> listItems;
+
+    @FindBy(className = "expiringListItem")
+    public List<ListItem> expiringListItems;
+
+    @FindBy(className = "expiringListItem")
+    public List<PageElement> expiringListItemsPageElement;
 }

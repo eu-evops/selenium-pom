@@ -45,6 +45,8 @@ public class WebElementListHandler implements InvocationHandler, Refreshable {
 
     private Refreshable parent;
 
+    private boolean needsRefresh;
+
     public WebElementListHandler(DependencyInjector driver,
             SearchContext searchContext, By by, FrameWrapper frame,
             WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator) {
@@ -64,6 +66,10 @@ public class WebElementListHandler implements InvocationHandler, Refreshable {
             for (WebElement webElement : elements) {
                 webElements.add(getWebElementProxy(webElement));
             }
+        }
+
+        if(needsRefresh) {
+            this.refresh();
         }
 
         try {
@@ -111,10 +117,13 @@ public class WebElementListHandler implements InvocationHandler, Refreshable {
                 }
             }
         }
+
+        this.needsRefresh = true;
     }
 
     @Override
     public void refresh() {
+        needsRefresh = false;
         if(webElements == null) return;
 
         List<WebElement> elements = searchContext.findElements(by);
@@ -124,6 +133,11 @@ public class WebElementListHandler implements InvocationHandler, Refreshable {
 
         assert elementField != null;
         elementField.setAccessible(true);
+
+        // Remove surplus sections (ones that have been removed from DOM
+        while(webElements.size() > elements.size()) {
+            webElements.remove(webElements.size() - 1);
+        }
 
         for (int i = 0; i < elements.size(); i++) {
             WebElement e = elements.get(i);

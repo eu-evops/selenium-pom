@@ -33,7 +33,7 @@ public class WebDriverFactory
 
     private WebDriver createNewDriver() {
         String webdriverProperty = System
-                .getProperty("selenium.webdriver", "firefox");
+                .getProperty("selenium.webdriver", "chrome");
         String webDriverServer = System
                 .getProperty("selenium.webdriver.remote.server", null);
 

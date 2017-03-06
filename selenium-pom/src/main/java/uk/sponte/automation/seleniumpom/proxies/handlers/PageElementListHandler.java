@@ -44,6 +44,7 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
     private ArrayList<WebElement> webElements;
 
     private Refreshable parent;
+    private boolean needsRefresh;
 
     public PageElementListHandler(DependencyInjector driver,
             SearchContext searchContext, By by, FrameWrapper frame,
@@ -64,6 +65,10 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
             for (WebElement webElement : elements) {
                 webElements.add(getPageElementProxy(webElement));
             }
+        }
+
+        if(needsRefresh) {
+            this.refresh();
         }
 
         try {
@@ -116,9 +121,12 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
                 }
             }
         }
+
+        this.needsRefresh = true;
     }
 
     public void refresh() {
+        needsRefresh = false;
         if(webElements == null) return;
 
         List<WebElement> elements = this.searchContext.findElements(by);
@@ -134,6 +142,12 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
 
         assert elementField != null;
         elementField.setAccessible(true);
+
+
+        // Remove surplus sections (ones that have been removed from DOM
+        while(webElements.size() > elements.size()) {
+            webElements.remove(webElements.size() - 1);
+        }
 
         for (int i = 0; i < elements.size(); i++) {
             WebElement e = elements.get(i);

@@ -167,4 +167,3 @@ public class CachingTest extends BasePageTest {
         assertEquals(2, cachingTestPage.pageSection.listItems.size());
     }
 }
-}

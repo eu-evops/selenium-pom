@@ -32,9 +32,36 @@
 <script src="jquery-2.1.3.js"></script>
 <script src="jquery-ui.js"></script>
 
-<script>
+<script type="text/javascript">
 
     var DEFAULT_TIMEOUT = 500;
+
+    function addNewItemToList() {
+        var itemsList = $("#section ul");
+        itemsList.remove();
+
+        var newList = $("<ul><li>one</li><li>two</li><li>three</li><li>New Element</li></ul>");
+
+        $("#section").append(newList);
+    }
+
+    function addTwoNewItemsToList() {
+        var itemsList = $("#section ul");
+        itemsList.remove();
+
+        var newList = $("<ul><li>one</li><li>two</li><li>three</li><li>New Element</li><li>New Element 2</li></ul>");
+
+        $("#section").append(newList);
+    }
+
+    function removeItemFromList() {
+        var itemsList = $("#section ul");
+        itemsList.remove();
+
+        var newList = $("<ul><li>one</li><li>two</li></ul>");
+
+        $("#section").append(newList);
+    }
 
     $(function() {
         $("#dblClick").dblclick(function(event, ui) {
@@ -148,6 +175,10 @@
     <h1>Section heading</h1>
 
     <h2>Section subtitle</h2>
+
+    <input type="button" name="addNewItem" onclick="addNewItemToList()" value="Add new item" />
+    <input type="button" name="addTwoNewItems" onclick="addTwoNewItemsToList()" value="Add two new items" />
+    <input type="button" name="removeItem" onclick="removeItemFromList()" value="Remove one item" />
     <ul>
         <li>one</li>
         <li>two</li>

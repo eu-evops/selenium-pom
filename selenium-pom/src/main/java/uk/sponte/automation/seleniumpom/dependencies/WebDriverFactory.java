@@ -9,7 +9,6 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.safari.SafariDriver;
 
 import java.util.function.BiConsumer;
 
@@ -60,9 +59,6 @@ public class WebDriverFactory
 
         if (webdriverProperty.equalsIgnoreCase("chrome"))
             return new ChromeDriver();
-
-        if (webdriverProperty.equalsIgnoreCase("safari"))
-            return new SafariDriver();
 
         if (webdriverProperty.equalsIgnoreCase("ie") ||
                 webdriverProperty.equalsIgnoreCase("iexplore") ||

@@ -17,7 +17,7 @@ public class CachingTestPage {
     public WebElement webElement;
 
     @FindBy(id = "section")
-    public WebElement pageElement;
+    public PageElement pageElement;
 
     @FindBy(id = "section")
     public TestSection pageSection;

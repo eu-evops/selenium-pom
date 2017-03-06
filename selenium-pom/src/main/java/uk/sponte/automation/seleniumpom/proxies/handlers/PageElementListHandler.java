@@ -44,7 +44,6 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
     private ArrayList<WebElement> webElements;
 
     private Refreshable parent;
-    private boolean needsRefresh;
 
     public PageElementListHandler(DependencyInjector driver,
             SearchContext searchContext, By by, FrameWrapper frame,
@@ -65,10 +64,6 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
             for (WebElement webElement : elements) {
                 webElements.add(getPageElementProxy(webElement));
             }
-        }
-
-        if(needsRefresh) {
-            this.refresh();
         }
 
         try {
@@ -121,12 +116,9 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
                 }
             }
         }
-
-        this.needsRefresh = true;
     }
 
     public void refresh() {
-        needsRefresh = false;
         if(webElements == null) return;
 
         List<WebElement> elements = this.searchContext.findElements(by);
@@ -143,19 +135,20 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
         assert elementField != null;
         elementField.setAccessible(true);
 
-
-        // Remove surplus sections (ones that have been removed from DOM
-        while(webElements.size() > elements.size()) {
-            webElements.remove(webElements.size() - 1);
+        // Remove access to extra elements
+        for(int i=elements.size(); i < webElements.size(); i++) {
+            webElements.remove(i);
         }
 
         for (int i = 0; i < elements.size(); i++) {
             WebElement e = elements.get(i);
-            Object s = webElements.get(i);
 
-            if (s == null) {
-                webElements.set(i, getPageElementProxy(e));
+            if (webElements.size() == i) {
+                // this adds new element to the list
+                webElements.add(getPageElementProxy(e));
             } else {
+                // This resets web element handler in the existing list item so that references are still valid
+                Object s = webElements.get(i);
                 try {
                     Object webElementProxy = elementField.get(s);
                     if(webElementProxy instanceof Proxy) {

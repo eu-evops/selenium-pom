@@ -45,6 +45,7 @@ public class PageSectionListHandler
     private ArrayList<Object> pageSections;
 
     private Refreshable parent;
+    private boolean needsRefresh;
 
     public PageSectionListHandler(
             DependencyInjector driver,
@@ -75,6 +76,10 @@ public class PageSectionListHandler
                 Object pageSection = getPageSection(element);
                 pageSections.add(pageSection);
             }
+        }
+
+        if(needsRefresh) {
+            this.refresh();
         }
 
         return method.invoke(pageSections, args);
@@ -118,10 +123,13 @@ public class PageSectionListHandler
         for (Object pageSection : pageSections) {
             pageFactory.get().invalidate(pageSection);
         }
+
+        this.needsRefresh = true;
     }
 
     @Override
     public void refresh() {
+        needsRefresh = false;
         if(this.parent != null) parent.refresh();
 
         if(pageSections == null) return;
@@ -141,6 +149,11 @@ public class PageSectionListHandler
 
         assert rootElementField != null;
         rootElementField.setAccessible(true);
+
+        // Remove surplus sections (ones that have been removed from DOM
+        while(pageSections.size() > elements.size()) {
+            pageSections.remove(pageSections.size() - 1);
+        }
 
         for (int i = 0; i < elements.size(); i++) {
             WebElement e = getWebElement(elements.get(i));

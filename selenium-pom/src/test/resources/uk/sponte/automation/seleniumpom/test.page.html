@@ -98,6 +98,17 @@
                 }, DEFAULT_TIMEOUT);
 
         });
+
+        if(document.cookie.match('expireItems') || document.location.hash === '#expire') {
+            console.log('The items should expire');
+            $('.expiringListItem').remove();
+        } else {
+            var date = new Date();
+            date.setTime(date.getTime() + 5000);
+            var expires = date.toGMTString();
+            console.log('expireItems=true;' + expires);
+            document.cookie = 'expireItems=true;path=/;expires=' + expires;
+        }
     });
 
 </script>
@@ -105,6 +116,12 @@
 <body>
 
 <h1>Headline</h1>
+
+
+<ul>
+    <li class="expiringListItem">expiringListItem 1</li>
+    <li class="expiringListItem">expiringListItem 2</li>
+</ul>
 
 <h2 style="display: none">Hidden subtitle</h2>
 
@@ -191,6 +208,7 @@
         <span class="item">three</span>
     </div>
 </div>
+
 
 <div class="listItem">
     <div class="listSubItem"><h5>List 1: Item 1</h5></div>

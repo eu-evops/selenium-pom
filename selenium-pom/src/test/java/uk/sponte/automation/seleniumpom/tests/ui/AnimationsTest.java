@@ -35,7 +35,7 @@ public class AnimationsTest extends BasePageTest {
         animatedTestPage.moveButton.click();
 
         thirdListItem.waitUntilStopsMoving();
-        
+
         thirdListItem.click();
         Thread.sleep(100);
         assertEquals("Clicked!", thirdListItem.getText());

@@ -24,4 +24,10 @@ public class CachingTestPage {
 
     @FindBy(className = "listItem")
     public List<ListItem> listItems;
+
+    @FindBy(className = "expiringListItem")
+    public List<ListItem> expiringListItems;
+
+    @FindBy(className = "expiringListItem")
+    public List<PageElement> expiringListItemsPageElement;
 }

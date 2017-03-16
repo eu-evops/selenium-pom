@@ -14,7 +14,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Caching tests - test caching features of selenium-pom framework
  * Created by n450777 on 04/03/2016.
  */
 public class CachingTest extends BasePageTest {
@@ -67,6 +66,43 @@ public class CachingTest extends BasePageTest {
         assertEquals("List 2: Item 2", headline.getText());
         assertEquals(elementText, cachingTestPage.pageSection.listItems.get(0).getText());
     }
+
+
+    @Test
+    public void refreshingModelReducesNumberOfItems() {
+        CachingTestPage cachingTestPage = pageFactory
+                .get(CachingTestPage.class);
+
+        assertEquals(2, cachingTestPage.expiringListItems.size());
+
+        // This page triggers element to be removed from DOM on refresh
+        driver.navigate().to(driver.getCurrentUrl() + "#expire");
+        driver.navigate().refresh();
+
+        pageFactory.invalidate(cachingTestPage);
+
+        // Page is configured to "hide" elements on refresh (through cookies)
+        assertEquals(0, cachingTestPage.expiringListItems.size());
+    }
+
+
+    @Test
+    public void refreshingModelReducesNumberOfItemsForPageElements() {
+        CachingTestPage cachingTestPage = pageFactory
+                .get(CachingTestPage.class);
+
+        assertEquals(2, cachingTestPage.expiringListItemsPageElement.size());
+
+        // This page triggers element to be removed from DOM on refresh
+        driver.navigate().to(driver.getCurrentUrl() + "#expire");
+        driver.navigate().refresh();
+
+        pageFactory.invalidate(cachingTestPage);
+
+        // Page is configured to "hide" elements on refresh (through cookies)
+        assertEquals(0, cachingTestPage.expiringListItemsPageElement.size());
+    }
+
 
     @Test
     public void returnsNewElementsAfterInvalidate() {

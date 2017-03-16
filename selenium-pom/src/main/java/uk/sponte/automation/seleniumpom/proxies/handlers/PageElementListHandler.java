@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 /**
- * Proxy object handler for page element lists
  * Created by swozniak on 03/04/15.
  */
 public class PageElementListHandler implements InvocationHandler, Refreshable {
@@ -45,7 +44,6 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
     private ArrayList<WebElement> webElements;
 
     private Refreshable parent;
-
     private boolean needsRefresh;
 
     public PageElementListHandler(DependencyInjector driver,
@@ -67,9 +65,10 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
             for (WebElement webElement : elements) {
                 webElements.add(getPageElementProxy(webElement));
             }
-        } else if (this.needsRefresh) {
-            refresh();
-            this.needsRefresh = false;
+        }
+
+        if(needsRefresh) {
+            this.refresh();
         }
 
         try {
@@ -108,7 +107,6 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
 
     @Override
     public void invalidate() {
-        this.needsRefresh = true;
         if(webElements == null) return;
         for (WebElement webElement : this.webElements) {
             if(webElement instanceof PageElementImpl) {
@@ -123,9 +121,12 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
                 }
             }
         }
+
+        needsRefresh = true;
     }
 
     public void refresh() {
+        needsRefresh = false;
         if(webElements == null) return;
 
         List<WebElement> elements = this.searchContext.findElements(by);
@@ -136,16 +137,14 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
         Field webElementInvocationHandlerWebElementField = ReflectionHelper
                 .getField(WebElementHandler.class,
                         Constants.PAGE_ELEMENT_CONTAINER_FIELD_NAME);
-
-        assert webElementInvocationHandlerWebElementField != null;
         webElementInvocationHandlerWebElementField.setAccessible(true);
+
 
         assert elementField != null;
         elementField.setAccessible(true);
 
-        // Remove access to extra elements
-        for(int i=elements.size(); i < webElements.size(); i++) {
-            webElements.remove(i);
+        while(webElements.size() > elements.size()) {
+            webElements.remove(webElements.size() - 1);
         }
 
         for (int i = 0; i < elements.size(); i++) {

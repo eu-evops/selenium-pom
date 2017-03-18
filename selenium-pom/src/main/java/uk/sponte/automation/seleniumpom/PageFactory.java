@@ -129,7 +129,7 @@ public class PageFactory implements
         return implementationFinder.find();
     }
 
-    protected <T> T initializeContainer(T page, SearchContext searchContext) {
+    private <T> T initializeContainer(T page, SearchContext searchContext) {
         return this.initializeContainer(page, searchContext,
                 getFrame(page.getClass(), page.getClass().getName(), null));
     }
@@ -244,7 +244,7 @@ public class PageFactory implements
 
     @Override
     public void afterNavigateRefresh(WebDriver webDriver) {
-
+        // Need to broadcast so that models invalidate
     }
 
     @Override

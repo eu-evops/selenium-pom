@@ -1,6 +1,6 @@
 package uk.sponte.automation.seleniumpom.webdriverConditions;
 
-import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import javax.annotation.Nullable;
 
 /**
+ * WebDriver element condition for checking element's presence
  * Created by n450777 on 04/03/2016.
  */
 public class ElementPresentCondition implements ExpectedCondition<WebElement> {
@@ -23,7 +24,7 @@ public class ElementPresentCondition implements ExpectedCondition<WebElement> {
         try {
             element.getTagName();
             return element;
-        } catch (StaleElementReferenceException ex) {
+        } catch (NoSuchElementException ex) {
             return null;
         }
     }

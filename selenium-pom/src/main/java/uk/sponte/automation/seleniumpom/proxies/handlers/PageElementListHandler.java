@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 /**
+ * Invocation handler for page element lists
  * Created by swozniak on 03/04/15.
  */
 public class PageElementListHandler implements InvocationHandler, Refreshable {
@@ -75,7 +76,11 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
             LOG.fine(String.format("Calling %s on %s", method.getName(), this));
             return method.invoke(webElements, args);
         } catch (InvocationTargetException ex) {
-            LOG.fine(String.format("Error calling %s on %s", method.getName(), this));
+            if(ex.getCause() instanceof IndexOutOfBoundsException) {
+                refresh();
+                return method.invoke(webElements, args);
+            }
+            LOG.warning(String.format("Error calling %s on %s", method.getName(), this));
             throw ex.getCause();
         }
     }

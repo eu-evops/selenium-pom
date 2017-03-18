@@ -24,8 +24,14 @@
     #hidden { display: none }
 
     .item:hover {
-    background-color: blue;
-    color: white;
+        background-color: blue;
+        color: white;
+    }
+
+    section {
+        border: 1px solid silver;
+        padding: 10px;
+        margin-bottom: 20px;
     }
 </style>
 
@@ -111,6 +117,18 @@
         }
     });
 
+
+   // Reloads paragraph for testing stale elements
+   $(function() {
+     $('#staleElementsTests');
+   });
+
+   function reloadParagraph() {
+     $('#staleElementsTests p').remove();
+     var newElement = $('<p>This is a paragraph</p>');
+     $('#staleElementsTests').append(newElement);
+   }
+
 </script>
 
 <body>
@@ -128,6 +146,11 @@
 <p>
     <input type="text" id="someInput"/>
 </p>
+
+<section id="staleElementsTests">
+    <p>This is a paragraph</p>
+    <button onclick="reloadParagraph();">Reload paragraph</button>
+</section>
 
 <p>
     <select>

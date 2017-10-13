@@ -1,6 +1,6 @@
 # Selenium Page Object Model
 
-[![Build Status](https://travis-ci.org/sponte/selenium-pom.svg?branch=develop)](https://travis-ci.org/sponte/selenium-pom)
+[![Build Status](https://travis-ci.org/eu-evops/selenium-pom.svg?branch=develop)](https://travis-ci.org/eu-evops/selenium-pom)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/7818/badge.svg)](https://scan.coverity.com/projects/sponte-selenium-pom)
 
 ## What is it
@@ -27,7 +27,7 @@ Selenium POM (Page Object Model) is a Java framework that provides ability to de
 
 ## Documentation
 
-Please visit our [wiki](https://github.com/sponte/selenium-pom/wiki) to find documentation.
+Please visit our [wiki](https://github.com/eu-evops/selenium-pom/wiki) to find documentation.
 
 ## Examples
 

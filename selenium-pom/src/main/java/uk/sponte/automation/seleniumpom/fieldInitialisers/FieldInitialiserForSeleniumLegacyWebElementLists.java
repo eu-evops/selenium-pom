@@ -34,6 +34,7 @@ public class FieldInitialiserForSeleniumLegacyWebElementLists implements FieldIn
 
         Annotations annotations = new Annotations(field);
         WebElementListHandler elementListHandler = new WebElementListHandler(dependencyInjector, searchContext, annotations.buildBy(), frame, webDriverFrameSwitchingOrchestrator);
+        pageFactory.get().addListener(elementListHandler);
 
         List webElementListProxy = (List) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),

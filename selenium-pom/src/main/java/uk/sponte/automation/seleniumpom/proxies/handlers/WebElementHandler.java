@@ -96,4 +96,9 @@ public class WebElementHandler implements InvocationHandler, Refreshable {
             throw ex.getCause();
         }
     }
+
+    @Override
+    public void pageRefreshed(WebDriver driver) {
+        invalidate();
+    }
 }

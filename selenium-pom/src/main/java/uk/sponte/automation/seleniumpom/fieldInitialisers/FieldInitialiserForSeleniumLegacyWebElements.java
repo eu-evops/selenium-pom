@@ -43,6 +43,7 @@ public class FieldInitialiserForSeleniumLegacyWebElements
                         dependencyInjector, searchContext,
                         annotations.buildBy(), frame,
                         webDriverFrameSwitchingOrchestrator);
+                pageFactory.get().addListener(elementHandler);
 
                 WebElement proxyElement = (WebElement) Proxy.newProxyInstance(
                         WebElement.class.getClassLoader(),

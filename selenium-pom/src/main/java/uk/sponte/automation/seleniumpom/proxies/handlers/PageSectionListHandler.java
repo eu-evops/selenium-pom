@@ -3,6 +3,7 @@ package uk.sponte.automation.seleniumpom.proxies.handlers;
 import com.google.inject.Provider;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import uk.sponte.automation.seleniumpom.PageElementImpl;
@@ -108,12 +109,11 @@ public class PageSectionListHandler
                 webDriverOrchestrator, element);
         webElementHandler.setParent(this);
 
-        WebElement elementProxy = (WebElement) Proxy.newProxyInstance(
+        return (WebElement) Proxy.newProxyInstance(
                 webElementHandler.getClass().getClassLoader(),
                 new Class[] { WebElement.class, Locatable.class },
                 webElementHandler
         );
-        return elementProxy;
     }
 
     @Override
@@ -185,5 +185,10 @@ public class PageSectionListHandler
     @Override
     public void setParent(Refreshable refreshable) {
         this.parent = refreshable;
+    }
+
+    @Override
+    public void pageRefreshed(WebDriver driver) {
+        invalidate();
     }
 }

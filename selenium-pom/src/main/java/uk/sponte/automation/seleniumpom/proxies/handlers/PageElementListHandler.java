@@ -2,6 +2,7 @@ package uk.sponte.automation.seleniumpom.proxies.handlers;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
@@ -182,5 +183,10 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
     @Override
     public void setParent(Refreshable refreshable) {
         this.parent = refreshable;
+    }
+
+    @Override
+    public void pageRefreshed(WebDriver driver) {
+        invalidate();
     }
 }

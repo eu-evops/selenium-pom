@@ -52,16 +52,23 @@ public class WebDriverFactory
                 String property = systemProperties.getProperty(propertyName);
 
                 if (propertyName.matches("selenium.webdriver.remote..*")) {
-                        String capabilityName = propertyName
-                                .replace("selenium.webdriver.remote.", "");
-                        if(capabilityName.equalsIgnoreCase("server")) {
-                            continue;
-                        }
-
-                        capabilities
-                                .setCapability(capabilityName, property);
+                    String capabilityName = propertyName
+                            .replace("selenium.webdriver.remote.", "");
+                    if (capabilityName.equalsIgnoreCase("server")) {
+                        continue;
                     }
+
+                    capabilities
+                            .setCapability(capabilityName, property);
                 }
+            }
+
+            // Sauce support
+            if(!System.getenv("SAUCE_USERNAME").equals("") &&
+                    !System.getenv("SAUCE_ACCESS_KEY").equals("")) {
+                capabilities.setCapability("username", System.getenv("SAUCE_USERNAME"));
+                capabilities.setCapability("access-key", System.getenv("SAUCE_ACCESS_KEY"));
+            }
 
             return new RemoteWebDriver(capabilities);
         }

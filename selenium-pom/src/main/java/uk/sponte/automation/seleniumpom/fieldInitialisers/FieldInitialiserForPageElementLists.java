@@ -33,6 +33,8 @@ public class FieldInitialiserForPageElementLists implements FieldInitialiser {
         Annotations annotations = new Annotations(field);
 
         PageElementListHandler elementListHandler = new PageElementListHandler(dependencyInjector, searchContext, annotations.buildBy(), frame, webDriverFrameSwitchingOrchestrator);
+        pageFactory.get().addListener(elementListHandler);
+
         List webElementListProxy = (List) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),
                 new Class[]{List.class},

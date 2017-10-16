@@ -42,6 +42,7 @@ public class FieldInitialiserForPageSectionLists implements FieldInitialiser {
                 searchContext,
                 annotations.buildBy(),
                 genericTypeArgument, pageFactory, frame, webDriverFrameSwitchingOrchestrator);
+        pageFactory.get().addListener(pageSectionListHandler);
 
         Object proxyInstance = Proxy.newProxyInstance(
                 Section.class.getClassLoader(),

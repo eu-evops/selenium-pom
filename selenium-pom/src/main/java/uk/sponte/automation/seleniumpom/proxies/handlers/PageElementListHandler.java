@@ -2,6 +2,7 @@ package uk.sponte.automation.seleniumpom.proxies.handlers;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
@@ -24,6 +25,7 @@ import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 /**
+ * Invocation handler for page element lists
  * Created by swozniak on 03/04/15.
  */
 public class PageElementListHandler implements InvocationHandler, Refreshable {
@@ -75,7 +77,11 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
             LOG.fine(String.format("Calling %s on %s", method.getName(), this));
             return method.invoke(webElements, args);
         } catch (InvocationTargetException ex) {
-            LOG.fine(String.format("Error calling %s on %s", method.getName(), this));
+            if(ex.getCause() instanceof IndexOutOfBoundsException) {
+                refresh();
+                return method.invoke(webElements, args);
+            }
+            LOG.warning(String.format("Error calling %s on %s", method.getName(), this));
             throw ex.getCause();
         }
     }
@@ -177,5 +183,10 @@ public class PageElementListHandler implements InvocationHandler, Refreshable {
     @Override
     public void setParent(Refreshable refreshable) {
         this.parent = refreshable;
+    }
+
+    @Override
+    public void pageRefreshed(WebDriver driver) {
+        invalidate();
     }
 }

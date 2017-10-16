@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
  * Test class
  * Created by n450777 on 04/03/2016.
  */
-public class CachingTest extends BasePageTest {
+public class CachingWithoutImplictInvalidateTest extends BasePageTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -32,7 +32,6 @@ public class CachingTest extends BasePageTest {
         String listItemText = cachingTestPage.listItems.get(1).getText();
 
         driver.navigate().refresh();
-        pageFactory.invalidate(cachingTestPage);
 
         assertEquals(webElementText, cachingTestPage.webElement.getText());
         assertEquals(pageElementText, cachingTestPage.pageElement.getText());
@@ -46,8 +45,6 @@ public class CachingTest extends BasePageTest {
         PageElement headline = cachingTestPage.listItems.get(1).subItems.get(1).headline;
 
         driver.navigate().refresh();
-
-        pageFactory.invalidate(cachingTestPage);
 
         assertEquals(headlineText, cachingTestPage.pageSection.headline.getText());
         assertNotNull(cachingTestPage.pageSection.getText());
@@ -68,8 +65,6 @@ public class CachingTest extends BasePageTest {
         driver.navigate().to(driver.getCurrentUrl() + "#expire");
         driver.navigate().refresh();
 
-        pageFactory.invalidate(cachingTestPage);
-
         // Page is configured to "hide" elements on refresh (through cookies)
         assertEquals(0, cachingTestPage.expiringListItems.size());
     }
@@ -86,8 +81,6 @@ public class CachingTest extends BasePageTest {
         driver.navigate().to(driver.getCurrentUrl() + "#expire");
         driver.navigate().refresh();
 
-        pageFactory.invalidate(cachingTestPage);
-
         // Page is configured to "hide" elements on refresh (through cookies)
         assertEquals(0, cachingTestPage.expiringListItemsPageElement.size());
     }
@@ -102,7 +95,6 @@ public class CachingTest extends BasePageTest {
         assertEquals(3, cachingTestPage.pageSection.listItems.size());
 
         cachingTestPage.pageSection.addNewItemButton.click();
-        pageFactory.invalidate(cachingTestPage);
 
         assertEquals("New Element", cachingTestPage.pageSection.listItems.get(3).getText());
         assertEquals(4, cachingTestPage.pageSection.listItems.size());
@@ -117,7 +109,6 @@ public class CachingTest extends BasePageTest {
         assertEquals(3, cachingTestPage.pageSection.listItems.size());
 
         cachingTestPage.pageSection.addNewItemButton.click();
-        pageFactory.invalidate(cachingTestPage);
 
         // Can still read elements
         assertEquals("three", cachingTestPage.pageSection.listItems.get(2).getText());
@@ -134,7 +125,6 @@ public class CachingTest extends BasePageTest {
         assertEquals(3, cachingTestPage.pageSection.listItems.size());
 
         cachingTestPage.pageSection.addTwoNewItemsButton.click();
-        pageFactory.invalidate(cachingTestPage);
 
         assertEquals("New Element", cachingTestPage.pageSection.listItems.get(3).getText());
         assertEquals("New Element 2", cachingTestPage.pageSection.listItems.get(4).getText());
@@ -150,7 +140,6 @@ public class CachingTest extends BasePageTest {
         assertEquals(3, cachingTestPage.pageSection.listItems.size());
 
         cachingTestPage.pageSection.removeItemButton.click();
-        pageFactory.invalidate(cachingTestPage);
 
         assertEquals("two", cachingTestPage.pageSection.listItems.get(1).getText());
         assertEquals(2, cachingTestPage.pageSection.listItems.size());

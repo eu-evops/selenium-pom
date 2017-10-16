@@ -2,6 +2,7 @@ package uk.sponte.automation.seleniumpom.proxies.handlers;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
@@ -14,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 /**
+ * Invocation handler for web elements
  * Created by swozniak on 03/04/15.
  */
 public class WebElementHandler implements InvocationHandler, Refreshable {
@@ -26,7 +28,7 @@ public class WebElementHandler implements InvocationHandler, Refreshable {
     private FrameWrapper frame;
     private WebDriverFrameSwitchingOrchestrator webDriverOrchestrator;
 
-    boolean needsRefresh = false;
+    private boolean needsRefresh = false;
 
     private Refreshable parent;
 
@@ -34,7 +36,7 @@ public class WebElementHandler implements InvocationHandler, Refreshable {
         this(dependencyInjector, searchContext, by, frame, webDriverFrameSwitchingOrchestrator, null);
     }
 
-    public WebElementHandler(DependencyInjector dependencyInjector, SearchContext searchContext, By by, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator, WebElement webElement) {
+    WebElementHandler(DependencyInjector dependencyInjector, SearchContext searchContext, By by, FrameWrapper frame, WebDriverFrameSwitchingOrchestrator webDriverFrameSwitchingOrchestrator, WebElement webElement) {
         this.dependencyInjector = dependencyInjector;
         this.searchContext = searchContext;
         this.by = by;
@@ -84,7 +86,19 @@ public class WebElementHandler implements InvocationHandler, Refreshable {
         try {
             return method.invoke(this.webElement, args);
         } catch(InvocationTargetException ex) {
+            if(ex.getCause() instanceof StaleElementReferenceException) {
+                if(this.parent != null) {
+                    this.parent.invalidate();
+                }
+                this.invalidate();
+                return invoke(proxy, method, args);
+            }
             throw ex.getCause();
         }
+    }
+
+    @Override
+    public void pageRefreshed(WebDriver driver) {
+        invalidate();
     }
 }

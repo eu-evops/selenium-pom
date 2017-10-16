@@ -62,6 +62,8 @@ public class FieldInitialiserForPageSections implements FieldInitialiser {
 
         WebElementHandler elementHandler = new WebElementHandler(
                 this.dependencyInjector, searchContext, by, frame, webDriverFrameSwitchingOrchestrator);
+        pageFactory.get().addListener(elementHandler);
+
         WebElement proxyElement = (WebElement) Proxy.newProxyInstance(
                 WebElement.class.getClassLoader(),
                 new Class[]{WebElement.class, Locatable.class,SearchContext.class, WrapsElement.class },

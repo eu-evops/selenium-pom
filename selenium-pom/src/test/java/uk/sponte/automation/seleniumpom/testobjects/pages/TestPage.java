@@ -4,6 +4,7 @@ import org.openqa.selenium.support.FindBy;
 import uk.sponte.automation.seleniumpom.testobjects.sections.ListSubItem;
 import uk.sponte.automation.seleniumpom.testobjects.sections.ParentSection;
 import uk.sponte.automation.seleniumpom.testobjects.sections.SectionListItem;
+import uk.sponte.automation.seleniumpom.testobjects.sections.StaleElementsSection;
 import uk.sponte.automation.seleniumpom.testobjects.sections.TestSection;
 import uk.sponte.automation.seleniumpom.PageElement;
 import uk.sponte.automation.seleniumpom.annotations.Frame;
@@ -15,6 +16,7 @@ import uk.sponte.automation.seleniumpom.testobjects.sections.PlainSection;
 import java.util.List;
 
 /**
+ * Test page for all UI tests
  * Created by swozniak-ba on 02/04/15.
  */
 public class TestPage {
@@ -23,6 +25,9 @@ public class TestPage {
 
     @FindBy(tagName = "h1")
     private PageElement privateHeadline;
+
+    @FindBy(id = "staleElementsTests")
+    public StaleElementsSection staleElementsSection;
 
     @FindBy(tagName = "h2")
     public PageElement subtitle;

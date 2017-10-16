@@ -16,6 +16,7 @@ import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
 import uk.sponte.automation.seleniumpom.dependencies.GuiceDependencyInjector;
 import uk.sponte.automation.seleniumpom.dependencies.InternalGuiceDependencyInjector;
 import uk.sponte.automation.seleniumpom.dependencies.WebDriverFactory;
+import uk.sponte.automation.seleniumpom.events.PageFactoryEventListenener;
 import uk.sponte.automation.seleniumpom.exceptions.PageFactoryError;
 import uk.sponte.automation.seleniumpom.fieldInitialisers.FieldAssessor;
 import uk.sponte.automation.seleniumpom.fieldInitialisers.FieldInitialiser;
@@ -31,9 +32,12 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static java.lang.String.format;
 
 /**
  * Selenium POM page factory - responsible for initialising pages with proxies
@@ -42,6 +46,7 @@ import java.util.logging.Logger;
 @Singleton
 public class PageFactory implements
         WebDriverEventListener,
+
         DependencyFactory<PageFactory> {
 
     private final static Logger LOG = Logger
@@ -55,6 +60,8 @@ public class PageFactory implements
     private Set<FieldInitialiser> fieldInitialisers;
 
     private EventFiringWebDriver eventFiringWebDriver;
+
+    private List<PageFactoryEventListenener> listeners = new ArrayList<PageFactoryEventListenener>();
 
     @Inject
     private WebDriverFrameSwitchingOrchestrator webDriverOrchestrator;
@@ -129,7 +136,7 @@ public class PageFactory implements
         return implementationFinder.find();
     }
 
-    protected <T> T initializeContainer(T page, SearchContext searchContext) {
+    private <T> T initializeContainer(T page, SearchContext searchContext) {
         return this.initializeContainer(page, searchContext,
                 getFrame(page.getClass(), page.getClass().getName(), null));
     }
@@ -174,6 +181,14 @@ public class PageFactory implements
         }
 
         return page;
+    }
+
+    public void addListener(PageFactoryEventListenener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(PageFactoryEventListenener listener) {
+        listeners.remove(listener);
     }
 
     private <T> void setRootElement(T pageObject, SearchContext searchContext) {
@@ -244,7 +259,14 @@ public class PageFactory implements
 
     @Override
     public void afterNavigateRefresh(WebDriver webDriver) {
-
+        // Need to broadcast so that models invalidate
+        for (PageFactoryEventListenener listener : listeners) {
+            try {
+                listener.pageRefreshed(webDriver);
+            } catch(Throwable ex) {
+                LOG.fine(format("Could not send event: %s", ex.getMessage()));
+            }
+        }
     }
 
     @Override
@@ -291,7 +313,6 @@ public class PageFactory implements
 
     @Override
     public void onException(Throwable throwable, WebDriver webDriver) {
-
     }
 
     @Provides

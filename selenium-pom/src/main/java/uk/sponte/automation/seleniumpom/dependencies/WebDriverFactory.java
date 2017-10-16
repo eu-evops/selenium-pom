@@ -10,7 +10,8 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.util.function.BiConsumer;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Created by n450777 on 07/04/15.
@@ -43,17 +44,25 @@ public class WebDriverFactory
 
         if (webdriverProperty.equalsIgnoreCase("remote")) {
             final DesiredCapabilities capabilities = new DesiredCapabilities();
-            System.getProperties().forEach(new BiConsumer<Object, Object>() {
-                @Override
-                public void accept(Object o, Object o2) {
-                    if (o.toString().matches("selenium.webdriver.remote..*")) {
-                        String capabilityName = o.toString()
+
+            Properties systemProperties = System.getProperties();
+            Set<String> propertyNames = systemProperties.stringPropertyNames();
+
+            for (String propertyName : propertyNames) {
+                String property = systemProperties.getProperty(propertyName);
+
+                if (propertyName.matches("selenium.webdriver.remote..*")) {
+                        String capabilityName = propertyName
                                 .replace("selenium.webdriver.remote.", "");
+                        if(capabilityName.equalsIgnoreCase("server")) {
+                            continue;
+                        }
+
                         capabilities
-                                .setCapability(capabilityName, o2.toString());
+                                .setCapability(capabilityName, property);
                     }
                 }
-            });
+
             return new RemoteWebDriver(capabilities);
         }
 

@@ -64,13 +64,13 @@ public class WebDriverFactory
             }
 
             // Sauce support
-            if(!System.getenv("SAUCE_USERNAME").equals("") &&
-                    !System.getenv("SAUCE_ACCESS_KEY").equals("")) {
+            if(System.getenv("SAUCE_USERNAME") != null &&
+                    System.getenv("SAUCE_ACCESS_KEY") != null) {
                 capabilities.setCapability("username", System.getenv("SAUCE_USERNAME"));
                 capabilities.setCapability("access-key", System.getenv("SAUCE_ACCESS_KEY"));
             }
 
-            if(!System.getenv("TUNNEL_IDENTIFIER").equals("")) {
+            if(System.getenv("TUNNEL_IDENTIFIER") != null) {
                 capabilities.setCapability("tunnelIdentifier", System.getenv("TUNNEL_IDENTIFIER"));
             }
 

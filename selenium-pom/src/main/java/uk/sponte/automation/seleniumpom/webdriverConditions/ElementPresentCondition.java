@@ -1,6 +1,7 @@
 package uk.sponte.automation.seleniumpom.webdriverConditions;
 
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -25,6 +26,8 @@ public class ElementPresentCondition implements ExpectedCondition<WebElement> {
             element.getTagName();
             return element;
         } catch (NoSuchElementException ex) {
+            return null;
+        } catch(StaleElementReferenceException ex) {
             return null;
         }
     }

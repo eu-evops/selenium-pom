@@ -17,7 +17,7 @@ import uk.sponte.automation.seleniumpom.testobjects.pages.TestPage;
  * BaseClass for UI tests
  */
 public class BasePageTest {
-    static final int SHORT_TIMEOUT = 200;
+    static final int SHORT_TIMEOUT = 0;
     static WebDriver driver;
     static PageFactory pageFactory;
 

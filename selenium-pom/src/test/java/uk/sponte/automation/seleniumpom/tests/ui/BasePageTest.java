@@ -37,7 +37,6 @@ public class BasePageTest {
 
     @BeforeClass
     public static void setup() {
-        System.setProperty("selenium.webdriver", "chrome");
         pageFactory = new PageFactory();
         driver = pageFactory.getDriver();
     }

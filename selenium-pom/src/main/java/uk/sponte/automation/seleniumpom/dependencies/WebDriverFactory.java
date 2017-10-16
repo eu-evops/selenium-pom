@@ -70,6 +70,10 @@ public class WebDriverFactory
                 capabilities.setCapability("access-key", System.getenv("SAUCE_ACCESS_KEY"));
             }
 
+            if(!System.getenv("TUNNEL_IDENTIFIER").equals("")) {
+                capabilities.setCapability("tunnelIdentifier", System.getenv("TUNNEL_IDENTIFIER"));
+            }
+
             return new RemoteWebDriver(capabilities);
         }
 

@@ -14,13 +14,12 @@ import java.util.concurrent.TimeoutException;
  * Created by n450777 on 04/03/2016.
  */
 public class BritishAirwaysTest {
-    PageFactory pageFactory;
-    BaMobileHomePage baMobileHomePage;
-    MobileDateSelector mobileDateSelector;
+    private PageFactory pageFactory;
+    private BaMobileHomePage baMobileHomePage;
+    private MobileDateSelector mobileDateSelector;
 
     @Before
     public void setup() {
-        System.setProperty("selenium.webdriver", "chrome");
         pageFactory = new PageFactory();
         baMobileHomePage = pageFactory.get(BaMobileHomePage.class);
         mobileDateSelector = pageFactory.get(MobileDateSelector.class);
@@ -37,7 +36,7 @@ public class BritishAirwaysTest {
         baMobileHomePage.departureDate.click();
 
         Calendar cal = Calendar.getInstance();
-        cal.set(2016, 11, 24);
+        cal.add(Calendar.MONTH, 6);
         mobileDateSelector.setDeparture(cal.getTime());
 
         baMobileHomePage.returnDate.click();

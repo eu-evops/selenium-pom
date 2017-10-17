@@ -8,7 +8,7 @@
 Selenium POM (Page Object Model) is a Java framework that provides ability to describe your web application as a hierarchy of models. It also adds helper methods for most common functions such us double click, or get value.
 
 ## Requirements
-* Java 7
+* Java 8
 
 ## Dependencies
 * Selenium 3.0 or better

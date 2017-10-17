@@ -60,9 +60,7 @@ public class PageElementImpl implements PageElement {
     public boolean isPresent() {
         try {
             this.webElement.getTagName();
-        } catch (NoSuchElementException e) {
-            return false;
-        } catch (StaleElementReferenceException ex) {
+        } catch (NoSuchElementException | StaleElementReferenceException e) {
             return false;
         }
 
@@ -126,7 +124,9 @@ public class PageElementImpl implements PageElement {
 
     @Override
     public PageElement waitFor(Integer timeout) {
-        getWebDriverWait(timeout).until(new ElementPresentCondition(this.webElement));
+
+        final ElementPresentCondition condition = new ElementPresentCondition(this.webElement);
+        getWebDriverWait(timeout).until(condition);
         return this;
     }
 
@@ -137,8 +137,9 @@ public class PageElementImpl implements PageElement {
 
     @Override
     public void waitUntilGone(Integer timeout)  {
-        getWebDriverWait(timeout).until(not(new ElementPresentCondition(
-                webElement)));
+        ElementPresentCondition condition = new ElementPresentCondition(
+                webElement);
+        getWebDriverWait(timeout).until(not(condition));
     }
 
     @Override

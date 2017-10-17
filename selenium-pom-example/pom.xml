@@ -6,7 +6,7 @@
         <groupId>uk.sponte.automation</groupId>
         <artifactId>selenium-pom-parent</artifactId>
         <relativePath>../pom.xml</relativePath>
-        <version>3.0.4</version>
+        <version>3.0.5-SNAPSHOT</version>
     </parent>
 
     <build>

@@ -2,6 +2,7 @@ package uk.sponte.automation.seleniumpom;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import uk.sponte.automation.seleniumpom.proxies.handlers.Refreshable;
 
@@ -46,7 +47,7 @@ public abstract class PageSection implements SearchContext, Refreshable, WebElem
      * Performs clear() sendKeys() action on a given element
      *
      * @param format Text format to enter into a text field
-     * @param args
+     * @param args Arguments used in the format string
      */
     @Override
     public void set(String format, Object... args) {
@@ -74,7 +75,7 @@ public abstract class PageSection implements SearchContext, Refreshable, WebElem
     /**
      * Waits for element to be available in DOM
      *
-     * @param timeout
+     * @param timeout in seconds
      */
     @Override
     public PageElement waitFor(Integer timeout) {
@@ -93,12 +94,12 @@ public abstract class PageSection implements SearchContext, Refreshable, WebElem
      */
     @Override
     public PageElement waitUntilHidden(Integer timeout) {
-        return waitUntilHidden(timeout);
+        return this.rootElement.waitUntilHidden(timeout);
     }
 
     @Override
     public PageElement waitUntilHidden() {
-        return this.rootElement.waitUntilHidden();
+        return waitUntilHidden(DEFAULT_WAIT_TIMEOUT);
     }
 
     /**
@@ -145,7 +146,7 @@ public abstract class PageSection implements SearchContext, Refreshable, WebElem
     /**
      * Waits until element's location does not change between intervals
      *
-     * @param timeout
+     * @param timeout in seconds
      */
     @Override
     public PageElement waitUntilStopsMoving(Integer timeout) {
@@ -174,4 +175,9 @@ public abstract class PageSection implements SearchContext, Refreshable, WebElem
 
     @Override
     public void refresh() { this.rootElement.refresh(); }
+
+    @Override
+    public void pageRefreshed(WebDriver driver) {
+        invalidate();
+    }
 }

@@ -4,11 +4,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import uk.sponte.automation.seleniumpom.PageFactory;
 import uk.sponte.automation.seleniumpom.dependencies.DependencyInjector;
@@ -18,6 +16,7 @@ import uk.sponte.automation.seleniumpom.helpers.TestDiInstance;
 import uk.sponte.automation.seleniumpom.helpers.TestDiInstanceFactory;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by n450777 on 10/02/2016.
@@ -40,10 +39,10 @@ public class DependencyInjectionTest {
 
     @Test
     public void canUseMyOwnDependencyInjection() {
-        WebDriver webDriver = new ChromeDriver();
+        WebDriver webDriver = mock(WebDriver.class);
         PageFactory pageFactory = new PageFactory(new MyCustomGuiceInjector(webDriver));
         EventFiringWebDriver driver = (EventFiringWebDriver) pageFactory.getDriver();
-        Assert.assertEquals(webDriver, driver.getWrappedDriver());
+        assertEquals(webDriver, driver.getWrappedDriver());
         webDriver.quit();
     }
 
@@ -55,7 +54,7 @@ public class DependencyInjectionTest {
 
         private WebDriver webDriver;
 
-        public MyCustomGuiceInjector(
+        private MyCustomGuiceInjector(
                 WebDriver webDriver) {
             this.webDriver = webDriver;
         }
@@ -70,7 +69,7 @@ public class DependencyInjectionTest {
             return getInjector().getInstance(klass);
         }
 
-        public Injector getInjector() {
+        private Injector getInjector() {
             if(injector != null) return injector;
             injector = Guice.createInjector(Stage.PRODUCTION, this);
             return injector;

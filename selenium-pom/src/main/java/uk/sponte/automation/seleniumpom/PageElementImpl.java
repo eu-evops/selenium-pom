@@ -71,7 +71,10 @@ public class PageElementImpl implements PageElement {
 
     @Override
     public String getHiddenText() {
-        return (String) ((JavascriptExecutor)getDriver()).executeScript(
+        JavascriptExecutor jsExecutor = (JavascriptExecutor) getDriver();
+        assert jsExecutor != null;
+
+        return (String) jsExecutor.executeScript(
                 "return arguments[0].innerText;", webElement);
     }
 
@@ -107,12 +110,18 @@ public class PageElementImpl implements PageElement {
     // DEMO custom actions made easier
     @Override
     public void doubleClick() {
-        new Actions(getDriver()).doubleClick(this.webElement).perform();
+        WebDriver driver = getDriver();
+        assert(driver != null);
+
+        new Actions(driver).doubleClick(this.webElement).perform();
     }
 
     @Override
     public void dropOnto(PageElement target) {
-        new Actions(getDriver()).dragAndDrop(this.webElement, target).perform();
+        WebDriver driver = getDriver();
+        assert(driver != null);
+
+        new Actions(driver).dragAndDrop(this.webElement, target).perform();
     }
 
     @Override
@@ -168,7 +177,7 @@ public class PageElementImpl implements PageElement {
     /**
      * Waits until element's location does not change between intervals
      *
-     * @param timeout
+     * @param timeout in seconds
      */
     @Override
     public PageElement waitUntilStopsMoving(Integer timeout) {
@@ -272,7 +281,10 @@ public class PageElementImpl implements PageElement {
     }
 
     private WebDriverWait getWebDriverWait(long timeout, long interval) {
-        return new WebDriverWait(getDriver(), Math.round(timeout / 1000f), interval);
+        WebDriver driver = getDriver();
+        assert(driver != null);
+
+        return new WebDriverWait(driver, Math.round(timeout / 1000f), interval);
     }
 
     @Override
@@ -339,5 +351,10 @@ public class PageElementImpl implements PageElement {
     public <X> X getScreenshotAs(OutputType<X> target)
             throws WebDriverException {
         return this.webElement.getScreenshotAs(target);
+    }
+
+    @Override
+    public void pageRefreshed(WebDriver driver) {
+        invalidate();
     }
 }

@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -66,7 +67,9 @@ public class WebDriverFactory
             return new InternetExplorerDriver();
 
         FirefoxProfile firefoxProfile = new FirefoxProfile();
-        firefoxProfile.setEnableNativeEvents(false);
-        return new FirefoxDriver(firefoxProfile);
+        FirefoxOptions firefoxOptions = new FirefoxOptions();
+        firefoxOptions.setProfile(firefoxProfile);
+
+        return new FirefoxDriver(firefoxOptions);
     }
 }

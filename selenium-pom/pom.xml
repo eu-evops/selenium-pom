@@ -9,7 +9,7 @@
         <groupId>uk.sponte.automation</groupId>
         <artifactId>selenium-pom-parent</artifactId>
         <relativePath>../pom.xml</relativePath>
-        <version>3.0.1-SNAPSHOT</version>
+        <version>3.0.1</version>
     </parent>
 
     <properties>

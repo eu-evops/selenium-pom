@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.13
+- Updated the changelog for 3.0.12 (forgot)
+
+## 3.0.12
+- Added ability to use Interfaces for page object models
+
 ## 3.0.1 - 3.0.11
 - No changes, build system deployment issues
 

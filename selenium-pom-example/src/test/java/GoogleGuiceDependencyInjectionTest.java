@@ -47,9 +47,9 @@ public class GoogleGuiceDependencyInjectionTest {
         Optional<SearchResult> potentialSearchResult = searchResultsPage
                 .searchResults
                 .results
-                .stream()
+                .parallelStream()
                 .filter(result -> result.getUrl().getHost().equals("en.wikipedia.org"))
-                .findAny();
+                .findFirst();
 
         if(!potentialSearchResult.isPresent())
             throw new RuntimeException("Could not find a link with wikipedia in url");

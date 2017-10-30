@@ -10,6 +10,7 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.safari.SafariDriver;
 
 import java.util.Properties;
 import java.util.Set;
@@ -85,6 +86,10 @@ public class WebDriverFactory
                 webdriverProperty.equalsIgnoreCase("iexplore") ||
                 webdriverProperty.equalsIgnoreCase("internet explorer"))
             return new InternetExplorerDriver();
+
+        if(webdriverProperty.equalsIgnoreCase("safari")) {
+            return new SafariDriver();
+        }
 
         FirefoxProfile firefoxProfile = new FirefoxProfile();
         FirefoxOptions firefoxOptions = new FirefoxOptions();

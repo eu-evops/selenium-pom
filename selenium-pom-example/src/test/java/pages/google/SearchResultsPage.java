@@ -10,6 +10,6 @@ import uk.sponte.automation.seleniumpom.PageElement;
 public class SearchResultsPage {
     public PageElement resultStats;
 
-    @FindBy(id = "center_col")
+    @FindBy(id = "search")
     public SearchResults searchResults;
 }

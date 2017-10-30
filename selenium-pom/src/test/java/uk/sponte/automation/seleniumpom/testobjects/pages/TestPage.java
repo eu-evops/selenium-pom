@@ -19,7 +19,7 @@ import java.util.List;
  * Test page for all UI tests
  * Created by swozniak-ba on 02/04/15.
  */
-public class TestPage {
+public class TestPage implements ITestPage {
     @FindBy(tagName = "h1")
     public PageElement headline;
 
@@ -85,6 +85,7 @@ public class TestPage {
     public FrameSection iframe;
 
 
+    @Override
     public String getPrivateHeadlineContents() {
         return this.privateHeadline.getText();
     }

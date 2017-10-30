@@ -15,7 +15,7 @@ public class ImplementationFinder<T> {
     private Class<T> pageClass;
     private DependencyInjector dependencyInjector;
 
-    private static HashMap<String, Reflections> reflectionsCache = new HashMap<String, Reflections>();
+    private static HashMap<String, Reflections> reflectionsCache = new HashMap<>();
 
     public ImplementationFinder(Class<T> pageClass, DependencyInjector dependencyInjector) {
         this.pageClass = pageClass;
@@ -25,8 +25,8 @@ public class ImplementationFinder<T> {
     public T find() {
         Set<Class<? extends T>> subTypesOf = getReflections(pageClass).getSubTypesOf(pageClass);
 
-        ArrayList<Class<? extends T>> sortedListOfImplementationClasses = new ArrayList<Class<? extends T>>(subTypesOf);
-        Collections.sort(sortedListOfImplementationClasses, new PageFilterAnnotatedClassComparator());
+        ArrayList<Class<? extends T>> sortedListOfImplementationClasses = new ArrayList<>(subTypesOf);
+        sortedListOfImplementationClasses.sort(new PageFilterAnnotatedClassComparator());
 
         for (Class<? extends T> klass : sortedListOfImplementationClasses) {
             PageFilter annotation = klass.getAnnotation(PageFilter.class);
@@ -43,7 +43,13 @@ public class ImplementationFinder<T> {
                 if (valid) {
                     return dependencyInjector.get(klass);
                 }
+            } else {
+                return dependencyInjector.get(klass);
             }
+        }
+
+        if(pageClass.isInterface()) {
+            throw new RuntimeException("Could not find any suitable implementations of " + pageClass.getName());
         }
 
         return dependencyInjector.get(pageClass);
@@ -76,7 +82,7 @@ public class ImplementationFinder<T> {
             if (pageFilterO2 != null)
                 o2ValidatorsCount = pageFilterO2.value().length;
 
-            return Integer.valueOf(o2ValidatorsCount).compareTo(Integer.valueOf(o1ValidatorsCount));
+            return Integer.compare(o2ValidatorsCount, o1ValidatorsCount);
         }
     }
 }

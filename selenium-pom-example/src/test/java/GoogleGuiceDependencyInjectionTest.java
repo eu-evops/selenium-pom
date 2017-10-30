@@ -44,19 +44,20 @@ public class GoogleGuiceDependencyInjectionTest {
 
         System.out.printf("Found %d results%n", searchResultsPage.searchResults.results.size());
 
-        Optional<SearchResult> searchResult = searchResultsPage
+        Optional<SearchResult> potentialSearchResult = searchResultsPage
                 .searchResults
                 .results
                 .stream()
                 .filter(result -> result.getUrl().getHost().equals("en.wikipedia.org"))
                 .findAny();
 
-        if(!searchResult.isPresent())
+        if(!potentialSearchResult.isPresent())
             throw new RuntimeException("Could not find a link with wikipedia in url");
 
-        String expectedSearchResultTitle = searchResult.get().title.getText();
+        SearchResult searchResult = potentialSearchResult.get();
+        String expectedSearchResultTitle = searchResult.title.getText();
 
-        searchResult.get().select();
+        searchResult.select();
 
         article.firstHeading.waitFor();
         Assert.assertEquals(expectedSearchResultTitle, driver.getTitle());

@@ -15,6 +15,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import uk.sponte.automation.seleniumpom.proxies.handlers.Refreshable;
@@ -173,6 +174,17 @@ public class PageElementImpl implements PageElement {
     @Override
     public PageElement waitUntilStopsMoving() {
         return waitUntilStopsMoving(DEFAULT_TIMEOUT);
+    }
+
+    @Override
+    public PageElement waitUntilClickable() {
+        return waitUntilClickable(DEFAULT_TIMEOUT);
+    }
+
+    @Override
+    public PageElement waitUntilClickable(Integer timeout) {
+        getWebDriverWait(timeout).until(ExpectedConditions.elementToBeClickable(this.webElement));
+        return this;
     }
 
     /**

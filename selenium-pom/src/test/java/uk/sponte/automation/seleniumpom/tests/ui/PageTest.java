@@ -158,4 +158,11 @@ public class PageTest extends BasePageTest {
     public void canUsePrivateField() {
         assertEquals("Headline", testPage.getPrivateHeadlineContents());
     }
+
+    @Test
+    public void verifyElementToBeClickable(){
+        assertEquals(true, Boolean.valueOf(testPage.lateLoadingButton.getAttribute("disabled")));
+        testPage.lateLoadingButton.waitUntilClickable();
+        assertEquals(null, testPage.lateLoadingButton.getAttribute("disabled"));
+    }
 }

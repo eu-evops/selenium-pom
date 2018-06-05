@@ -7,6 +7,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.openqa.selenium.WebDriver;
 import uk.sponte.automation.seleniumpom.PageFactory;
 import uk.sponte.automation.seleniumpom.testobjects.pages.TestPage;
@@ -32,6 +33,8 @@ public class BasePageTest {
             .disableRequestJournal()
             .withRootDirectory("src/test/resources/uk/sponte/automation/seleniumpom");
 
+    @Rule public TestName testName = new TestName();
+
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(opts); // No-args constructor defaults to port 8080
 
@@ -43,6 +46,9 @@ public class BasePageTest {
 
     @Before
     public void navigateToTestPage() {
+        System.setProperty("selenium.webdriver.remote.name",
+                String.format("%s.%s", this.getClass().getName(), this.testName.getMethodName()));
+
         String testUrl = wireMockRule.url(getTestPagePath());
         driver.navigate().to("about:blank");
         driver.navigate().to(testUrl);

@@ -69,6 +69,10 @@ public class BasePageTest implements SessionAndDriverProvider {
 
     @Override
     public String getSessionId() {
+        if(this.pageFactory == null) {
+            return "";
+        }
+
         if(this.sessionId != null) {
             return this.sessionId;
         }

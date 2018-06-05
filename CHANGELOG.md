@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.14
+- Added new methods to wait until element is clickable
+
 ## 3.0.13
 - Updated the changelog for 3.0.12 (forgot)
 

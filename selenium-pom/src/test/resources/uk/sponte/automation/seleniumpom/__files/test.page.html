@@ -104,6 +104,11 @@
                 }, DEFAULT_TIMEOUT);
 
         });
+        $('#loadLazyButton').click(function() {
+            setTimeout(function() {
+                $('#lazyButton').prop('disabled', false);
+            }, DEFAULT_TIMEOUT);
+        });
 
         if(document.cookie.match('expireItems') || document.location.hash === '#expire') {
             console.log('The items should expire');
@@ -128,6 +133,12 @@
      var newElement = $('<p>This is a paragraph</p>');
      $('#staleElementsTests').append(newElement);
    }
+
+   $(function() {
+     setTimeout(function() {
+         $('#lateLoadingButton').prop('disabled', false);
+       }, DEFAULT_TIMEOUT);
+    });
 
 </script>
 
@@ -350,6 +361,9 @@
     <li>HelloWorld</li>
     <li>HelloWorld</li>
 </ul>
+
+<button id="loadLazyButton">Load Lazy Button</button>
+<button id="lazyButton" disabled>Lazy Button</button>
 
 </body>
 </html>

@@ -135,6 +135,16 @@ public abstract class PageSection implements SearchContext, Refreshable, WebElem
         this.rootElement.waitUntilGone(timeout);
     }
 
+    @Override
+    public PageElement waitUntilClickable() {
+        return this.rootElement.waitUntilClickable();
+    }
+
+    @Override
+    public PageElement waitUntilClickable(Integer timeout) {
+        return this.rootElement.waitUntilClickable(timeout);
+    }
+
     /**
      * Waits until element's location does not change between intervals
      */

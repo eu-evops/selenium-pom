@@ -37,6 +37,13 @@ public class TestPage implements ITestPage {
     @FindBy(id = "dblClick")
     public PageElement doubleClick;
 
+    @FindBy(id="lazyButton")
+    public PageElement lazyButton;
+
+    @FindBy(id="loadLazyButton")
+    public PageElement loadLazyButton;
+
+
     public PageElement drag;
     public PageElement drop;
 

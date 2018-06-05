@@ -59,10 +59,8 @@ public class MobileDateSelector {
      * @param calenderBox
      * @param monthNumber
      * @param date
-     * @throws TimeoutException
      */
-    private void setDate(MobileCalenderBox calendar, Date date) throws
-            TimeoutException {
+    private void setDate(MobileCalenderBox calendar, Date date) {
         calendar.calendarNext.waitUntilStopsMoving();
         while (!MONTH_NAMES.get(calendar.monthName.getText())
                 .equals(date.getMonth())) {

@@ -109,6 +109,10 @@ public class PageFactory implements
         return eventFiringWebDriver;
     }
 
+    public WebDriver getRawDriver() {
+        return dependencyInjector.get(WebDriver.class);
+    }
+
     public <T> T get(Class<T> pageClass) throws PageFactoryError {
         return this.get(pageClass, getDriver());
     }

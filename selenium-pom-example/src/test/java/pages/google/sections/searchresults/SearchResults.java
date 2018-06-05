@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class SearchResults extends PageSection {
     @FindAll({
-            @FindBy(css = "div.rc"),
+            @FindBy(css = "div > div.rc"),
             @FindBy(css = "._NId > .srg > .g div.rc")
     })
     public List<SearchResult> results;

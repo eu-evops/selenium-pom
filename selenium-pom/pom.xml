@@ -23,9 +23,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.16</version>
                 <configuration>
-                    <forkCount>8</forkCount>
-                    <reuseForks>true</reuseForks>
-                    <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+                    <forkCount>5</forkCount>
+                    <reuseForks>false</reuseForks>
+                    <argLine>-Xmx512m -XX:MaxPermSize=256m</argLine>
                 </configuration>
             </plugin>
         </plugins>
@@ -104,6 +104,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>22.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.saucelabs</groupId>
+            <artifactId>sauce_junit</artifactId>
+            <version>2.1.18</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

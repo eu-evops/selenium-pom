@@ -1,4 +1,4 @@
-package uk.sponte.automation.seleniumpom.helpers;
+package uk.sponte.automation.seleniumpom.helpers.sauce;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;

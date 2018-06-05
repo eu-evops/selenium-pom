@@ -104,6 +104,11 @@
                 }, DEFAULT_TIMEOUT);
 
         });
+        $('#loadLazyButton').click(function() {
+            setTimeout(function() {
+                $('#lazyButton').prop('disabled', false);
+            }, DEFAULT_TIMEOUT);
+        });
 
         if(document.cookie.match('expireItems') || document.location.hash === '#expire') {
             console.log('The items should expire');
@@ -357,7 +362,8 @@
     <li>HelloWorld</li>
 </ul>
 
-<button id="lateLoadingButton" disabled>Late Loading Button</button>
+<button id="loadLazyButton">Load Lazy Button</button>
+<button id="lazyButton" disabled>Lazy Button</button>
 
 </body>
 </html>

@@ -161,8 +161,9 @@ public class PageTest extends BasePageTest {
 
     @Test
     public void verifyElementToBeClickable(){
-        assertEquals(true, Boolean.valueOf(testPage.lateLoadingButton.getAttribute("disabled")));
-        testPage.lateLoadingButton.waitUntilClickable();
-        assertEquals(null, testPage.lateLoadingButton.getAttribute("disabled"));
+        assertEquals(true, Boolean.valueOf(testPage.lazyButton.getAttribute("disabled")));
+        testPage.loadLazyButton.click();
+        testPage.lazyButton.waitUntilClickable();
+        assertEquals(null, testPage.lazyButton.getAttribute("disabled"));
     }
 }

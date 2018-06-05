@@ -34,7 +34,7 @@ public class MobileCalenderBox extends PageSection {
     PageElement dateCell(int date) {
         return new PageElementImpl(rootElement.findElement(
                         By.xpath(
-                                String.format(".//*[text()='%s']", String.valueOf(date))
+                                String.format(".//*[text()='%s' and contains(@class, 'infocus')]", String.valueOf(date))
                         )
         ));
     }

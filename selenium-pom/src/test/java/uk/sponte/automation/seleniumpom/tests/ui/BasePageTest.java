@@ -47,6 +47,7 @@ public class BasePageTest implements SessionAndDriverProvider {
     @Before
     public void navigateToTestPage() {
         pageFactory = new PageFactory();
+        this.sessionId = getSessionId();
         driver = pageFactory.getDriver();
         String testUrl = wireMockRule.url(getTestPagePath());
         driver.navigate().to("about:blank");

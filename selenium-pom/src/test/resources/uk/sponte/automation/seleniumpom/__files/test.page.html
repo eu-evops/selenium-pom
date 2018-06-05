@@ -129,6 +129,12 @@
      $('#staleElementsTests').append(newElement);
    }
 
+   $(function() {
+     setTimeout(function() {
+         $('#lateLoadingButton').prop('disabled', false);
+       }, DEFAULT_TIMEOUT);
+    });
+
 </script>
 
 <body>
@@ -350,6 +356,8 @@
     <li>HelloWorld</li>
     <li>HelloWorld</li>
 </ul>
+
+<button id="lateLoadingButton" disabled>Late Loading Button</button>
 
 </body>
 </html>

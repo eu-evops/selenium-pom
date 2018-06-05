@@ -76,4 +76,11 @@ public interface WebElementExtensions {
      */
     PageElement waitUntilStopsMoving(Integer timeout);
     PageElement waitUntilStopsMoving();
+
+    /**
+     * Waits for element to be clickable
+     */
+    PageElement waitUntilClickable();
+    PageElement waitUntilClickable(Integer timeout);
+
 }
